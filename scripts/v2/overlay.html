@@ -50,7 +50,7 @@
   .outro-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;padding:0 80px 60px;}
   .outro-wrap > *{transform-origin:50% 50%;}
-  .o-logo{max-height:170px;max-width:420px;margin-bottom:48px;}
+  .o-logo{width:640px;height:auto;margin-bottom:58px;}
   .o-label{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;
     color:#F0D723;font-size:30px;margin-bottom:26px;}
   .o-hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:84px;line-height:1.05;margin:0;}
@@ -67,7 +67,7 @@
   <div id="segs"></div>
 </div>
 <script id="timeline-data" type="application/json">{"trans": 0.6, "total_duration": 32.5, "timeline": [{"key": "intro", "mountStart": 0.0, "fullStart": 0.0, "fullEnd": 4.4, "mountEnd": 5.0}, {"key": "whw", "mountStart": 4.4, "fullStart": 5.0, "fullEnd": 9.8, "mountEnd": 10.4}, {"key": "fisherman", "mountStart": 9.8, "fullStart": 10.4, "fullEnd": 16.2, "mountEnd": 16.8}, {"key": "cotswold", "mountStart": 16.2, "fullStart": 16.8, "fullEnd": 23.6, "mountEnd": 24.2}, {"key": "montblanc", "mountStart": 23.6, "fullStart": 24.2, "fullEnd": 28.1, "mountEnd": 28.7}, {"key": "outro", "mountStart": 28.1, "fullStart": 28.7, "fullEnd": 32.5, "mountEnd": 32.5}]}</script>
-<script id="content-data" type="application/json">{"intro": {"pill": "WANDERURLAUB 2027", "headline": ["Die sch\u00f6nsten", "Wanderrouten f\u00fcr 2027."]}, "whw": {"country": "SCHOTTLAND", "badges": [{"value": "57\u2013152", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "WEST HIGHLAND WAY", "headline": ["Hier ist der Wind", "schon l\u00e4nger unterwegs", "als der Weg."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "89", "cap": "KM"}, {"value": "7", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "FISHERMAN'S TRAIL", "headline": ["Der Atlantik begleitet", "dich \u2013 und ist nie", "zweimal derselbe."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "48\u2013166", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "LEICHT", "cap": "NIVEAU"}], "pill": "COTSWOLD WAY", "headline": ["Wer langsam geht,", "kommt auch an."]}, "montblanc": {"country": "FRANKREICH \u00b7 ITALIEN \u00b7 SCHWEIZ", "badges": [{"value": "50\u2013174", "cap": "KM"}, {"value": "5\u201314", "cap": "TAGE"}, {"value": "ANSPRUCHSVOLL", "cap": "NIVEAU"}], "pill": "TOUR DU MONT BLANC", "headline": ["Manche Stille", "findet man nur", "auf 2.500 Metern."]}, "outro": {"logo": null, "label": "WANDERURLAUB 2027", "headline": ["Finde deinen Weg", "f\u00fcr 2027."], "cta": "orbisways.com", "cta_caption": "Mehr Infos & Buchung"}}</script>
+<script id="content-data" type="application/json">{"intro": {"pill": "WANDERURLAUB 2027", "headline": ["Die sch\u00f6nsten", "Wanderrouten f\u00fcr 2027."]}, "whw": {"country": "SCHOTTLAND", "badges": [{"value": "57\u2013152", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "WEST HIGHLAND WAY", "headline": ["Hier ist der Wind", "schon l\u00e4nger unterwegs", "als der Weg."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "89", "cap": "KM"}, {"value": "7", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "FISHERMAN'S TRAIL", "headline": ["Der Atlantik begleitet", "dich \u2013 und ist nie", "zweimal derselbe."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "48\u2013166", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "LEICHT", "cap": "NIVEAU"}], "pill": "COTSWOLD WAY", "headline": ["Wer langsam geht,", "kommt auch an."]}, "montblanc": {"country": "FRANKREICH \u00b7 ITALIEN \u00b7 SCHWEIZ", "badges": [{"value": "50\u2013174", "cap": "KM"}, {"value": "5\u201314", "cap": "TAGE"}, {"value": "ANSPRUCHSVOLL", "cap": "NIVEAU"}], "pill": "TOUR DU MONT BLANC", "headline": ["Manche Stille", "findet man nur", "auf 2.500 Metern."]}, "outro": {"logo": "scripts/orbisways_style/logo/orbisways_logo_white.png", "label": "WANDERURLAUB 2027", "headline": ["Finde deinen Weg", "f\u00fcr 2027."], "cta": "orbisways.com", "cta_caption": "Mehr Infos & Buchung"}}</script>
 <script>
 const TIMELINE = JSON.parse(document.getElementById('timeline-data').textContent);
 const CONTENT = JSON.parse(document.getElementById('content-data').textContent);
@@ -237,7 +237,10 @@ function renderAtTime(t){
 
 window.renderAtTime = renderAtTime;
 window.TOTAL_DURATION = TIMELINE.total_duration;
-Promise.all(['700','800','900'].map(w => document.fonts.load(`${w} 40px Poppins`)))
+Promise.all([
+  ...['700','800','900'].map(w => document.fonts.load(`${w} 40px Poppins`)),
+  ...Array.from(document.images).map(img => img.decode()),
+])
   .then(() => document.fonts.ready)
   .then(() => { window.__READY__ = true; });
 renderAtTime(0);
