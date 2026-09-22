@@ -1,6 +1,6 @@
 {
   "trans": 0.6,
-  "total_duration": 27.999999999999993,
+  "total_duration": 26.999999999999996,
   "timeline": [
     {
       "key": "intro",
@@ -13,29 +13,29 @@
       "key": "whw",
       "mountStart": 3.4,
       "fullStart": 4.0,
-      "fullEnd": 8.8,
-      "mountEnd": 9.4
+      "fullEnd": 7.8,
+      "mountEnd": 8.4
     },
     {
       "key": "fisherman",
-      "mountStart": 8.8,
-      "fullStart": 9.4,
-      "fullEnd": 15.2,
-      "mountEnd": 15.8
+      "mountStart": 7.8,
+      "fullStart": 8.4,
+      "fullEnd": 14.2,
+      "mountEnd": 14.8
     },
     {
       "key": "cotswold",
-      "mountStart": 15.2,
-      "fullStart": 15.8,
-      "fullEnd": 23.1,
-      "mountEnd": 23.7
+      "mountStart": 14.2,
+      "fullStart": 14.8,
+      "fullEnd": 22.1,
+      "mountEnd": 22.7
     },
     {
       "key": "montblanc",
-      "mountStart": 23.1,
-      "fullStart": 23.7,
-      "fullEnd": 28.0,
-      "mountEnd": 28.0
+      "mountStart": 22.1,
+      "fullStart": 22.7,
+      "fullEnd": 27.0,
+      "mountEnd": 27.0
     }
   ]
 }

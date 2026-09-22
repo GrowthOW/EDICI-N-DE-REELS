@@ -4,24 +4,24 @@
   "segments": [
     {
       "key": "intro",
-      "src_start": 0.0,
-      "src_end": 4.0,
-      "crop_x0": 1060,
-      "crop_x1": 1060
+      "src_start": 5.07,
+      "src_end": 9.07,
+      "crop_x0": 1750,
+      "crop_x1": 1950
     },
     {
       "key": "whw",
-      "src_start": 5.07,
-      "src_end": 11.07,
-      "crop_x0": 1750,
-      "crop_x1": 1950
+      "src_start": 0.0,
+      "src_end": 5.0,
+      "crop_x0": 1060,
+      "crop_x1": 1060
     },
     {
       "key": "fisherman",
       "src_start": 11.07,
       "src_end": 18.07,
-      "crop_x0": 300,
-      "crop_x1": 500
+      "crop_x0": 1250,
+      "crop_x1": 1400
     },
     {
       "key": "cotswold",
