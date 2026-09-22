@@ -50,11 +50,11 @@
   .outro-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;padding:0 80px 60px;}
   .outro-wrap > *{transform-origin:50% 50%;}
-  .o-logo{width:640px;height:auto;margin-bottom:58px;}
+  .o-logo{width:640px;height:auto;margin-bottom:46px;}
   .o-label{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;
     color:#F0D723;font-size:30px;margin-bottom:26px;}
-  .o-hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:84px;line-height:1.05;margin:0;}
-  .o-cta{margin-top:60px;display:inline-block;background:#1474A4;border-radius:16px;padding:24px 44px 20px;
+  .o-hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:58px;line-height:1.05;margin:0;}
+  .o-cta{margin-top:48px;display:inline-block;background:#1474A4;border-radius:16px;padding:24px 44px 20px;
     line-height:1.1;box-shadow:0 10px 30px rgba(0,0,0,0.35);}
   .o-cta span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
     color:#FFFFFF;font-size:64px;white-space:nowrap;}
@@ -142,7 +142,7 @@ TIMELINE.timeline.forEach(tl => {
       const img = add('img', 'o-logo', null, 'logo', 'logo', wrap);
       img.src = '../../' + data.logo;
     }
-    add('div', 'o-label', data.label, 'label', 'country', wrap);
+    if (data.label) add('div', 'o-label', data.label, 'label', 'country', wrap);
     data.headline.forEach((line, idx) => add('p', 'o-hline', line, 'h' + (idx+1), 'headline', wrap));
     add('div', 'o-cta', `<span>${data.cta}</span>`, 'cta', 'pill', wrap);
     add('div', 'o-caption', data.cta_caption, 'caption', 'country', wrap);

@@ -99,10 +99,8 @@
   },
   "outro": {
     "logo": "scripts/orbisways_style/logo/orbisways_logo_white.png",
-    "label": "WANDERURLAUB 2027",
     "headline": [
-      "Finde deinen Weg",
-      "für 2027."
+      "Finde deinen Weg"
     ],
     "cta": "orbisways.com",
     "cta_caption": "Mehr Infos & Buchung"

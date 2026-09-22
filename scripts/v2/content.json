@@ -100,10 +100,8 @@
   },
   "outro": {
     "logo": "scripts/orbisways_style/logo/orbisways_logo_white.png",
-    "label": "WALKING HOLIDAYS 2027",
     "headline": [
-      "Find your trail",
-      "for 2027."
+      "Find your trail"
     ],
     "cta": "orbisways.com",
     "cta_caption": "More info & bookings"
