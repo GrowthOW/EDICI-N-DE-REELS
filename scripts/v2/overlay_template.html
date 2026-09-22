@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+  @font-face{font-family:'Poppins';font-weight:700;src:url('../orbisways_style/fonts/poppins-latin-700-normal.woff2') format('woff2');}
+  @font-face{font-family:'Poppins';font-weight:800;src:url('../orbisways_style/fonts/poppins-latin-800-normal.woff2') format('woff2');}
+  @font-face{font-family:'Poppins';font-weight:900;src:url('../orbisways_style/fonts/poppins-latin-900-normal.woff2') format('woff2');}
   html,body{margin:0;padding:0;background:transparent;}
   #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
   .seg{position:absolute;inset:0;display:none;}
@@ -23,18 +25,19 @@
   .badge .cap{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
     color:#F0D723;font-size:21px;display:block;margin-top:4px;}
 
-  .pill{position:absolute;left:80px;top:1270px;display:inline-block;background:#1474A4;border-radius:11px;
-    padding:16px 28px;transform-origin:0% 100%;}
-  .pill span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;
-    color:#FFFFFF;font-size:32px;white-space:nowrap;}
+  .pill{position:absolute;left:80px;top:1180px;display:inline-block;background:#1474A4;border-radius:16px;
+    padding:22px 36px 18px;line-height:1.1;transform-origin:0% 100%;box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .pill span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    color:#FFFFFF;font-size:62px;white-space:nowrap;}
 
-  .headline{position:absolute;left:80px;top:1388px;right:70px;}
-  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:70px;line-height:1.12;
+  .headline{position:absolute;left:80px;top:1350px;right:70px;}
+  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:60px;line-height:1.12;
     margin:0;text-shadow:0 4px 18px rgba(0,0,0,0.35);transform-origin:0% 100%;}
 
   .headline.intro{top:1300px;}
   .headline.intro .hline{font-size:66px;}
-  .pill.intro{top:1220px;}
+  .pill.intro{top:1210px;padding:16px 28px;border-radius:11px;box-shadow:none;}
+  .pill.intro span{font-size:34px;letter-spacing:0.05em;}
 </style>
 </head>
 <body>
@@ -190,7 +193,9 @@ function renderAtTime(t){
 
 window.renderAtTime = renderAtTime;
 window.TOTAL_DURATION = TIMELINE.total_duration;
-window.__READY__ = true;
+Promise.all(['700','800','900'].map(w => document.fonts.load(`${w} 40px Poppins`)))
+  .then(() => document.fonts.ready)
+  .then(() => { window.__READY__ = true; });
 renderAtTime(0);
 </script>
 </body>

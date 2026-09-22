@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+  @font-face{font-family:'Poppins';font-weight:700;src:url('../orbisways_style/fonts/poppins-latin-700-normal.woff2') format('woff2');}
+  @font-face{font-family:'Poppins';font-weight:800;src:url('../orbisways_style/fonts/poppins-latin-800-normal.woff2') format('woff2');}
+  @font-face{font-family:'Poppins';font-weight:900;src:url('../orbisways_style/fonts/poppins-latin-900-normal.woff2') format('woff2');}
   html,body{margin:0;padding:0;background:transparent;}
   #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
   .seg{position:absolute;inset:0;display:none;}
@@ -23,26 +25,27 @@
   .badge .cap{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
     color:#F0D723;font-size:21px;display:block;margin-top:4px;}
 
-  .pill{position:absolute;left:80px;top:1270px;display:inline-block;background:#1474A4;border-radius:11px;
-    padding:16px 28px;transform-origin:0% 100%;}
-  .pill span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;
-    color:#FFFFFF;font-size:32px;white-space:nowrap;}
+  .pill{position:absolute;left:80px;top:1180px;display:inline-block;background:#1474A4;border-radius:16px;
+    padding:22px 36px 18px;line-height:1.1;transform-origin:0% 100%;box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .pill span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    color:#FFFFFF;font-size:62px;white-space:nowrap;}
 
-  .headline{position:absolute;left:80px;top:1388px;right:70px;}
-  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:70px;line-height:1.12;
+  .headline{position:absolute;left:80px;top:1350px;right:70px;}
+  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:60px;line-height:1.12;
     margin:0;text-shadow:0 4px 18px rgba(0,0,0,0.35);transform-origin:0% 100%;}
 
   .headline.intro{top:1300px;}
   .headline.intro .hline{font-size:66px;}
-  .pill.intro{top:1220px;}
+  .pill.intro{top:1210px;padding:16px 28px;border-radius:11px;box-shadow:none;}
+  .pill.intro span{font-size:34px;letter-spacing:0.05em;}
 </style>
 </head>
 <body>
 <div id="stage">
   <div id="segs"></div>
 </div>
-<script id="timeline-data" type="application/json">{"trans": 0.6, "total_duration": 27.999999999999993, "timeline": [{"key": "intro", "mountStart": 0.0, "fullStart": 0.0, "fullEnd": 3.4, "mountEnd": 4.0}, {"key": "whw", "mountStart": 3.4, "fullStart": 4.0, "fullEnd": 8.8, "mountEnd": 9.4}, {"key": "fisherman", "mountStart": 8.8, "fullStart": 9.4, "fullEnd": 15.2, "mountEnd": 15.8}, {"key": "cotswold", "mountStart": 15.2, "fullStart": 15.8, "fullEnd": 23.1, "mountEnd": 23.7}, {"key": "montblanc", "mountStart": 23.1, "fullStart": 23.7, "fullEnd": 28.0, "mountEnd": 28.0}]}</script>
-<script id="content-data" type="application/json">{"intro": {"pill": "WALKING HOLIDAYS 2027", "headline": ["Best walking holidays", "destinations for 2027."]}, "whw": {"country": "SCOTLAND", "badges": [{"value": "154", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "WEST HIGHLAND WAY", "headline": ["Here the wind has", "walked longer than", "the path."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "230", "cap": "KM"}, {"value": "7\u201310", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "FISHERMAN'S TRAIL", "headline": ["The ocean walks", "beside you and", "never repeats itself."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "164", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "GENTLE", "cap": "LEVEL"}], "pill": "COTSWOLD WAY", "headline": ["Walking slowly is", "also a way of", "arriving."]}, "montblanc": {"country": "FRANCE \u00b7 ITALY \u00b7 SWITZERLAND", "badges": [{"value": "160", "cap": "KM"}, {"value": "8\u201312", "cap": "DAYS"}, {"value": "ACTIVE", "cap": "LEVEL"}], "pill": "TOUR DU MONT BLANC", "headline": ["There are silences", "that only exist at", "2,500 m."]}}</script>
+<script id="timeline-data" type="application/json">{"trans": 0.6, "total_duration": 30.1, "timeline": [{"key": "intro", "mountStart": 0.0, "fullStart": 0.0, "fullEnd": 4.4, "mountEnd": 5.0}, {"key": "whw", "mountStart": 4.4, "fullStart": 5.0, "fullEnd": 9.8, "mountEnd": 10.4}, {"key": "fisherman", "mountStart": 9.8, "fullStart": 10.4, "fullEnd": 16.2, "mountEnd": 16.8}, {"key": "cotswold", "mountStart": 16.2, "fullStart": 16.8, "fullEnd": 23.6, "mountEnd": 24.2}, {"key": "montblanc", "mountStart": 23.6, "fullStart": 24.2, "fullEnd": 30.1, "mountEnd": 30.1}]}</script>
+<script id="content-data" type="application/json">{"intro": {"pill": "WALKING HOLIDAYS 2027", "headline": ["Best walking holidays", "destinations for 2027."]}, "whw": {"country": "SCOTLAND", "badges": [{"value": "57\u2013152", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "WEST HIGHLAND WAY", "headline": ["Here the wind has", "walked longer than", "the path."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "89", "cap": "KM"}, {"value": "7", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "FISHERMAN'S TRAIL", "headline": ["The ocean walks", "beside you and", "never repeats itself."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "48\u2013166", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "GENTLE", "cap": "LEVEL"}], "pill": "COTSWOLD WAY", "headline": ["Walking slowly is", "also a way of", "arriving."]}, "montblanc": {"country": "FRANCE \u00b7 ITALY \u00b7 SWITZERLAND", "badges": [{"value": "50\u2013174", "cap": "KM"}, {"value": "5\u201314", "cap": "DAYS"}, {"value": "ACTIVE", "cap": "LEVEL"}], "pill": "TOUR DU MONT BLANC", "headline": ["There are silences", "that only exist at", "2,500 m."]}}</script>
 <script>
 const TIMELINE = JSON.parse(document.getElementById('timeline-data').textContent);
 const CONTENT = JSON.parse(document.getElementById('content-data').textContent);
@@ -190,7 +193,9 @@ function renderAtTime(t){
 
 window.renderAtTime = renderAtTime;
 window.TOTAL_DURATION = TIMELINE.total_duration;
-window.__READY__ = true;
+Promise.all(['700','800','900'].map(w => document.fonts.load(`${w} 40px Poppins`)))
+  .then(() => document.fonts.ready)
+  .then(() => { window.__READY__ = true; });
 renderAtTime(0);
 </script>
 </body>

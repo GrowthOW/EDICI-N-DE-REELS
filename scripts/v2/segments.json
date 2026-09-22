@@ -1,23 +1,29 @@
 {
   "trans": 0.6,
+  "fps": 30,
   "canvas": { "w": 1080, "h": 1920 },
+  "music": "sources_audio/background_music.mp3",
+  "music_start": 0.0,
   "segments": [
     {
       "key": "intro",
+      "src": "sources_raw/intro_forest_walker_vertical.mp4",
+      "src_start": 0.0,
+      "src_end": 5.0,
+      "crop_x0": 0,
+      "crop_x1": 0
+    },
+    {
+      "key": "whw",
+      "src": "sources_raw/brutos_rutas_compilado.mp4",
       "src_start": 5.07,
-      "src_end": 9.07,
+      "src_end": 11.07,
       "crop_x0": 1750,
       "crop_x1": 1950
     },
     {
-      "key": "whw",
-      "src_start": 0.0,
-      "src_end": 5.0,
-      "crop_x0": 1060,
-      "crop_x1": 1060
-    },
-    {
       "key": "fisherman",
+      "src": "sources_raw/brutos_rutas_compilado.mp4",
       "src_start": 11.07,
       "src_end": 18.07,
       "crop_x0": 1250,
@@ -25,17 +31,19 @@
     },
     {
       "key": "cotswold",
+      "src": "sources_raw/brutos_rutas_compilado.mp4",
       "src_start": 18.63,
-      "src_end": 27.13,
+      "src_end": 26.63,
       "crop_x0": 1327,
       "crop_x1": 1327
     },
     {
       "key": "montblanc",
-      "src_start": 28.03,
-      "src_end": 32.93,
-      "crop_x0": 793,
-      "crop_x1": 2333
+      "src": "sources_raw/montblanc_massif_drone.mp4",
+      "src_start": 0.5,
+      "src_end": 7.0,
+      "crop_x0": 1450,
+      "crop_x1": 1800
     }
   ]
 }

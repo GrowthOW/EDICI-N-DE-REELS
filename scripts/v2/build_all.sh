@@ -1,40 +1,42 @@
 #!/usr/bin/env bash
-# Reconstruye el reel "Top destinos 2027" a partir de un clip bruto.
-# Uso: ./build_all.sh /ruta/al/bruto.mp4 /ruta/de/salida.mp4
+# Reconstruye el reel a partir de los brutos/música definidos en segments.json.
+# Uso: ./build_all.sh <salida.mp4>
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC="${1:?uso: build_all.sh <bruto.mp4> <salida.mp4>}"
-OUT="${2:?uso: build_all.sh <bruto.mp4> <salida.mp4>}"
-
+REPO="$(cd "$HERE/../.." && pwd)"
+OUT="${1:?uso: build_all.sh <salida.mp4>}"
 BG="$HERE/background.mp4"
 
-echo "== 1/3 fondo (recorte 9:16 + grading + transiciones + audio) =="
-python3 "$HERE/build_background.py" "$SRC" "$BG"
+echo "== 1/3 fondo (recorte 9:16 + grading + transiciones) =="
+python3 "$HERE/build_background.py" "$BG"
 
 echo "== 2/3 cartelas (texto real, capa transparente) =="
-python3 << PYEOF
-import json
-with open("$HERE/timeline.json") as f: tl = json.load(f)
-with open("$HERE/content.json") as f: content = json.load(f)
-with open("$HERE/overlay_template.html") as f: html = f.read()
-html = html.replace("__TIMELINE_JSON__", json.dumps(tl))
-html = html.replace("__CONTENT_JSON__", json.dumps(content))
-with open("$HERE/overlay.html", "w") as f:
-    f.write(html)
+python3 - "$HERE" << 'PYEOF'
+import json, os, sys
+here = sys.argv[1]
+tl = json.load(open(os.path.join(here, "timeline.json")))
+content = json.load(open(os.path.join(here, "content.json")))
+html = open(os.path.join(here, "overlay_template.html")).read()
+html = html.replace("__TIMELINE_JSON__", json.dumps(tl)).replace("__CONTENT_JSON__", json.dumps(content))
+open(os.path.join(here, "overlay.html"), "w").write(html)
 PYEOF
 python3 "$HERE/overlay_capture.py"
 
-echo "== 3/3 composicion final =="
-DUR=$(python3 -c "import json;print(json.load(open('$HERE/timeline.json'))['total_duration'])")
-FADE_ST=$(python3 -c "print($DUR-0.5)")
-ffmpeg -y \
+echo "== 3/3 composicion final + musica =="
+read -r DUR MUSIC MUSIC_START < <(python3 -c "
+import json
+t=json.load(open('$HERE/timeline.json')); s=json.load(open('$HERE/segments.json'))
+print(t['total_duration'], '$REPO/'+s['music'], s.get('music_start',0))")
+VFADE=$(python3 -c "print(round($DUR-0.5,3))")
+AFADE=$(python3 -c "print(round($DUR-1.5,3))")
+ffmpeg -y -v error -stats \
   -i "$BG" \
   -framerate 30 -i "$HERE/overlay_frames/ov_%05d.png" \
-  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,fade=t=out:st=${FADE_ST}:d=0.5[v]" \
-  -map "[v]" -map 0:a \
-  -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 16 -preset slow \
-  -c:a aac -b:a 192k -af "afade=t=out:st=${FADE_ST}:d=0.5" \
-  -movflags +faststart \
+  -ss "$MUSIC_START" -t "$DUR" -i "$MUSIC" \
+  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,fade=t=out:st=${VFADE}:d=0.5[v];[2:a]afade=t=in:d=0.4,afade=t=out:st=${AFADE}:d=1.5[a]" \
+  -map "[v]" -map "[a]" -t "$DUR" \
+  -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 20 -preset medium \
+  -c:a aac -b:a 192k -movflags +faststart \
   "$OUT"
 
 echo "DONE -> $OUT"
