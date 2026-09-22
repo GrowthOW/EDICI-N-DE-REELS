@@ -42,3 +42,33 @@ ffmpeg -y -framerate 30 -i frames/frame_%05d.png \
 ```
 
 El video no incluye audio; queda listo para añadir música/voz al publicarlo.
+
+## v2 — cartelas sobre video bruto (`scripts/v2/`)
+
+Segunda pieza: mismas cartelas (design system en `scripts/orbisways_style/`),
+pero ahora montadas como **texto real** (no imagen) sobre clips de video
+brutos, en vez de sobre fotos estáticas.
+
+- `sources_raw/` — clips brutos de producto tal como se recibieron.
+- `scripts/v2/segments.json` — qué tramo de cada bruto usa cada
+  producto/destino y cómo se recorta a vertical (con paneo cuando hace falta).
+- `scripts/v2/content.json` — texto de cada cartela (país, km/días/nivel,
+  nombre, frase) por segmento.
+- `scripts/v2/build_background.py` — recorta cada tramo a 9:16, aplica el
+  grading de marca, encadena las transiciones (crossfade de video + audio)
+  y calcula el timeline (`timeline.json`) que usa la capa de texto.
+- `scripts/v2/overlay_template.html` + `overlay_capture.py` — renderizan las
+  cartelas como HTML/CSS real (fuente Poppins, mismos colores/proporciones)
+  sobre fondo transparente, con Playwright, frame a frame.
+- `scripts/v2/build_all.sh` — encadena los 3 pasos + composición final con
+  ffmpeg (`overlay` de la capa de texto sobre el video, fade final,
+  conserva el audio ambiente del bruto).
+- `output/orbisways_top_destinos_2027_reel.mp4` — resultado.
+
+```bash
+cd scripts/v2
+./build_all.sh ../../sources_raw/Diseno_sin_titulo_1_1.mp4 ../../output/mi_reel.mp4
+```
+
+Para un bruto nuevo: ajustar `segments.json` (tramos de origen y recorte)
+y `content.json` (texto por producto), y volver a correr `build_all.sh`.

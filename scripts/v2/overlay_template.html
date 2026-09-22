@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+  html,body{margin:0;padding:0;background:transparent;}
+  #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
+  .seg{position:absolute;inset:0;display:none;}
+  .gradient{position:absolute;left:0;right:0;bottom:0;height:900px;
+    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.55) 55%, rgba(6,20,30,0.82) 100%);}
+  .top-gradient{position:absolute;left:0;right:0;top:0;height:420px;
+    background:linear-gradient(to bottom, rgba(4,14,22,0.55) 0%, rgba(4,14,22,0) 100%);}
+
+  .country{position:absolute;left:80px;top:126px;font-family:'Poppins',sans-serif;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.14em;color:#FFFFFF;font-size:32px;
+    text-shadow:0 2px 10px rgba(0,0,0,0.35);transform-origin:0% 50%;}
+
+  .badges{position:absolute;left:80px;top:200px;display:flex;gap:22px;}
+  .badge{background:rgba(10,30,45,0.5);border-radius:18px;padding:20px 24px;min-width:140px;
+    transform-origin:0% 100%;}
+  .badge .val{font-family:'Poppins',sans-serif;font-weight:800;color:#FFFFFF;font-size:50px;line-height:1.05;display:block;white-space:nowrap;}
+  .badge .cap{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+    color:#F0D723;font-size:21px;display:block;margin-top:4px;}
+
+  .pill{position:absolute;left:80px;top:1270px;display:inline-block;background:#1474A4;border-radius:11px;
+    padding:16px 28px;transform-origin:0% 100%;}
+  .pill span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;
+    color:#FFFFFF;font-size:32px;white-space:nowrap;}
+
+  .headline{position:absolute;left:80px;top:1388px;right:70px;}
+  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:70px;line-height:1.12;
+    margin:0;text-shadow:0 4px 18px rgba(0,0,0,0.35);transform-origin:0% 100%;}
+
+  .headline.intro{top:1300px;}
+  .headline.intro .hline{font-size:66px;}
+  .pill.intro{top:1220px;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="segs"></div>
+</div>
+<script id="timeline-data" type="application/json">__TIMELINE_JSON__</script>
+<script id="content-data" type="application/json">__CONTENT_JSON__</script>
+<script>
+const TIMELINE = JSON.parse(document.getElementById('timeline-data').textContent);
+const CONTENT = JSON.parse(document.getElementById('content-data').textContent);
+
+const REVEAL = {
+  intro: {
+    pill: { off: 0.25, dur: 0.55 },
+    h1:   { off: 0.55, dur: 0.60 },
+    h2:   { off: 0.80, dur: 0.60 },
+  },
+  dest: {
+    country: { off: 0.45, dur: 0.50 },
+    badge1:  { off: 0.60, dur: 0.50 },
+    badge2:  { off: 0.70, dur: 0.50 },
+    badge3:  { off: 0.80, dur: 0.50 },
+    pill:    { off: 1.00, dur: 0.55 },
+    h1:      { off: 1.25, dur: 0.60 },
+    h2:      { off: 1.45, dur: 0.60 },
+    h3:      { off: 1.65, dur: 0.60 },
+  }
+};
+
+function easeOutCubic(x){ x=Math.max(0,Math.min(1,x)); return 1-Math.pow(1-x,3); }
+function easeOutBack(x){ x=Math.max(0,Math.min(1,x)); const c1=1.70158,c3=c1+1; return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2); }
+function clamp01(x){ return Math.max(0,Math.min(1,x)); }
+function lerp(a,b,t){ return a+(b-a)*t; }
+
+const segsRoot = document.getElementById('segs');
+const segEls = {};
+
+TIMELINE.timeline.forEach(tl => {
+  const key = tl.key;
+  const data = CONTENT[key];
+  const div = document.createElement('div');
+  div.className = 'seg';
+  div.dataset.key = key;
+
+  const grad = document.createElement('div');
+  grad.className = 'gradient';
+  div.appendChild(grad);
+  const topGrad = document.createElement('div');
+  topGrad.className = 'top-gradient';
+  div.appendChild(topGrad);
+
+  const overlays = {};
+
+  if (key === 'intro') {
+    const pill = document.createElement('div');
+    pill.className = 'pill intro';
+    pill.innerHTML = `<span>${data.pill}</span>`;
+    div.appendChild(pill);
+    overlays['pill'] = { el: pill, type: 'pill' };
+
+    const headline = document.createElement('div');
+    headline.className = 'headline intro';
+    data.headline.forEach((line, idx) => {
+      const p = document.createElement('p');
+      p.className = 'hline';
+      p.textContent = line;
+      headline.appendChild(p);
+      overlays['h' + (idx+1)] = { el: p, type: 'headline' };
+    });
+    div.appendChild(headline);
+  } else {
+    const country = document.createElement('div');
+    country.className = 'country';
+    country.textContent = data.country;
+    div.appendChild(country);
+    overlays['country'] = { el: country, type: 'country' };
+
+    const badges = document.createElement('div');
+    badges.className = 'badges';
+    data.badges.forEach((b, idx) => {
+      const bd = document.createElement('div');
+      bd.className = 'badge';
+      bd.innerHTML = `<span class="val">${b.value}</span><span class="cap">${b.cap}</span>`;
+      badges.appendChild(bd);
+      overlays['badge' + (idx+1)] = { el: bd, type: 'badge' };
+    });
+    div.appendChild(badges);
+
+    const pill = document.createElement('div');
+    pill.className = 'pill';
+    pill.innerHTML = `<span>${data.pill}</span>`;
+    div.appendChild(pill);
+    overlays['pill'] = { el: pill, type: 'pill' };
+
+    const headline = document.createElement('div');
+    headline.className = 'headline';
+    data.headline.forEach((line, idx) => {
+      const p = document.createElement('p');
+      p.className = 'hline';
+      p.textContent = line;
+      headline.appendChild(p);
+      overlays['h' + (idx+1)] = { el: p, type: 'headline' };
+    });
+    div.appendChild(headline);
+  }
+
+  segsRoot.appendChild(div);
+  segEls[key] = { container: div, gradient: grad, topGradient: topGrad, overlays };
+});
+
+function renderAtTime(t){
+  TIMELINE.timeline.forEach(tl => {
+    const rec = segEls[tl.key];
+    if (t < tl.mountStart - 0.0005 || t > tl.mountEnd + 0.0005){
+      rec.container.style.display = 'none';
+      return;
+    }
+    rec.container.style.display = 'block';
+
+    let opacity = 1;
+    if (t < tl.fullStart){
+      const p = clamp01((t - tl.mountStart) / (tl.fullStart - tl.mountStart || 1));
+      opacity = easeOutCubic(p);
+    } else if (t > tl.fullEnd){
+      const p = clamp01((t - tl.fullEnd) / (tl.mountEnd - tl.fullEnd || 1));
+      opacity = 1 - easeOutCubic(p);
+    }
+    rec.container.style.opacity = opacity;
+
+    const revealBase = tl.mountStart;
+    const revealSet = (tl.key === 'intro') ? REVEAL.intro : REVEAL.dest;
+    for (const id in rec.overlays){
+      const ov = rec.overlays[id];
+      const cfg = revealSet[id];
+      if (!cfg) continue;
+      const start = revealBase + cfg.off;
+      const p = clamp01((t - start) / cfg.dur);
+      const eOpacity = easeOutCubic(p);
+      const isPop = (ov.type === 'badge' || ov.type === 'pill');
+      const eShape = isPop ? easeOutBack(p) : easeOutCubic(p);
+      const scaleFrom = isPop ? 0.86 : 1.0;
+      const scaleVal = isPop ? lerp(scaleFrom, 1, eShape) : 1;
+      const tyFrom = (ov.type === 'headline') ? 30 : (isPop ? 16 : 10);
+      const ty = lerp(tyFrom, 0, easeOutCubic(p));
+      const blurVal = lerp(9, 0, easeOutCubic(p));
+      ov.el.style.opacity = clamp01(eOpacity);
+      ov.el.style.transform = `translateY(${ty}px) scale(${scaleVal})`;
+      ov.el.style.filter = `blur(${blurVal}px)`;
+    }
+  });
+}
+
+window.renderAtTime = renderAtTime;
+window.TOTAL_DURATION = TIMELINE.total_duration;
+window.__READY__ = true;
+renderAtTime(0);
+</script>
+</body>
+</html>

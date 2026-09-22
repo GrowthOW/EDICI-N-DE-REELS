@@ -1,0 +1,46 @@
+{
+  "intro": {
+    "pill": "WALKING HOLIDAYS 2027",
+    "headline": ["Best walking holidays", "destinations for 2027."]
+  },
+  "whw": {
+    "country": "SCOTLAND",
+    "badges": [
+      { "value": "154", "cap": "KM" },
+      { "value": "5–12", "cap": "DAYS" },
+      { "value": "MODERATE", "cap": "LEVEL" }
+    ],
+    "pill": "WEST HIGHLAND WAY",
+    "headline": ["Here the wind has", "walked longer than", "the path."]
+  },
+  "fisherman": {
+    "country": "PORTUGAL",
+    "badges": [
+      { "value": "230", "cap": "KM" },
+      { "value": "7–10", "cap": "DAYS" },
+      { "value": "MODERATE", "cap": "LEVEL" }
+    ],
+    "pill": "FISHERMAN'S TRAIL",
+    "headline": ["The ocean walks", "beside you and", "never repeats itself."]
+  },
+  "cotswold": {
+    "country": "ENGLAND",
+    "badges": [
+      { "value": "164", "cap": "KM" },
+      { "value": "5–12", "cap": "DAYS" },
+      { "value": "GENTLE", "cap": "LEVEL" }
+    ],
+    "pill": "COTSWOLD WAY",
+    "headline": ["Walking slowly is", "also a way of", "arriving."]
+  },
+  "montblanc": {
+    "country": "FRANCE · ITALY · SWITZERLAND",
+    "badges": [
+      { "value": "160", "cap": "KM" },
+      { "value": "8–12", "cap": "DAYS" },
+      { "value": "ACTIVE", "cap": "LEVEL" }
+    ],
+    "pill": "TOUR DU MONT BLANC",
+    "headline": ["There are silences", "that only exist at", "2,500 m."]
+  }
+}
