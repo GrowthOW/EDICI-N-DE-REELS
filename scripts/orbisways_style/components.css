@@ -1,0 +1,92 @@
+/*
+  Orbis Ways — cartelas reutilizables (motion graphics style)
+  Extraído de "Top destinos 2027". Ver tokens.json para los valores en crudo.
+  Pensado para un stage de 1080x1920 (Story/Reel 9:16).
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+
+:root{
+  --ow-pill: #1474A4;
+  --ow-badge-fill: rgba(10, 30, 45, 0.45);
+  --ow-yellow: #F0D723;
+  --ow-white: #FFFFFF;
+  --ow-font: 'Poppins', sans-serif;
+}
+
+.ow-country-label{
+  font-family: var(--ow-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ow-white);
+  font-size: 32px;
+}
+
+.ow-badges-row{
+  display: flex;
+  gap: 24px;
+}
+
+.ow-badge{
+  background: var(--ow-badge-fill);
+  backdrop-filter: blur(1px);
+  border-radius: 18px;
+  padding: 20px 26px;
+  min-width: 150px;
+}
+
+.ow-badge .ow-badge-value{
+  font-family: var(--ow-font);
+  font-weight: 800;
+  color: var(--ow-white);
+  font-size: 54px;
+  line-height: 1.05;
+  display: block;
+}
+
+.ow-badge .ow-badge-caption{
+  font-family: var(--ow-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ow-yellow);
+  font-size: 22px;
+  display: block;
+  margin-top: 4px;
+}
+
+.ow-pill{
+  display: inline-block;
+  background: var(--ow-pill);
+  border-radius: 11px;
+  padding: 16px 28px;
+}
+
+.ow-pill span{
+  font-family: var(--ow-font);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ow-white);
+  font-size: 34px;
+}
+
+.ow-headline{
+  font-family: var(--ow-font);
+  font-weight: 900;
+  color: var(--ow-white);
+  font-size: 74px;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.ow-photo-grade{
+  /* aplicar sobre la foto de fondo para el look frío/teal de la marca */
+  filter: saturate(0.92) contrast(1.08) brightness(0.98) hue-rotate(-2deg);
+}
+
+.ow-bottom-gradient{
+  /* colocar como capa absoluta sobre el tercio inferior de la foto */
+  background: linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.65) 60%, rgba(6,20,30,0.85) 100%);
+}
