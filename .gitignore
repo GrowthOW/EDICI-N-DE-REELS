@@ -2,3 +2,6 @@ scripts/frames/
 scripts/v2/overlay_frames/
 scripts/v2/overlay_test/
 scripts/v2/background.mp4
+scripts/v2/preview.jpg
+scripts/v2/crop_preview.jpg
+scripts/v2/_preview.html

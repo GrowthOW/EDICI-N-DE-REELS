@@ -1,5 +1,9 @@
 # Orbis Ways — Top destinos 2027 (Story animada)
 
+> **Equipo:** para crear o editar reels (añadir brutos, cambiar textos,
+> otro idioma, renderizar) ver **[`docs/GUIA_EQUIPO.md`](docs/GUIA_EQUIPO.md)**.
+> Estilo de marca en `scripts/orbisways_style/`.
+
 Conversión de las 5 láminas estáticas de "Top destinos 2027" (portada +
 4 destinos) en un video animado para Instagram Stories, con textos que
 aparecen con animación y transiciones orgánicas entre slides.
@@ -69,6 +73,7 @@ brutos, en vez de sobre fotos estáticas.
 
 ```bash
 cd scripts/v2
+python3 preview.py                                                # vista previa rápida
 ./build_all.sh ../../output/mi_reel.mp4                          # inglés
 SKIP_BG=1 ./build_all.sh ../../output/mi_reel_DE.mp4 content_de.json  # otro idioma, reutiliza el fondo
 ```
