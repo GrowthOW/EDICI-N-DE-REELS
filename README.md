@@ -60,7 +60,7 @@ brutos, en vez de sobre fotos estáticas.
   grading de marca, encadena las transiciones (crossfade)
   y calcula el timeline (`timeline.json`) que usa la capa de texto.
 - `scripts/v2/overlay_template.html` + `overlay_capture.py` — renderizan las
-  cartelas como HTML/CSS real (fuente Poppins, mismos colores/proporciones)
+  cartelas como HTML/CSS real (Manrope para títulos, Liberation Sans para frases)
   sobre fondo transparente, con Playwright, frame a frame.
 - `scripts/v2/build_all.sh` — encadena los 3 pasos + composición final con
   ffmpeg (`overlay` de la capa de texto sobre el video, fade final y
@@ -78,5 +78,5 @@ un velo azul y muestra el logo blanco (`scripts/orbisways_style/logo/`) y la
 web. El logo se cambia en `content.json → outro.logo`.
 
 Para cambiar clips, música o datos: editar `segments.json` y `content.json`
-y volver a correr `build_all.sh`. La fuente Poppins va incrustada en
-`scripts/orbisways_style/fonts/` (no depende de internet al renderizar).
+y volver a correr `build_all.sh`. Las fuentes (Manrope y Liberation Sans) van
+incrustadas en `scripts/orbisways_style/fonts/` (no depende de internet al renderizar).

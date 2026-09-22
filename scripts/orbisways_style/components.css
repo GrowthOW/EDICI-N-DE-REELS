@@ -1,92 +1,83 @@
 /*
   Orbis Ways — cartelas reutilizables (motion graphics style)
-  Extraído de "Top destinos 2027". Ver tokens.json para los valores en crudo.
-  Pensado para un stage de 1080x1920 (Story/Reel 9:16).
+  Stage de 1080x1920 (Story/Reel 9:16). Valores en crudo en tokens.json.
+
+  Tipografía (regla fija):
+    - Títulos y rótulos → Manrope 800
+    - Cuerpo / frases   → Liberation Sans Bold engrosada a extra bold
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+@font-face{font-family:'Manrope';font-weight:700;src:url('fonts/manrope-latin-700-normal.woff2') format('woff2');}
+@font-face{font-family:'Manrope';font-weight:800;src:url('fonts/manrope-latin-800-normal.woff2') format('woff2');}
+@font-face{font-family:'OrbisBody';font-weight:700;src:url('fonts/LiberationSans-Bold.ttf') format('truetype');}
 
 :root{
   --ow-pill: #1474A4;
-  --ow-badge-fill: rgba(10, 30, 45, 0.45);
+  --ow-light-blue: #3E9DCA;
+  --ow-badge-fill: rgba(10, 30, 45, 0.5);
   --ow-yellow: #F0D723;
   --ow-white: #FFFFFF;
-  --ow-font: 'Poppins', sans-serif;
+  --ow-title: 'Manrope', sans-serif;
+  --ow-body: 'OrbisBody', Arial, sans-serif;
 }
+
+/* bloque de info de cada ruta: abajo a la izquierda, crece hacia arriba */
+.ow-info{position:absolute;left:80px;right:70px;bottom:330px;display:flex;flex-direction:column;align-items:flex-start;}
 
 .ow-country-label{
-  font-family: var(--ow-font);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--ow-white);
-  font-size: 32px;
+  font-family: var(--ow-title); font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--ow-white); font-size: 32px; margin-bottom: 20px;
 }
 
-.ow-badges-row{
-  display: flex;
-  gap: 24px;
-}
+.ow-badges-row{ display: flex; gap: 22px; margin-bottom: 34px; }
 
-.ow-badge{
-  background: var(--ow-badge-fill);
-  backdrop-filter: blur(1px);
-  border-radius: 18px;
-  padding: 20px 26px;
-  min-width: 150px;
-}
-
+.ow-badge{ background: var(--ow-badge-fill); border-radius: 18px; padding: 20px 24px; min-width: 140px; }
 .ow-badge .ow-badge-value{
-  font-family: var(--ow-font);
-  font-weight: 800;
-  color: var(--ow-white);
-  font-size: 54px;
-  line-height: 1.05;
-  display: block;
+  font-family: var(--ow-title); font-weight: 800; color: var(--ow-white);
+  font-size: 50px; line-height: 1.05; display: block; white-space: nowrap;
 }
-
 .ow-badge .ow-badge-caption{
-  font-family: var(--ow-font);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ow-yellow);
-  font-size: 22px;
-  display: block;
-  margin-top: 4px;
+  font-family: var(--ow-title); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ow-yellow); font-size: 21px; display: block; margin-top: 4px;
 }
 
+/* nombre de la ruta: el elemento más importante */
 .ow-pill{
-  display: inline-block;
-  background: var(--ow-pill);
-  border-radius: 11px;
-  padding: 16px 28px;
+  display: inline-block; background: var(--ow-pill); border-radius: 16px;
+  padding: 22px 36px 18px; line-height: 1.1; margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
-
 .ow-pill span{
-  font-family: var(--ow-font);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--ow-white);
-  font-size: 34px;
+  font-family: var(--ow-title); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--ow-white); font-size: 66px; white-space: nowrap;
 }
 
+/* frases: Liberation Sans solo trae Bold; el trazo del mismo color bajo el relleno la lleva a extra bold */
 .ow-headline{
-  font-family: var(--ow-font);
-  font-weight: 900;
-  color: var(--ow-white);
-  font-size: 74px;
-  line-height: 1.08;
-  margin: 0;
+  font-family: var(--ow-body); font-weight: 700;
+  -webkit-text-stroke: 3px var(--ow-white); paint-order: stroke fill;
+  color: var(--ow-white); font-size: 60px; line-height: 1.12; margin: 0;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.35);
 }
 
-.ow-photo-grade{
-  /* aplicar sobre la foto de fondo para el look frío/teal de la marca */
-  filter: saturate(0.92) contrast(1.08) brightness(0.98) hue-rotate(-2deg);
-}
+.ow-photo-grade{ filter: saturate(0.92) contrast(1.08) brightness(0.98) hue-rotate(-2deg); }
 
 .ow-bottom-gradient{
-  /* colocar como capa absoluta sobre el tercio inferior de la foto */
-  background: linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.65) 60%, rgba(6,20,30,0.85) 100%);
+  position:absolute;left:0;right:0;bottom:0;height:1250px;
+  background: linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.5) 40%, rgba(6,20,30,0.84) 100%);
 }
+
+/* cierre */
+.ow-outro-veil{ position:absolute;inset:0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(10,42,62,0.70) 0%, rgba(4,14,22,0.92) 100%); }
+.ow-outro{ position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 80px 60px; }
+.ow-outro-logo{ width: 640px; height: auto; margin-bottom: 46px; }   /* logo/orbisways_logo_white.png */
+.ow-outro .ow-headline{ font-size: 58px; line-height: 1.05; }
+.ow-outro-cta{ margin-top: 48px; display:inline-block; background: var(--ow-pill); border-radius: 16px;
+  padding: 24px 44px 20px; line-height: 1.1; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+.ow-outro-cta span{ font-family: var(--ow-title); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--ow-white); font-size: 64px; white-space: nowrap; }
+.ow-outro-caption{ margin-top: 24px; font-family: var(--ow-title); font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.12em; color: rgba(255,255,255,0.85); font-size: 26px; }

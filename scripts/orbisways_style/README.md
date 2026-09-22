@@ -1,37 +1,45 @@
-# Orbis Ways — estilo de cartelas (para reutilizar en próximos videos)
+# Orbis Ways — design system de cartelas / motion graphics
 
-Este es el "design system" de motion graphics extraído de las láminas de
-"Top destinos 2027", guardado para reusarlo en los próximos videos que se
-pidan en este proyecto — sin depender de que el texto venga horneado en un
-PNG como la primera vez.
+Estilo fijo para todas las piezas de video de Orbis Ways (reels, stories).
+Las cartelas se montan siempre como **texto real** (HTML/CSS) sobre el
+video o la foto, nunca como imagen con el texto ya puesto.
 
-- `tokens.json` — colores exactos, tipografía y proporciones de layout.
-- `components.css` — clases CSS listas para montar las mismas piezas
-  (`.ow-country-label`, `.ow-badges-row` / `.ow-badge`, `.ow-pill`,
-  `.ow-headline`) con texto nuevo cada vez, en vez de recortar imágenes.
+- `tokens.json` — colores, tipografía, tamaños y layout en crudo.
+- `components.css` — clases listas (`.ow-info`, `.ow-country-label`,
+  `.ow-badge`, `.ow-pill`, `.ow-headline`, `.ow-outro*`).
+- `fonts/` — Manrope 700/800 y Liberation Sans Bold, incrustadas (no se
+  depende de internet ni de las fuentes del sistema).
+- `logo/` — logo blanco y a color, fondo transparente.
 
-## Piezas del sistema
+## Tipografía (regla fija)
 
-1. **Country label** — país(es) en mayúsculas, blanco, sin fondo, con
-   letter-spacing amplio. Esquina superior izquierda.
-2. **Badges (KM · DÍAS · NIVEL)** — 3 cajas en fila, fondo azul-marino
-   translúcido (`rgba(10,30,45,.45)`), valor grande blanco + caption
-   amarillo (`#F0D723`) en mayúsculas.
-3. **Pill de ubicación** — chip azul sólido (`#1474A4`), texto blanco en
-   mayúsculas. Va justo encima del titular.
-4. **Titular** — 2-3 líneas, blanco, Poppins ExtraBold/Black, interlineado
-   muy apretado (1.05-1.1), tono editorial/inspiracional.
-5. **Grading de foto** — degradado oscuro en el tercio inferior + leve
-   viraje frío/teal para que el texto blanco siempre tenga contraste.
+| Uso | Fuente | Peso |
+|---|---|---|
+| **Títulos y rótulos**: nombre de la ruta (pill azul), pill del intro, CTA de la web, datos km/días/nivel, país, captions | **Manrope** | ExtraBold 800, MAYÚSCULAS |
+| **Cuerpo**: frases del intro, de cada destino y del cierre | **Liberation Sans** (estilo Arial/Helvetica) | extra bold* |
 
-Tipografía: Poppins ExtraBold/Black (alternativas cercanas: Baloo 2 Bold,
-Fredoka SemiBold, Nunito ExtraBold).
+\* Liberation Sans solo existe en Bold; se lleva a extra bold con un trazo
+del mismo color bajo el relleno (`-webkit-text-stroke:3px` +
+`paint-order:stroke fill`). Mismas letras, más gruesas.
 
-## Cómo se usa de ahora en adelante
+No usar Poppins ni otras familias.
 
-En vez del truco de "desenfoque→foco" sobre un PNG ya renderizado (usado en
-el primer intento, que no convenció), los próximos videos deberían montar
-estas cartelas como **elementos de texto reales** (HTML/CSS o el motor que
-se use) sobre las fotos, para poder animarlas con más libertad: entradas,
-salidas, texto dinámico por slide, etc., manteniendo siempre estos mismos
-colores, tipografía y proporciones de layout.
+## Piezas
+
+1. **Bloque de info por ruta** — abajo a la izquierda, anclado a 330px del
+   borde inferior (fuera de la zona que tapa Instagram), crece hacia arriba:
+   país → 3 badges → pill con el nombre de la ruta → frase. La parte de
+   arriba del video queda limpia.
+2. **Badges (KM · DÍAS · NIVEL)** — cajas translúcidas azul marino, valor
+   blanco + caption amarillo `#F0D723`.
+3. **Pill del nombre de la ruta** — azul sólido `#1474A4`, Manrope 800 a
+   66px. Es el elemento más importante de cada cartela.
+4. **Frase** — 2-3 líneas en blanco, Liberation Sans extra bold, 60px.
+5. **Legibilidad** — degradado oscuro en la mitad inferior + grading frío.
+6. **Cierre** — la última toma sigue bajo un velo azul marino; centrado:
+   logo blanco → frase corta → pill con la web → caption.
+
+## Colores
+
+Azul pill / azul oscuro del logo `#1474A4` · azul claro del logo `#3E9DCA`
+· amarillo captions `#F0D723` · blanco `#FFFFFF`.
