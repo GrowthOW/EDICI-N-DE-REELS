@@ -1,46 +1,111 @@
 {
   "intro": {
     "pill": "WALKING HOLIDAYS 2027",
-    "headline": ["Best walking holidays", "destinations for 2027."]
+    "headline": [
+      "Best walking holidays",
+      "destinations for 2027."
+    ]
   },
   "whw": {
     "country": "SCOTLAND",
     "badges": [
-      { "value": "57–152", "cap": "KM" },
-      { "value": "5–12", "cap": "DAYS" },
-      { "value": "MODERATE", "cap": "LEVEL" }
+      {
+        "value": "57–152",
+        "cap": "KM"
+      },
+      {
+        "value": "5–12",
+        "cap": "DAYS"
+      },
+      {
+        "value": "MODERATE",
+        "cap": "LEVEL"
+      }
     ],
     "pill": "WEST HIGHLAND WAY",
-    "headline": ["Here the wind has", "walked longer than", "the path."]
+    "headline": [
+      "Here the wind has",
+      "walked longer than",
+      "the path."
+    ]
   },
   "fisherman": {
     "country": "PORTUGAL",
     "badges": [
-      { "value": "89", "cap": "KM" },
-      { "value": "7", "cap": "DAYS" },
-      { "value": "MODERATE", "cap": "LEVEL" }
+      {
+        "value": "89",
+        "cap": "KM"
+      },
+      {
+        "value": "7",
+        "cap": "DAYS"
+      },
+      {
+        "value": "MODERATE",
+        "cap": "LEVEL"
+      }
     ],
     "pill": "FISHERMAN'S TRAIL",
-    "headline": ["The ocean walks", "beside you and", "never repeats itself."]
+    "headline": [
+      "The ocean walks",
+      "beside you and",
+      "never repeats itself."
+    ]
   },
   "cotswold": {
     "country": "ENGLAND",
     "badges": [
-      { "value": "48–166", "cap": "KM" },
-      { "value": "5–12", "cap": "DAYS" },
-      { "value": "GENTLE", "cap": "LEVEL" }
+      {
+        "value": "48–166",
+        "cap": "KM"
+      },
+      {
+        "value": "5–12",
+        "cap": "DAYS"
+      },
+      {
+        "value": "GENTLE",
+        "cap": "LEVEL"
+      }
     ],
     "pill": "COTSWOLD WAY",
-    "headline": ["Walking slowly is", "also a way of", "arriving."]
+    "headline": [
+      "Walking slowly is",
+      "also a way of",
+      "arriving."
+    ]
   },
   "montblanc": {
     "country": "FRANCE · ITALY · SWITZERLAND",
     "badges": [
-      { "value": "50–174", "cap": "KM" },
-      { "value": "5–14", "cap": "DAYS" },
-      { "value": "ACTIVE", "cap": "LEVEL" }
+      {
+        "value": "50–174",
+        "cap": "KM"
+      },
+      {
+        "value": "5–14",
+        "cap": "DAYS"
+      },
+      {
+        "value": "ACTIVE",
+        "cap": "LEVEL"
+      }
     ],
     "pill": "TOUR DU MONT BLANC",
-    "headline": ["There are silences", "that only exist at", "2,500 m."]
+    "headline": [
+      "There are silences",
+      "that only exist at",
+      "2,500 m."
+    ]
+  },
+  "outro": {
+    "logo": null,
+    "label": "WALKING HOLIDAYS 2027",
+    "headline": [
+      "Find your trail",
+      "for 2027."
+    ],
+    "cta": "orbisways.com",
+    "cta_caption": "More info & bookings"
   }
 }

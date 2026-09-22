@@ -38,6 +38,22 @@
   .headline.intro .hline{font-size:66px;}
   .pill.intro{top:1210px;padding:16px 28px;border-radius:11px;box-shadow:none;}
   .pill.intro span{font-size:34px;letter-spacing:0.05em;}
+
+  .veil{position:absolute;inset:0;
+    background:radial-gradient(ellipse at 50% 48%, rgba(10,42,62,0.70) 0%, rgba(4,14,22,0.92) 100%);}
+  .outro-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:0 80px 60px;}
+  .outro-wrap > *{transform-origin:50% 50%;}
+  .o-logo{max-height:170px;max-width:420px;margin-bottom:48px;}
+  .o-label{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;
+    color:#F0D723;font-size:30px;margin-bottom:26px;}
+  .o-hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:84px;line-height:1.05;margin:0;}
+  .o-cta{margin-top:60px;display:inline-block;background:#1474A4;border-radius:16px;padding:24px 44px 20px;
+    line-height:1.1;box-shadow:0 10px 30px rgba(0,0,0,0.35);}
+  .o-cta span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    color:#FFFFFF;font-size:64px;white-space:nowrap;}
+  .o-caption{margin-top:24px;font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:0.12em;color:rgba(255,255,255,0.85);font-size:26px;}
 </style>
 </head>
 <body>
@@ -55,6 +71,15 @@ const REVEAL = {
     pill: { off: 0.25, dur: 0.55 },
     h1:   { off: 0.55, dur: 0.60 },
     h2:   { off: 0.80, dur: 0.60 },
+  },
+  outro: {
+    veil:    { off: 0.00, dur: 0.80 },
+    logo:    { off: 0.35, dur: 0.60 },
+    label:   { off: 0.40, dur: 0.55 },
+    h1:      { off: 0.55, dur: 0.60 },
+    h2:      { off: 0.72, dur: 0.60 },
+    cta:     { off: 0.95, dur: 0.60 },
+    caption: { off: 1.20, dur: 0.55 },
   },
   dest: {
     country: { off: 0.45, dur: 0.50 },
@@ -92,7 +117,30 @@ TIMELINE.timeline.forEach(tl => {
 
   const overlays = {};
 
-  if (key === 'intro') {
+  const add = (tag, cls, html, id, type, parent) => {
+    const el = document.createElement(tag);
+    el.className = cls;
+    if (html !== null) el.innerHTML = html;
+    (parent || div).appendChild(el);
+    overlays[id] = { el, type };
+    return el;
+  };
+
+  if (key === 'outro') {
+    grad.remove(); topGrad.remove();
+    add('div', 'veil', null, 'veil', 'veil');
+    const wrap = document.createElement('div');
+    wrap.className = 'outro-wrap';
+    div.appendChild(wrap);
+    if (data.logo) {
+      const img = add('img', 'o-logo', null, 'logo', 'logo', wrap);
+      img.src = '../../' + data.logo;
+    }
+    add('div', 'o-label', data.label, 'label', 'country', wrap);
+    data.headline.forEach((line, idx) => add('p', 'o-hline', line, 'h' + (idx+1), 'headline', wrap));
+    add('div', 'o-cta', `<span>${data.cta}</span>`, 'cta', 'pill', wrap);
+    add('div', 'o-caption', data.cta_caption, 'caption', 'country', wrap);
+  } else if (key === 'intro') {
     const pill = document.createElement('div');
     pill.className = 'pill intro';
     pill.innerHTML = `<span>${data.pill}</span>`;
@@ -169,7 +217,7 @@ function renderAtTime(t){
     rec.container.style.opacity = opacity;
 
     const revealBase = tl.mountStart;
-    const revealSet = (tl.key === 'intro') ? REVEAL.intro : REVEAL.dest;
+    const revealSet = REVEAL[tl.key] || REVEAL.dest;
     for (const id in rec.overlays){
       const ov = rec.overlays[id];
       const cfg = revealSet[id];
@@ -177,7 +225,8 @@ function renderAtTime(t){
       const start = revealBase + cfg.off;
       const p = clamp01((t - start) / cfg.dur);
       const eOpacity = easeOutCubic(p);
-      const isPop = (ov.type === 'badge' || ov.type === 'pill');
+      if (ov.type === 'veil'){ ov.el.style.opacity = eOpacity; continue; }
+      const isPop = (ov.type === 'badge' || ov.type === 'pill' || ov.type === 'logo');
       const eShape = isPop ? easeOutBack(p) : easeOutCubic(p);
       const scaleFrom = isPop ? 0.86 : 1.0;
       const scaleVal = isPop ? lerp(scaleFrom, 1, eShape) : 1;

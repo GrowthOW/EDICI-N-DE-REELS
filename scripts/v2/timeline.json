@@ -1,6 +1,6 @@
 {
   "trans": 0.6,
-  "total_duration": 30.1,
+  "total_duration": 32.5,
   "timeline": [
     {
       "key": "intro",
@@ -34,8 +34,15 @@
       "key": "montblanc",
       "mountStart": 23.6,
       "fullStart": 24.2,
-      "fullEnd": 30.1,
-      "mountEnd": 30.1
+      "fullEnd": 28.1,
+      "mountEnd": 28.7
+    },
+    {
+      "key": "outro",
+      "mountStart": 28.1,
+      "fullStart": 28.7,
+      "fullEnd": 32.5,
+      "mountEnd": 32.5
     }
   ]
 }

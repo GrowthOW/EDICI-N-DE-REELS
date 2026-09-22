@@ -72,6 +72,11 @@ cd scripts/v2
 ./build_all.sh ../../output/mi_reel.mp4
 ```
 
+La cartela de cierre (`outro` en `content.json`) continúa la última toma con
+un velo azul y muestra la web. Para añadir el isotipo, poner la ruta del
+archivo (PNG/SVG con fondo transparente, relativa a la raíz del repo) en
+`content.json → outro.logo` y volver a renderizar.
+
 Para cambiar clips, música o datos: editar `segments.json` y `content.json`
 y volver a correr `build_all.sh`. La fuente Poppins va incrustada en
 `scripts/orbisways_style/fonts/` (no depende de internet al renderizar).

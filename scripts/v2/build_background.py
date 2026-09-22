@@ -12,19 +12,24 @@ SEGMENTS = CFG["segments"]
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "background.mp4")
 
 inputs, filters, labels = [], [], []
-durations = [s["src_end"] - s["src_start"] for s in SEGMENTS]
+src_durations = [s["src_end"] - s["src_start"] for s in SEGMENTS]
+durations = [d + s.get("hold_extra", 0) for d, s in zip(src_durations, SEGMENTS)]
 
 # One input per segment: sharing a single decoded input across out-of-order
 # trims makes the filter graph buffer frames until it stalls.
 for i, seg in enumerate(SEGMENTS):
-    dur = durations[i]
-    inputs += ["-ss", f"{seg['src_start']}", "-t", f"{dur}", "-i", os.path.join(REPO, seg["src"])]
+    src_dur = src_durations[i]
+    inputs += ["-ss", f"{seg['src_start']}", "-t", f"{src_dur}", "-i", os.path.join(REPO, seg["src"])]
     x0, x1 = seg["crop_x0"], seg["crop_x1"]
-    crop_x = f"{x0}" if x0 == x1 else f"{x0}+({x1}-{x0})*(t/{dur:.4f})"
+    # the pan settles before the outgoing crossfade, so a segment that continues
+    # the same shot lines up frame-for-frame instead of ghosting
+    pan_dur = src_dur - (TRANS if i < len(SEGMENTS) - 1 else 0)
+    crop_x = f"{x0}" if x0 == x1 else f"{x0}+({x1}-{x0})*min(1,t/{pan_dur:.4f})"
+    hold = f",tpad=stop_mode=clone:stop_duration={seg['hold_extra']}" if seg.get("hold_extra") else ""
     filters.append(
         f"[{i}:v]fps={FPS},setpts=PTS-STARTPTS,scale=-2:{H},"
         f"crop={W}:{H}:'{crop_x}':0,setsar=1,format=yuv420p,"
-        f"eq=contrast=1.08:brightness=-0.02:saturation=0.92,hue=h=-2[v{i}]"
+        f"eq=contrast=1.08:brightness=-0.02:saturation=0.92,hue=h=-2{hold}[v{i}]"
     )
     labels.append(f"v{i}")
 

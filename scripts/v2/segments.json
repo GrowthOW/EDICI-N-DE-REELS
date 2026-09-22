@@ -1,7 +1,10 @@
 {
   "trans": 0.6,
   "fps": 30,
-  "canvas": { "w": 1080, "h": 1920 },
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
   "music": "sources_audio/background_music.mp3",
   "music_start": 0.0,
   "segments": [
@@ -40,10 +43,19 @@
     {
       "key": "montblanc",
       "src": "sources_raw/montblanc_massif_drone.mp4",
-      "src_start": 0.5,
-      "src_end": 7.0,
+      "src_start": 0.3,
+      "src_end": 5.4,
       "crop_x0": 1450,
       "crop_x1": 1800
+    },
+    {
+      "key": "outro",
+      "src": "sources_raw/montblanc_massif_drone.mp4",
+      "src_start": 4.8,
+      "src_end": 8.2,
+      "crop_x0": 1800,
+      "crop_x1": 1800,
+      "hold_extra": 1.0
     }
   ]
 }
