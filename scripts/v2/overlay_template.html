@@ -9,8 +9,14 @@
   html,body{margin:0;padding:0;background:transparent;}
   #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
   .seg{position:absolute;inset:0;display:none;}
-  .gradient{position:absolute;left:0;right:0;bottom:0;height:900px;
-    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.55) 55%, rgba(6,20,30,0.82) 100%);}
+  .gradient{position:absolute;left:0;right:0;bottom:0;height:1250px;
+    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.5) 40%, rgba(6,20,30,0.84) 100%);}
+  /* bottom-anchored so the block grows upward and stays clear of the IG caption/UI zone */
+  .info{position:absolute;left:80px;right:70px;bottom:330px;display:flex;flex-direction:column;align-items:flex-start;}
+  .info .country, .info .badges, .info .pill, .info .headline{position:relative;left:auto;top:auto;right:auto;}
+  .info .country{margin-bottom:20px;}
+  .info .badges{margin-bottom:34px;}
+  .info .pill{margin-bottom:24px;}
   .top-gradient{position:absolute;left:0;right:0;top:0;height:420px;
     background:linear-gradient(to bottom, rgba(4,14,22,0.55) 0%, rgba(4,14,22,0) 100%);}
 
@@ -158,39 +164,28 @@ TIMELINE.timeline.forEach(tl => {
     });
     div.appendChild(headline);
   } else {
-    const country = document.createElement('div');
-    country.className = 'country';
-    country.textContent = data.country;
-    div.appendChild(country);
-    overlays['country'] = { el: country, type: 'country' };
+    topGrad.remove();
+    const info = document.createElement('div');
+    info.className = 'info';
+    div.appendChild(info);
+
+    add('div', 'country', null, 'country', 'country', info).textContent = data.country;
 
     const badges = document.createElement('div');
     badges.className = 'badges';
+    info.appendChild(badges);
     data.badges.forEach((b, idx) => {
-      const bd = document.createElement('div');
-      bd.className = 'badge';
-      bd.innerHTML = `<span class="val">${b.value}</span><span class="cap">${b.cap}</span>`;
-      badges.appendChild(bd);
-      overlays['badge' + (idx+1)] = { el: bd, type: 'badge' };
+      const bd = add('div', 'badge', `<span class="val">${b.value}</span><span class="cap">${b.cap}</span>`,
+                     'badge' + (idx+1), 'badge', badges);
+      if (b.value.length > 9) bd.querySelector('.val').style.fontSize = '40px';
     });
-    div.appendChild(badges);
 
-    const pill = document.createElement('div');
-    pill.className = 'pill';
-    pill.innerHTML = `<span>${data.pill}</span>`;
-    div.appendChild(pill);
-    overlays['pill'] = { el: pill, type: 'pill' };
+    add('div', 'pill', `<span>${data.pill}</span>`, 'pill', 'pill', info);
 
     const headline = document.createElement('div');
     headline.className = 'headline';
-    data.headline.forEach((line, idx) => {
-      const p = document.createElement('p');
-      p.className = 'hline';
-      p.textContent = line;
-      headline.appendChild(p);
-      overlays['h' + (idx+1)] = { el: p, type: 'headline' };
-    });
-    div.appendChild(headline);
+    info.appendChild(headline);
+    data.headline.forEach((line, idx) => add('p', 'hline', null, 'h' + (idx+1), 'headline', headline).textContent = line);
   }
 
   segsRoot.appendChild(div);

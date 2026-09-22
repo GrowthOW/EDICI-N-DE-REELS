@@ -1,0 +1,53 @@
+{
+  "intro": {
+    "pill": "WANDERURLAUB 2027",
+    "headline": ["Die schönsten", "Wanderrouten für 2027."]
+  },
+  "whw": {
+    "country": "SCHOTTLAND",
+    "badges": [
+      { "value": "57–152", "cap": "KM" },
+      { "value": "5–12", "cap": "TAGE" },
+      { "value": "MITTEL", "cap": "NIVEAU" }
+    ],
+    "pill": "WEST HIGHLAND WAY",
+    "headline": ["Hier ist der Wind", "schon länger unterwegs", "als der Weg."]
+  },
+  "fisherman": {
+    "country": "PORTUGAL",
+    "badges": [
+      { "value": "89", "cap": "KM" },
+      { "value": "7", "cap": "TAGE" },
+      { "value": "MITTEL", "cap": "NIVEAU" }
+    ],
+    "pill": "FISHERMAN'S TRAIL",
+    "headline": ["Der Atlantik begleitet", "dich – und ist nie", "zweimal derselbe."]
+  },
+  "cotswold": {
+    "country": "ENGLAND",
+    "badges": [
+      { "value": "48–166", "cap": "KM" },
+      { "value": "5–12", "cap": "TAGE" },
+      { "value": "LEICHT", "cap": "NIVEAU" }
+    ],
+    "pill": "COTSWOLD WAY",
+    "headline": ["Wer langsam geht,", "kommt auch an."]
+  },
+  "montblanc": {
+    "country": "FRANKREICH · ITALIEN · SCHWEIZ",
+    "badges": [
+      { "value": "50–174", "cap": "KM" },
+      { "value": "5–14", "cap": "TAGE" },
+      { "value": "ANSPRUCHSVOLL", "cap": "NIVEAU" }
+    ],
+    "pill": "TOUR DU MONT BLANC",
+    "headline": ["Manche Stille", "findet man nur", "auf 2.500 Metern."]
+  },
+  "outro": {
+    "logo": null,
+    "label": "WANDERURLAUB 2027",
+    "headline": ["Finde deinen Weg", "für 2027."],
+    "cta": "orbisways.com",
+    "cta_caption": "Mehr Infos & Buchung"
+  }
+}

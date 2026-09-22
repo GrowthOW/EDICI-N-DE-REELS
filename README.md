@@ -54,8 +54,8 @@ brutos, en vez de sobre fotos estáticas.
 - `scripts/v2/segments.json` — qué clip y qué tramo usa cada
   producto/destino, cómo se recorta a vertical (con paneo cuando hace falta)
   y qué música lleva.
-- `scripts/v2/content.json` — texto de cada cartela (país, km/días/nivel,
-  nombre, frase) por segmento.
+- `scripts/v2/content.json` / `content_de.json` — texto de cada cartela
+  (país, km/días/nivel, nombre, frase) por segmento, en inglés y alemán.
 - `scripts/v2/build_background.py` — recorta cada tramo a 9:16, aplica el
   grading de marca, encadena las transiciones (crossfade)
   y calcula el timeline (`timeline.json`) que usa la capa de texto.
@@ -65,11 +65,12 @@ brutos, en vez de sobre fotos estáticas.
 - `scripts/v2/build_all.sh` — encadena los 3 pasos + composición final con
   ffmpeg (`overlay` de la capa de texto sobre el video, fade final y
   música).
-- `output/orbisways_top_destinos_2027_reel.mp4` — resultado.
+- `output/orbisways_top_destinos_2027_reel.mp4` (EN) y `..._reel_DE.mp4` (DE) — resultado.
 
 ```bash
 cd scripts/v2
-./build_all.sh ../../output/mi_reel.mp4
+./build_all.sh ../../output/mi_reel.mp4                          # inglés
+SKIP_BG=1 ./build_all.sh ../../output/mi_reel_DE.mp4 content_de.json  # otro idioma, reutiliza el fondo
 ```
 
 La cartela de cierre (`outro` en `content.json`) continúa la última toma con

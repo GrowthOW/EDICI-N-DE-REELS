@@ -9,8 +9,14 @@
   html,body{margin:0;padding:0;background:transparent;}
   #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
   .seg{position:absolute;inset:0;display:none;}
-  .gradient{position:absolute;left:0;right:0;bottom:0;height:900px;
-    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.55) 55%, rgba(6,20,30,0.82) 100%);}
+  .gradient{position:absolute;left:0;right:0;bottom:0;height:1250px;
+    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.5) 40%, rgba(6,20,30,0.84) 100%);}
+  /* bottom-anchored so the block grows upward and stays clear of the IG caption/UI zone */
+  .info{position:absolute;left:80px;right:70px;bottom:330px;display:flex;flex-direction:column;align-items:flex-start;}
+  .info .country, .info .badges, .info .pill, .info .headline{position:relative;left:auto;top:auto;right:auto;}
+  .info .country{margin-bottom:20px;}
+  .info .badges{margin-bottom:34px;}
+  .info .pill{margin-bottom:24px;}
   .top-gradient{position:absolute;left:0;right:0;top:0;height:420px;
     background:linear-gradient(to bottom, rgba(4,14,22,0.55) 0%, rgba(4,14,22,0) 100%);}
 
@@ -61,7 +67,7 @@
   <div id="segs"></div>
 </div>
 <script id="timeline-data" type="application/json">{"trans": 0.6, "total_duration": 32.5, "timeline": [{"key": "intro", "mountStart": 0.0, "fullStart": 0.0, "fullEnd": 4.4, "mountEnd": 5.0}, {"key": "whw", "mountStart": 4.4, "fullStart": 5.0, "fullEnd": 9.8, "mountEnd": 10.4}, {"key": "fisherman", "mountStart": 9.8, "fullStart": 10.4, "fullEnd": 16.2, "mountEnd": 16.8}, {"key": "cotswold", "mountStart": 16.2, "fullStart": 16.8, "fullEnd": 23.6, "mountEnd": 24.2}, {"key": "montblanc", "mountStart": 23.6, "fullStart": 24.2, "fullEnd": 28.1, "mountEnd": 28.7}, {"key": "outro", "mountStart": 28.1, "fullStart": 28.7, "fullEnd": 32.5, "mountEnd": 32.5}]}</script>
-<script id="content-data" type="application/json">{"intro": {"pill": "WALKING HOLIDAYS 2027", "headline": ["Best walking holidays", "destinations for 2027."]}, "whw": {"country": "SCOTLAND", "badges": [{"value": "57\u2013152", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "WEST HIGHLAND WAY", "headline": ["Here the wind has", "walked longer than", "the path."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "89", "cap": "KM"}, {"value": "7", "cap": "DAYS"}, {"value": "MODERATE", "cap": "LEVEL"}], "pill": "FISHERMAN'S TRAIL", "headline": ["The ocean walks", "beside you and", "never repeats itself."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "48\u2013166", "cap": "KM"}, {"value": "5\u201312", "cap": "DAYS"}, {"value": "GENTLE", "cap": "LEVEL"}], "pill": "COTSWOLD WAY", "headline": ["Walking slowly is", "also a way of", "arriving."]}, "montblanc": {"country": "FRANCE \u00b7 ITALY \u00b7 SWITZERLAND", "badges": [{"value": "50\u2013174", "cap": "KM"}, {"value": "5\u201314", "cap": "DAYS"}, {"value": "ACTIVE", "cap": "LEVEL"}], "pill": "TOUR DU MONT BLANC", "headline": ["There are silences", "that only exist at", "2,500 m."]}, "outro": {"logo": null, "label": "WALKING HOLIDAYS 2027", "headline": ["Find your trail", "for 2027."], "cta": "orbisways.com", "cta_caption": "More info & bookings"}}</script>
+<script id="content-data" type="application/json">{"intro": {"pill": "WANDERURLAUB 2027", "headline": ["Die sch\u00f6nsten", "Wanderrouten f\u00fcr 2027."]}, "whw": {"country": "SCHOTTLAND", "badges": [{"value": "57\u2013152", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "WEST HIGHLAND WAY", "headline": ["Hier ist der Wind", "schon l\u00e4nger unterwegs", "als der Weg."]}, "fisherman": {"country": "PORTUGAL", "badges": [{"value": "89", "cap": "KM"}, {"value": "7", "cap": "TAGE"}, {"value": "MITTEL", "cap": "NIVEAU"}], "pill": "FISHERMAN'S TRAIL", "headline": ["Der Atlantik begleitet", "dich \u2013 und ist nie", "zweimal derselbe."]}, "cotswold": {"country": "ENGLAND", "badges": [{"value": "48\u2013166", "cap": "KM"}, {"value": "5\u201312", "cap": "TAGE"}, {"value": "LEICHT", "cap": "NIVEAU"}], "pill": "COTSWOLD WAY", "headline": ["Wer langsam geht,", "kommt auch an."]}, "montblanc": {"country": "FRANKREICH \u00b7 ITALIEN \u00b7 SCHWEIZ", "badges": [{"value": "50\u2013174", "cap": "KM"}, {"value": "5\u201314", "cap": "TAGE"}, {"value": "ANSPRUCHSVOLL", "cap": "NIVEAU"}], "pill": "TOUR DU MONT BLANC", "headline": ["Manche Stille", "findet man nur", "auf 2.500 Metern."]}, "outro": {"logo": null, "label": "WANDERURLAUB 2027", "headline": ["Finde deinen Weg", "f\u00fcr 2027."], "cta": "orbisways.com", "cta_caption": "Mehr Infos & Buchung"}}</script>
 <script>
 const TIMELINE = JSON.parse(document.getElementById('timeline-data').textContent);
 const CONTENT = JSON.parse(document.getElementById('content-data').textContent);
@@ -158,39 +164,28 @@ TIMELINE.timeline.forEach(tl => {
     });
     div.appendChild(headline);
   } else {
-    const country = document.createElement('div');
-    country.className = 'country';
-    country.textContent = data.country;
-    div.appendChild(country);
-    overlays['country'] = { el: country, type: 'country' };
+    topGrad.remove();
+    const info = document.createElement('div');
+    info.className = 'info';
+    div.appendChild(info);
+
+    add('div', 'country', null, 'country', 'country', info).textContent = data.country;
 
     const badges = document.createElement('div');
     badges.className = 'badges';
+    info.appendChild(badges);
     data.badges.forEach((b, idx) => {
-      const bd = document.createElement('div');
-      bd.className = 'badge';
-      bd.innerHTML = `<span class="val">${b.value}</span><span class="cap">${b.cap}</span>`;
-      badges.appendChild(bd);
-      overlays['badge' + (idx+1)] = { el: bd, type: 'badge' };
+      const bd = add('div', 'badge', `<span class="val">${b.value}</span><span class="cap">${b.cap}</span>`,
+                     'badge' + (idx+1), 'badge', badges);
+      if (b.value.length > 9) bd.querySelector('.val').style.fontSize = '40px';
     });
-    div.appendChild(badges);
 
-    const pill = document.createElement('div');
-    pill.className = 'pill';
-    pill.innerHTML = `<span>${data.pill}</span>`;
-    div.appendChild(pill);
-    overlays['pill'] = { el: pill, type: 'pill' };
+    add('div', 'pill', `<span>${data.pill}</span>`, 'pill', 'pill', info);
 
     const headline = document.createElement('div');
     headline.className = 'headline';
-    data.headline.forEach((line, idx) => {
-      const p = document.createElement('p');
-      p.className = 'hline';
-      p.textContent = line;
-      headline.appendChild(p);
-      overlays['h' + (idx+1)] = { el: p, type: 'headline' };
-    });
-    div.appendChild(headline);
+    info.appendChild(headline);
+    data.headline.forEach((line, idx) => add('p', 'hline', null, 'h' + (idx+1), 'headline', headline).textContent = line);
   }
 
   segsRoot.appendChild(div);
