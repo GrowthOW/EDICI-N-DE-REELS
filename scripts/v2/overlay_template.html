@@ -6,6 +6,7 @@
   @font-face{font-family:'Poppins';font-weight:700;src:url('../orbisways_style/fonts/poppins-latin-700-normal.woff2') format('woff2');}
   @font-face{font-family:'Poppins';font-weight:800;src:url('../orbisways_style/fonts/poppins-latin-800-normal.woff2') format('woff2');}
   @font-face{font-family:'Poppins';font-weight:900;src:url('../orbisways_style/fonts/poppins-latin-900-normal.woff2') format('woff2');}
+  @font-face{font-family:'HeadlineSans';font-weight:700;src:url('../orbisways_style/fonts/LiberationSans-Bold.ttf') format('truetype');}
   html,body{margin:0;padding:0;background:transparent;}
   #stage{width:1080px;height:1920px;position:relative;overflow:hidden;background:transparent;}
   .seg{position:absolute;inset:0;display:none;}
@@ -37,7 +38,7 @@
     color:#FFFFFF;font-size:62px;white-space:nowrap;}
 
   .headline{position:absolute;left:80px;top:1350px;right:70px;}
-  .hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:60px;line-height:1.12;
+  .hline{font-family:'HeadlineSans',Arial,sans-serif;font-weight:700;-webkit-text-stroke:3px #FFFFFF;paint-order:stroke fill;color:#FFFFFF;font-size:60px;line-height:1.12;
     margin:0;text-shadow:0 4px 18px rgba(0,0,0,0.35);transform-origin:0% 100%;}
 
   .headline.intro{top:1300px;}
@@ -53,7 +54,7 @@
   .o-logo{width:640px;height:auto;margin-bottom:46px;}
   .o-label{font-family:'Poppins',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;
     color:#F0D723;font-size:30px;margin-bottom:26px;}
-  .o-hline{font-family:'Poppins',sans-serif;font-weight:900;color:#FFFFFF;font-size:58px;line-height:1.05;margin:0;}
+  .o-hline{font-family:'HeadlineSans',Arial,sans-serif;font-weight:700;-webkit-text-stroke:3px #FFFFFF;paint-order:stroke fill;color:#FFFFFF;font-size:58px;line-height:1.05;margin:0;}
   .o-cta{margin-top:48px;display:inline-block;background:#1474A4;border-radius:16px;padding:24px 44px 20px;
     line-height:1.1;box-shadow:0 10px 30px rgba(0,0,0,0.35);}
   .o-cta span{font-family:'Poppins',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
@@ -239,6 +240,7 @@ window.renderAtTime = renderAtTime;
 window.TOTAL_DURATION = TIMELINE.total_duration;
 Promise.all([
   ...['700','800','900'].map(w => document.fonts.load(`${w} 40px Poppins`)),
+  document.fonts.load('700 40px HeadlineSans'),
   ...Array.from(document.images).map(img => img.decode()),
 ])
   .then(() => document.fonts.ready)
