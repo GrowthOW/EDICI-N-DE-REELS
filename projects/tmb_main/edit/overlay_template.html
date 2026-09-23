@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face{font-family:'Manrope';font-weight:700;src:url('../../../scripts/orbisways_style/fonts/manrope-latin-700-normal.woff2') format('woff2');}
+  @font-face{font-family:'Manrope';font-weight:800;src:url('../../../scripts/orbisways_style/fonts/manrope-latin-800-normal.woff2') format('woff2');}
+  @font-face{font-family:'OrbisBody';font-weight:700;src:url('../../../scripts/orbisways_style/fonts/LiberationSans-Bold.ttf') format('truetype');}
+  html,body{margin:0;padding:0;background:transparent;}
+  #stage{width:1920px;height:1080px;position:relative;overflow:hidden;}
+  .ev{position:absolute;inset:0;display:none;}
+  .grad{position:absolute;left:0;right:0;bottom:0;height:620px;
+    background:linear-gradient(to bottom, rgba(6,20,30,0) 0%, rgba(6,20,30,0.45) 45%, rgba(6,20,30,0.8) 100%);}
+  .block{position:absolute;left:110px;bottom:120px;display:flex;flex-direction:column;align-items:flex-start;}
+  .it{transform-origin:0% 100%;}
+
+  .body{font-family:'OrbisBody',Arial,sans-serif;font-weight:700;-webkit-text-stroke:3px #FFFFFF;paint-order:stroke fill;
+    color:#FFFFFF;font-size:60px;line-height:1.12;margin:0;text-shadow:0 4px 18px rgba(0,0,0,0.4);white-space:nowrap;}
+  .country{font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.16em;
+    color:#FFFFFF;font-size:30px;margin-bottom:20px;text-shadow:0 2px 10px rgba(0,0,0,0.4);}
+  .pill{display:inline-block;background:#1474A4;border-radius:18px;padding:24px 40px 20px;line-height:1.1;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .pill span{font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    color:#FFFFFF;font-size:76px;white-space:nowrap;}
+  .badges{display:flex;gap:22px;margin-bottom:14px;}
+  .badge{background:rgba(10,30,45,0.55);border-radius:18px;padding:20px 26px;min-width:150px;transform-origin:0% 100%;}
+  .badge .val{font-family:'Manrope',sans-serif;font-weight:800;color:#FFFFFF;font-size:54px;line-height:1.05;display:block;white-space:nowrap;}
+  .badge .cap{font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;
+    color:#F0D723;font-size:22px;display:block;margin-top:4px;}
+  .caption{font-family:'Manrope',sans-serif;font-weight:700;font-style:italic;color:rgba(255,255,255,0.85);
+    font-size:24px;margin-bottom:26px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+
+  .svc-row{display:flex;align-items:center;gap:22px;margin-top:14px;}
+  .chk{width:44px;height:44px;border-radius:10px;background:#1474A4;position:relative;flex:none;box-shadow:0 4px 14px rgba(0,0,0,0.3);}
+  .chk::after{content:'';position:absolute;left:15px;top:7px;width:10px;height:20px;border:solid #fff;border-width:0 5px 5px 0;transform:rotate(45deg);}
+  .svc{font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:#FFFFFF;
+    font-size:38px;text-shadow:0 2px 12px rgba(0,0,0,0.5);white-space:nowrap;}
+  .foot{font-family:'Manrope',sans-serif;font-weight:700;font-style:italic;color:rgba(255,255,255,0.8);font-size:22px;margin-top:18px;}
+
+  .veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 48%, rgba(10,42,62,0.68) 0%, rgba(4,14,22,0.9) 100%);}
+  .outro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .outro .it{transform-origin:50% 50%;}
+  .logo{width:620px;height:auto;margin-bottom:44px;}
+  .outro .body{font-size:54px;line-height:1.15;}
+  .cta{margin-top:46px;display:inline-block;background:#1474A4;border-radius:16px;padding:22px 44px 18px;line-height:1.1;box-shadow:0 10px 30px rgba(0,0,0,0.35);}
+  .cta span{font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:#fff;font-size:60px;white-space:nowrap;}
+  .cta-cap{margin-top:22px;font-family:'Manrope',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.85);font-size:24px;}
+
+  canvas{position:absolute;inset:0;}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script id="data" type="application/json">__DATA_JSON__</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const TL = DATA.timeline, EDL = DATA.edl, MAP = DATA.map_data;
+const clip = k => TL.find(c => c.key === k);
+const stage = document.getElementById('stage');
+
+const clamp01 = x => Math.max(0, Math.min(1, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = x => 1 - Math.pow(1 - clamp01(x), 3);
+const easeInOut = x => { x = clamp01(x); return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const easeBack = x => { x = clamp01(x); const c1 = 1.70158, c3 = c1 + 1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); };
+
+function el(tag, cls, html, parent){ const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; parent.appendChild(e); return e; }
+function resolve(ev){
+  const c = clip(ev.clip);
+  const start = c.mountStart + (ev.at || 0);
+  const endClip = clip(ev.until_clip || ev.clip);
+  let end = endClip.mountEnd;
+  if (ev.until !== undefined) end = ev.until < 0 ? endClip.mountEnd + ev.until : endClip.mountStart + ev.until;
+  return { start, end, c };
+}
+
+// ---------- DOM events ----------
+const EVENTS = [];
+EDL.events.forEach(ev => {
+  const { start, end, c } = resolve(ev);
+  const root = el('div', 'ev', null, stage);
+  const items = [];  // {el, t, pop}
+  const add = (node, t, pop) => { node.classList.add('it'); items.push({ el: node, t, pop: !!pop }); return node; };
+
+  if (ev.type === 'map') { EVENTS.push({ ev, start: c.mountStart, end: c.mountEnd, root, items, c, map: buildMap(root) }); return; }
+  if (ev.type !== 'outro') el('div', 'grad', null, root);
+  if (ev.type === 'outro') {
+    add(el('div', 'veil', null, root), 0, false).dataset.veil = 1;
+    const w = el('div', 'outro', null, root);
+    const img = add(el('img', 'logo', null, w), 0.35, true); img.src = '../../../' + ev.logo;
+    ev.lines.forEach((l, i) => add(el('p', 'body', null, w), 0.6 + i*0.18, false).textContent = l);
+    add(el('div', 'cta', `<span>${ev.cta}</span>`, w), 1.0, true);
+    add(el('div', 'cta-cap', ev.cta_caption, w), 1.25, false);
+    EVENTS.push({ ev, start, end: c.mountEnd + 5, root, items }); return;
+  }
+  const b = el('div', 'block', null, root);
+  if (ev.type === 'super') {
+    ev.lines.forEach((l, i) => add(el('p', 'body', null, b), i*0.2, false).textContent = l);
+  } else if (ev.type === 'title') {
+    add(el('div', 'country', ev.country, b), 0, false);
+    add(el('div', 'pill', `<span>${ev.pill}</span>`, b), 0.25, true);
+  } else if (ev.type === 'stats') {
+    const row = el('div', 'badges', null, b);
+    ev.badges.forEach((bd, i) => add(el('div', 'badge', `<span class="val">${bd.value}</span><span class="cap">${bd.cap}</span>`, row), i*0.12, true));
+    if (ev.caption) add(el('div', 'caption', ev.caption, b), 0.35, false);
+    (ev.lines || []).forEach((l, i) => add(el('p', 'body', null, b), 0.6 + i*0.2, false).textContent = l);
+  } else if (ev.type === 'services') {
+    add(el('div', 'country', ev.header, b), 0, false);
+    const span = Math.max(1, (end - start) - 2.2);
+    const step = Math.min(1.5, span / ev.items.length);
+    ev.items.forEach((s, i) => {
+      const row = add(el('div', 'svc-row', null, b), 0.5 + i*step, true);
+      el('div', 'chk', null, row); el('div', 'svc', s, row);
+    });
+    if (ev.footnote) add(el('div', 'foot', ev.footnote, b), 0.5 + ev.items.length*step, false);
+  }
+  EVENTS.push({ ev, start, end, root, items });
+});
+
+// ---------- map ----------
+function buildMap(root){
+  const cv = el('canvas', null, null, root); cv.width = 1920; cv.height = 1080;
+  const K = 2054, LAT0 = 45.87, LON0 = 6.92, COS = Math.cos(LAT0 * Math.PI / 180);
+  const P = (lat, lon) => ({ x: (lon - LON0) * COS * K, y: -(lat - LAT0) * K });
+  const pts = MAP.route.map(r => Object.assign(P(r.lat, r.lon), r));
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i-1] + Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y));
+  const L = cum[cum.length - 1];
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  const center = { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 };
+  const borders = MAP.borders.map(line => line.map(([la, lo]) => P(la, lo)));
+  const countries = MAP.countries.map(c => Object.assign(P(c.lat, c.lon), c));
+  const peak = Object.assign(P(MAP.peak.lat, MAP.peak.lon), MAP.peak);
+  // badges block (DOM, same style as the rest)
+  const b = el('div', 'block', null, root);
+  const row = el('div', 'badges', null, b);
+  const badgeEls = DATA.edl.map.badges.map(bd => { const n = el('div', 'badge it', `<span class="val">${bd.value}</span><span class="cap">${bd.cap}</span>`, row); return n; });
+  if (DATA.edl.map.pill) badgeEls.push(el('div', 'pill', `<span>${DATA.edl.map.pill}</span>`, b));
+  return { cv, ctx: cv.getContext('2d'), P, pts, cum, L, center, borders, countries, peak, badgeEls };
+}
+
+function headAt(M, d){
+  d = Math.max(0, Math.min(M.L, d));
+  let i = 1; while (i < M.cum.length - 1 && M.cum[i] < d) i++;
+  const s = (d - M.cum[i-1]) / Math.max(1e-6, M.cum[i] - M.cum[i-1]);
+  return { x: lerp(M.pts[i-1].x, M.pts[i].x, s), y: lerp(M.pts[i-1].y, M.pts[i].y, s), i };
+}
+
+function drawMap(E, t){
+  const M = E.map, ctx = M.ctx, D = E.c.mountEnd - E.c.mountStart, lt = t - E.c.mountStart;
+  const T0 = 1.3, T1 = D - 4.6, ZIN = [0.5, 1.6], ZOUT = [T1 - 0.1, T1 + 1.9], Z = 1.9;
+  const prog = x => easeInOut((x - T0) / (T1 - T0));
+  const p = prog(lt);
+  const zi = easeInOut((lt - ZIN[0]) / (ZIN[1] - ZIN[0])) * (1 - easeInOut((lt - ZOUT[0]) / (ZOUT[1] - ZOUT[0])));
+  const z = lerp(0.92, Z, zi);
+  // camera follows a lagged average of the drawing head
+  let hx = 0, hy = 0; const N = 10;
+  for (let k = 0; k < N; k++){ const h = headAt(M, prog(lt - k*0.08) * M.L); hx += h.x; hy += h.y; }
+  hx /= N; hy /= N;
+  const cam = { x: lerp(M.center.x, hx, zi), y: lerp(M.center.y, hy, zi) };
+  const anchor = { x: lerp(1290, 960, zi), y: lerp(470, 560, zi) };
+  const S = q => ({ x: (q.x - cam.x) * z + anchor.x, y: (q.y - cam.y) * z + anchor.y });
+  const base = easeOut(lt / 0.9);
+  const head = headAt(M, p * M.L);
+
+  ctx.clearRect(0, 0, 1920, 1080);
+  // navy wash so the footage reads as a relief map and the route stands out
+  ctx.fillStyle = `rgba(6,22,34,${0.5*base})`; ctx.fillRect(0, 0, 1920, 1080);
+  const vg = ctx.createRadialGradient(960, 540, 200, 960, 540, 1100);
+  vg.addColorStop(0, 'rgba(4,14,22,0)'); vg.addColorStop(1, `rgba(4,14,22,${0.7*base})`);
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, 1920, 1080);
+
+  // current country (for highlight)
+  let cur = 'FRANCE'; for (let i = 0; i <= head.i && i < M.pts.length; i++) if (M.pts[i].enter && M.cum[i] <= p*M.L) cur = M.pts[i].enter;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  M.countries.forEach(c => {
+    const s = S(c); const on = (lt > T0 && lt < T1 + 0.3 && c.name === cur) ? 1 : 0;
+    ctx.font = '800 30px Manrope'; ctx.letterSpacing = '8px';
+    ctx.fillStyle = `rgba(255,255,255,${base * (0.38 + 0.5*on)})`;
+    ctx.fillText(c.name, s.x, s.y);
+  });
+  ctx.letterSpacing = '0px';
+
+  ctx.setLineDash([10, 9]); ctx.lineWidth = 2; ctx.strokeStyle = `rgba(255,255,255,${0.3*base})`;
+  M.borders.forEach(line => { ctx.beginPath(); line.forEach((q, i) => { const s = S(q); i ? ctx.lineTo(s.x, s.y) : ctx.moveTo(s.x, s.y); }); ctx.stroke(); });
+  ctx.setLineDash([]);
+
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath(); M.pts.forEach((q, i) => { const s = S(q); i ? ctx.lineTo(s.x, s.y) : ctx.moveTo(s.x, s.y); });
+  ctx.lineWidth = 2.5; ctx.strokeStyle = `rgba(255,255,255,${0.35*base})`; ctx.stroke();
+
+  // peak
+  const pk = S(M.peak), pa = easeOut((lt - 0.6) / 0.6);
+  ctx.fillStyle = `rgba(255,255,255,${0.9*pa})`;
+  ctx.beginPath(); ctx.moveTo(pk.x, pk.y - 13); ctx.lineTo(pk.x + 12, pk.y + 8); ctx.lineTo(pk.x - 12, pk.y + 8); ctx.closePath(); ctx.fill();
+  ctx.font = '800 22px Manrope'; ctx.letterSpacing = '3px'; ctx.textAlign = 'center';
+  ctx.fillText(`${M.peak.name} · ${M.peak.elev}`, pk.x, pk.y + 32); ctx.letterSpacing = '0px';
+
+  // drawn route
+  if (p > 0){
+    ctx.beginPath(); const s0 = S(M.pts[0]); ctx.moveTo(s0.x, s0.y);
+    for (let i = 1; i < M.pts.length && M.cum[i] <= p*M.L; i++){ const s = S(M.pts[i]); ctx.lineTo(s.x, s.y); }
+    const sh = S(head); ctx.lineTo(sh.x, sh.y);
+    ctx.shadowColor = 'rgba(62,157,202,0.9)'; ctx.shadowBlur = 18;
+    ctx.lineWidth = 6.5; ctx.strokeStyle = '#3E9DCA'; ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // stops, passes, labels
+  M.pts.forEach((q, i) => {
+    if (!q.stop && !q.pass) return;
+    const reachT = (i === 0) ? T0 - 0.2 : null;
+    const reached = i === 0 ? lt >= T0 - 0.2 : M.cum[i] <= p*M.L + 0.5;
+    if (!reached) return;
+    // time since reached: invert progress numerically (cheap: search back)
+    let since = 0; for (let k = 1; k <= 12; k++){ if (prog(lt - k*0.05)*M.L + 0.5 >= M.cum[i] || i === 0) since = k*0.05; else break; }
+    if (i === 0) since = Math.min(0.6, lt - (T0 - 0.2));
+    const a = easeOut(since / 0.5) * base;
+    const s = S(q);
+    if (q.stop){
+      ctx.beginPath(); ctx.arc(s.x, s.y, 9 * lerp(0.5, 1, easeBack(since/0.45)), 0, Math.PI*2);
+      ctx.fillStyle = `rgba(11,34,51,${a})`; ctx.fill(); ctx.lineWidth = 3.5; ctx.strokeStyle = `rgba(62,157,202,${a})`; ctx.stroke();
+      ctx.font = '800 29px Manrope'; ctx.letterSpacing = '2px';
+      const off = { left: [-20, 0, 'right'], right: [20, 0, 'left'], above: [0, -26, 'center'], below: [0, 30, 'center'] }[q.label || 'right'];
+      ctx.textAlign = off[2]; ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 10;
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.fillText(q.stop, s.x + off[0] + (1 - a) * (off[2] === 'right' ? 12 : off[2] === 'left' ? -12 : 0), s.y + off[1]);
+      ctx.shadowBlur = 0; ctx.letterSpacing = '0px';
+    } else if (q.pass && lt < T1 + 0.2){
+      // border pass: brief label, then fade
+      const fade = a * (1 - easeOut((since - 1.6) / 0.4));
+      if (fade > 0.01){
+        ctx.font = '800 22px Manrope'; ctx.letterSpacing = '3px'; ctx.textAlign = 'center';
+        ctx.fillStyle = `rgba(240,215,35,${fade})`;
+        ctx.fillText(q.pass, s.x, s.y - 24); ctx.letterSpacing = '0px';
+      }
+    }
+  });
+
+  // moving head
+  if (p > 0 && p < 1){
+    const sh = S(head); const pulse = 0.5 + 0.5*Math.sin(lt * 7);
+    ctx.beginPath(); ctx.arc(sh.x, sh.y, 16 + 6*pulse, 0, Math.PI*2); ctx.fillStyle = `rgba(62,157,202,${0.25*base})`; ctx.fill();
+    ctx.beginPath(); ctx.arc(sh.x, sh.y, 8, 0, Math.PI*2); ctx.fillStyle = '#FFFFFF'; ctx.fill();
+  }
+  // finish pulse at Chamonix
+  if (p >= 1){
+    const f = M.pts[M.pts.length - 1], s = S(f), k = ((lt - T1) % 1.4) / 1.4;
+    ctx.beginPath(); ctx.arc(s.x, s.y, 10 + 26*k, 0, Math.PI*2); ctx.lineWidth = 3; ctx.strokeStyle = `rgba(62,157,202,${(1-k)*0.9})`; ctx.stroke();
+  }
+
+  // badges after the zoom-out
+  const sig = [p.toFixed(4), z.toFixed(3), lt < T1 + 3 ? Math.round(lt*30) : 0];
+  M.badgeEls.forEach((n, i) => {
+    const q = (lt - (T1 + 1.2 + i*0.14)) / 0.5;
+    const o = easeOut(q), sc = lerp(0.86, 1, easeBack(q)), ty = lerp(16, 0, easeOut(q));
+    n.style.opacity = o; n.style.transform = `translateY(${ty}px) scale(${sc})`; n.style.filter = `blur(${lerp(8,0,easeOut(q))}px)`;
+    sig.push(o.toFixed(3));
+  });
+  return sig.join(',');
+}
+
+// ---------- render ----------
+function renderAtTime(t){
+  const sig = [];
+  EVENTS.forEach((E, idx) => {
+    const visible = t >= E.start - 0.001 && t <= E.end + 0.001;
+    E.root.style.display = visible ? 'block' : 'none';
+    if (!visible) return;
+    // segment-level fade out (in the last 0.35 s) and, for the map, fade with the crossfades
+    let op = 1;
+    if (E.map){
+      op = Math.min(easeOut((t - E.c.mountStart) / Math.max(0.01, E.c.fullStart - E.c.mountStart)),
+                    1 - easeOut((t - E.c.fullEnd) / Math.max(0.01, E.c.mountEnd - E.c.fullEnd)));
+      if (E.c.fullStart === E.c.mountStart) op = 1 - easeOut((t - E.c.fullEnd) / Math.max(0.01, E.c.mountEnd - E.c.fullEnd));
+    } else if (E.ev.type !== 'outro') {
+      op = 1 - easeOut((t - (E.end - 0.35)) / 0.35);
+    }
+    E.root.style.opacity = op;
+    sig.push(idx + ':' + op.toFixed(3));
+    if (E.map){ sig.push(drawMap(E, t)); return; }
+    E.items.forEach(it => {
+      const q = (t - (E.start + it.t)) / (it.el.dataset.veil ? 0.8 : 0.55);
+      const o = easeOut(q);
+      if (it.el.dataset.veil){ it.el.style.opacity = o; sig.push(o.toFixed(3)); return; }
+      const sc = it.pop ? lerp(0.86, 1, easeBack(q)) : 1;
+      const ty = lerp(it.pop ? 16 : 26, 0, easeOut(q));
+      const bl = lerp(9, 0, easeOut(q));
+      it.el.style.opacity = o;
+      it.el.style.transform = `translateY(${ty.toFixed(1)}px) scale(${sc.toFixed(3)})`;
+      it.el.style.filter = `blur(${bl.toFixed(1)}px)`;
+      sig.push(o.toFixed(3) + '/' + sc.toFixed(3) + '/' + ty.toFixed(1));
+    });
+  });
+  return sig.join('|');
+}
+
+window.renderAtTime = renderAtTime;
+window.TOTAL = TL[TL.length - 1].mountEnd;
+Promise.all([
+  ...['700', '800'].map(w => document.fonts.load(`${w} 40px Manrope`)),
+  document.fonts.load('700 40px OrbisBody'),
+  ...Array.from(document.images).map(i => i.decode()),
+]).then(() => document.fonts.ready).then(() => { window.__READY__ = true; });
+</script>
+</body>
+</html>

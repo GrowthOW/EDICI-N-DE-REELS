@@ -5,3 +5,10 @@ scripts/v2/background.mp4
 scripts/v2/preview.jpg
 scripts/v2/crop_preview.jpg
 scripts/v2/_preview.html
+*_encuadre.jpg
+projects/tmb_main/edit/cache/
+projects/tmb_main/edit/overlay_frames/
+projects/tmb_main/edit/background.mp4
+projects/tmb_main/edit/overlay.html
+projects/tmb_main/edit/preview.jpg
+projects/tmb_main/edit/timeline.json

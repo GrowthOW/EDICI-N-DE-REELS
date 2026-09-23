@@ -1,0 +1,46 @@
+{
+  "note": "Primer corte 16:9 del video principal del TMB (sin locución, música provisional). Cada clip: src, in/out en segundos del bruto, speed (<1 = cámara lenta), interp (interpolar fotogramas en cámaras lentas), fx (mapbg = desenfoque + oscurecido bajo el mapa), hold (congelar el último frame N s).",
+  "fps": 30,
+  "w": 1920,
+  "h": 1080,
+  "trans": 0.5,
+  "music": "sources_audio/background_music.mp3",
+  "music_start": 0.0,
+  "clips": [
+    {"key": "hook_a",    "src": "sources_raw/tmb/tmb02_montblanc_cresta_timelapse.mp4", "in": 0.2, "out": 6.9},
+    {"key": "hook_b",    "src": "sources_raw/tmb/tmb01_collado_refugio_dron.mp4", "in": 0.0, "out": 6.8},
+    {"key": "map",       "src": "sources_raw/montblanc_massif_drone.mp4", "in": 0.3, "out": 8.2, "speed": 0.44, "fx": "mapbg"},
+    {"key": "special_a", "src": "sources_raw/tmb/tmb04_vaca_pradera.mp4", "in": 0.5, "out": 5.3},
+    {"key": "special_b", "src": "sources_raw/tmb/tmb03_pareja_senderistas.mp4", "in": 1.0, "out": 8.0},
+    {"key": "day_a",     "src": "sources_raw/tmb/tmb09_habitacion_piedra.mp4", "in": 0.0, "out": 1.7, "speed": 0.55, "interp": true},
+    {"key": "day_steps", "src": "sources_raw/tmb/tmb12_pasos_bosque_pinos.mp4", "in": 0.3, "out": 6.3},
+    {"key": "day_b",     "src": "sources_raw/tmb/tmb03_pareja_senderistas.mp4", "in": 12.0, "out": 18.5},
+    {"key": "orbis_a",   "src": "sources_raw/tmb/tmb11_techo_vigas.mp4", "in": 0.0, "out": 2.03, "speed": 0.65, "interp": true},
+    {"key": "orbis_b",   "src": "sources_raw/tmb/tmb10_habitacion_buhardilla.mp4", "in": 0.0, "out": 1.63, "speed": 0.5, "interp": true},
+    {"key": "orbis_c",   "src": "sources_raw/tmb/tmb08_salon_rustico.mp4", "in": 0.0, "out": 1.0, "speed": 0.36, "interp": true},
+    {"key": "orbis_d",   "src": "sources_raw/tmb/tmb01_collado_refugio_dron.mp4", "in": 6.8, "out": 11.5},
+    {"key": "closing",   "src": "sources_raw/montblanc_massif_drone.mp4", "in": 4.6, "out": 8.2, "hold": 2.2}
+  ],
+  "events": [
+    {"type": "super", "clip": "hook_a", "at": 1.0, "until": -0.2, "lines": ["Some mountains are", "meant to be admired."]},
+    {"type": "super", "clip": "hook_b", "at": 0.5, "until": 2.9, "lines": ["Others are meant", "to be explored."]},
+    {"type": "title", "clip": "hook_b", "at": 3.1, "until": -0.1, "country": "FRANCE · ITALY · SWITZERLAND", "pill": "TOUR DU MONT BLANC"},
+    {"type": "map", "clip": "map"},
+    {"type": "super", "clip": "special_b", "at": 0.6, "until": -0.3, "lines": ["It's about what happens", "in between."]},
+    {"type": "super", "clip": "day_a", "at": 0.2, "until": -0.1, "lines": ["Most days start with breakfast", "and a new stage ahead."]},
+    {"type": "stats", "clip": "day_steps", "at": 0.7, "until": -0.3, "badges": [{"value": "12–20", "cap": "KM / DAY"}], "caption": "Distances vary by stage", "lines": ["Big climbs and descents,", "day after day."]},
+    {"type": "super", "clip": "day_b", "at": 0.6, "until": -0.3, "lines": ["For confident mountain walkers,", "ready for a real adventure."]},
+    {"type": "services", "clip": "orbis_a", "at": 0.3, "until_clip": "orbis_d", "until": -0.3,
+     "header": "ORBIS WAYS TAKES CARE OF",
+     "items": ["ACCOMMODATION", "LUGGAGE TRANSFERS*", "BREAKFAST + SELECTED DINNERS", "ROUTE INFORMATION & MAPS", "24/7 TELEPHONE ASSISTANCE"],
+     "footnote": "*According to itinerary"},
+    {"type": "outro", "clip": "closing", "at": 0.2,
+     "logo": "scripts/orbisways_style/logo/orbisways_logo_white.png",
+     "lines": ["The journey is yours.", "We take care of the rest."],
+     "cta": "orbisways.com", "cta_caption": "More info & bookings"}
+  ],
+  "map": {
+    "badges": [{"value": "7–12", "cap": "DAYS"}, {"value": "12–20", "cap": "KM / DAY"}, {"value": "3", "cap": "COUNTRIES"}],
+    "pill": "TOUR DU MONT BLANC"
+  }
+}

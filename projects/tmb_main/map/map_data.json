@@ -1,0 +1,43 @@
+{
+  "note": "Coordenadas aproximadas (lat, lon) del Tour du Mont Blanc en sentido antihorario, de Les Houches a Chamonix. Esquema para el mapa animado, no para navegar.",
+  "route": [
+    {"lat": 45.8906, "lon": 6.7985, "stop": "LES HOUCHES", "label": "left"},
+    {"lat": 45.8790, "lon": 6.7470},
+    {"lat": 45.8213, "lon": 6.7272, "stop": "LES CONTAMINES", "label": "left"},
+    {"lat": 45.7917, "lon": 6.7219},
+    {"lat": 45.7220, "lon": 6.7090},
+    {"lat": 45.7150, "lon": 6.7200},
+    {"lat": 45.6922, "lon": 6.7334, "stop": "LES CHAPIEUX", "label": "left"},
+    {"lat": 45.7129, "lon": 6.7741},
+    {"lat": 45.7519, "lon": 6.8024, "enter": "ITALY", "pass": "COL DE LA SEIGNE"},
+    {"lat": 45.7736, "lon": 6.8543},
+    {"lat": 45.7850, "lon": 6.9050},
+    {"lat": 45.7968, "lon": 6.9690, "stop": "COURMAYEUR", "label": "below"},
+    {"lat": 45.8158, "lon": 6.9895},
+    {"lat": 45.8395, "lon": 7.0290, "stop": "VAL FERRET", "label": "right"},
+    {"lat": 45.8676, "lon": 7.0495},
+    {"lat": 45.8878, "lon": 7.0641, "enter": "SWITZERLAND", "pass": "GRAND COL FERRET"},
+    {"lat": 45.8985, "lon": 7.0800},
+    {"lat": 45.9336, "lon": 7.0948, "stop": "LA FOULY", "label": "right"},
+    {"lat": 45.9870, "lon": 7.1220},
+    {"lat": 46.0290, "lon": 7.1170, "stop": "CHAMPEX", "label": "right"},
+    {"lat": 46.0520, "lon": 7.0470},
+    {"lat": 46.0590, "lon": 7.0020},
+    {"lat": 46.0555, "lon": 6.9960, "stop": "TRIENT", "label": "above"},
+    {"lat": 46.0360, "lon": 6.9580, "enter": "FRANCE", "pass": "COL DE BALME"},
+    {"lat": 45.9930, "lon": 6.9220},
+    {"lat": 45.9600, "lon": 6.8900},
+    {"lat": 45.9237, "lon": 6.8694, "stop": "CHAMONIX", "label": "right", "finish": true}
+  ],
+  "peak": {"lat": 45.8326, "lon": 6.8652, "name": "MONT BLANC", "elev": "4,808 M"},
+  "borders": [
+    [[45.62, 6.90], [45.70, 6.84], [45.7519, 6.8024], [45.79, 6.83], [45.8326, 6.8652], [45.852, 6.935], [45.869, 6.988], [45.905, 7.020], [45.922, 7.046]],
+    [[45.922, 7.046], [45.8878, 7.0641], [45.872, 7.120], [45.860, 7.200]],
+    [[45.922, 7.046], [45.958, 7.023], [45.990, 7.013], [46.0360, 6.9580], [46.075, 6.925], [46.12, 6.88]]
+  ],
+  "countries": [
+    {"name": "FRANCE", "lat": 45.99, "lon": 6.66},
+    {"name": "ITALY", "lat": 45.73, "lon": 7.02},
+    {"name": "SWITZERLAND", "lat": 45.98, "lon": 7.26}
+  ]
+}
