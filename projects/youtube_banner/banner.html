@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Banner del canal de YouTube de Orbis Ways (2560×1440).
-     Variantes por URL: banner.html?v=mosaico | blanco | panoramica
+     Variantes por URL: banner.html?v=cresta | panoramica | mosaico | blanco
      Zona segura de YouTube (lo único que se ve en móvil): 1546×423 centrada.
      Escritorio enseña 2560×423 (franja central); TV, el lienzo entero. -->
 <html><head><meta charset="utf-8">
@@ -37,15 +37,16 @@
   body.blanco .marca .web{color:var(--blanco);}
 
   /* ---------- panorámica ---------- */
-  /* La foto baja 300 px para que el logo quede sobre cielo limpio; el cielo se prolonga hacia arriba con su mismo degradado */
-  .pano{position:absolute;inset:0;background:linear-gradient(180deg,#2C68A6 0px,#3F80BF 300px);}
-  .pano img.foto{position:absolute;left:0;top:300px;width:2560px;height:1440px;object-fit:cover;
+  /* La foto baja para que el logo quede sobre cielo limpio; el cielo se prolonga hacia arriba con un degradado de su color
+     (top, fondo y velo van por foto en PANOS) */
+  .pano{position:absolute;inset:0;}
+  .pano img.foto{position:absolute;left:0;width:2560px;height:1440px;object-fit:cover;
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 160px);mask-image:linear-gradient(180deg,transparent 0,#000 160px);}
-  .pano .velo{position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(19,118,164,0.0) 30%, rgba(19,118,164,0.38) 42%, rgba(19,118,164,0.30) 54%, rgba(19,118,164,0.0) 62%, rgba(10,30,45,0.30) 100%);}
+  .pano .velo{position:absolute;inset:0;}
   .pano .marca{position:absolute;left:var(--segura-left);width:var(--segura-w);
     top:calc(var(--franja-top) + 40px);height:220px;gap:30px;}
   .pano .marca .web{color:var(--blanco);font-size:46px;}
+  .pano .marca.izquierda{align-items:flex-start;left:calc(var(--segura-left) + 56px);width:auto;top:calc(var(--franja-top) + 56px);height:auto;gap:28px;}
 </style></head>
 <body>
 <div id="lienzo"></div>
@@ -56,9 +57,24 @@ const L = document.getElementById('lienzo');
 const LOGO = '../../scripts/orbisways_style/logo/orbisways_logo_' + (v === 'mosaico' ? 'color' : 'white') + '.png';
 const marca = () => `<img src="${LOGO}" alt="Orbis Ways"><div class="web">orbisways.com</div>`;
 
-if (v === 'panoramica'){
-  L.innerHTML = `<div class="pano"><img class="foto" src="fotos/macizo_montblanc_4k.jpg"><div class="velo"></div>
-                 <div class="marca">${marca()}</div></div>`;
+const PANOS = {
+  // dron 4K del macizo desde Courmayeur
+  panoramica: {foto: 'macizo_montblanc_4k.jpg', top: 300,
+    fondo: 'linear-gradient(180deg,#2C68A6 0px,#3F80BF 300px)',
+    velo: 'linear-gradient(180deg, rgba(19,118,164,0.0) 30%, rgba(19,118,164,0.38) 42%, rgba(19,118,164,0.30) 54%, rgba(19,118,164,0.0) 62%, rgba(10,30,45,0.30) 100%)'},
+  // timelapse de la cresta nevada con nubes (original 1080p: la marca de clideo queda por debajo del lienzo)
+  // logo a la izquierda sobre el cielo para dejar la cumbre a la vista en la franja
+  cresta: {foto: 'cresta_montblanc.jpg', top: 183, ancho: 2800, izq: 0, alinear: 'izquierda',
+    fondo: 'linear-gradient(180deg,#1C6FA8 0px,#2E9BD2 183px)',
+    velo: 'linear-gradient(90deg, rgba(19,118,164,0.55) 0%, rgba(19,118,164,0.42) 30%, rgba(19,118,164,0.0) 52%), linear-gradient(180deg, rgba(10,30,45,0) 70%, rgba(10,30,45,0.35) 100%)'},
+};
+if (PANOS[v]){
+  document.body.className = 'panoramica';
+  const P = PANOS[v];
+  const ancho = P.ancho || 2560, alto = ancho * 1440 / 2560;
+  L.innerHTML = `<div class="pano" style="background:${P.fondo}">
+                 <img class="foto" src="fotos/${P.foto}" style="top:${P.top}px;left:${P.izq || 0}px;width:${ancho}px;height:${alto}px">
+                 <div class="velo" style="background:${P.velo}"></div><div class="marca ${P.alinear || ''}">${marca()}</div></div>`;
 } else {
   // 5 cajas: 2 fotos fuera de la zona segura (solo escritorio/TV), 2 fotos dentro y la marca en el centro
   const W = 2560, g = 22, sl = 507, sw = 1546, marcaW = 660;

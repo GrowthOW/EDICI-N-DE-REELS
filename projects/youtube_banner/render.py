@@ -1,6 +1,6 @@
 """Renderiza el banner de YouTube (2560×1440) y una hoja de prueba por dispositivo.
 
-Uso: python3 render.py [mosaico blanco panoramica]
+Uso: python3 render.py [cresta panoramica mosaico blanco]
 Salida: salida/banner_<variante>.jpg (para subir a YouTube, < 6 MB)
         salida/prueba_<variante>.jpg (lienzo TV con la zona segura marcada,
         franja de escritorio 2560×423 y recorte de móvil 1546×423)
@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "salida")
-VARIANTES = sys.argv[1:] or ["mosaico", "blanco", "panoramica"]
+VARIANTES = sys.argv[1:] or ["cresta", "panoramica", "mosaico", "blanco"]
 
 
 def ff(*args):
