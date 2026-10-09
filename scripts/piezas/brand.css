@@ -1,0 +1,28 @@
+/* Piezas de redes de Orbis Ways · tokens del OW DESIGN SYSTEM (Brandbook 2027 V1).
+   Caros Soft y Museo Sans requieren licencia: hasta tener los .otf se usan los mismos
+   sustitutos que el design system (Nunito para titulares, Mulish para texto). */
+@font-face{font-family:Head;src:url(fonts/nunito-latin-900-normal.woff2) format('woff2');font-weight:900}
+@font-face{font-family:Head;src:url(fonts/nunito-latin-800-normal.woff2) format('woff2');font-weight:800}
+@font-face{font-family:Head;src:url(fonts/nunito-latin-700-normal.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Head;src:url(fonts/nunito-latin-600-normal.woff2) format('woff2');font-weight:600}
+@font-face{font-family:Body;src:url(fonts/mulish-latin-700-normal.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Body;src:url(fonts/mulish-latin-600-normal.woff2) format('woff2');font-weight:600}
+@font-face{font-family:Body;src:url(fonts/mulish-latin-500-normal.woff2) format('woff2');font-weight:500}
+:root{
+  --brand:#1376A4; --brand-light:#3B9CCA; --ink:#222222; --ink-muted:#5C5C5C;
+  --surface:#FFFFFF; --surface-soft:#F2F7FA; --accent:#FFDA00; --on-brand:#FFFFFF;
+  --line:#DCE6EC; --radius-sm:10px; --radius-lg:28px; --radius-xl:40px; --radius-pill:999px;
+  --scrim:linear-gradient(to bottom,rgba(10,40,58,0) 0%,rgba(10,40,58,.55) 55%,rgba(10,40,58,.85) 100%);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:transparent;-webkit-font-smoothing:antialiased}
+.head{font-family:Head,sans-serif}
+.body{font-family:Body,sans-serif}
+/* palabra destacada: blanco sobre caja azul (sobre foto nunca texto azul) */
+.k{background:var(--brand);color:#fff;padding:0 .14em;border-radius:.18em;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* titular bicolor sobre blanco: una palabra en azul claro */
+.kl{color:var(--brand-light)}
+.eyebrow{font-family:Head,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.12em}
+.chip{display:inline-block;background:var(--brand);color:#fff;border-radius:var(--radius-pill);
+  font-family:Head,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.06em}

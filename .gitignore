@@ -12,3 +12,11 @@ projects/tmb_main/edit/background.mp4
 projects/tmb_main/edit/overlay.html
 projects/tmb_main/edit/preview.jpg
 projects/tmb_main/edit/timeline.json
+# piezas diarias: intermedios y salidas pesadas (las finales van al chat y al centro de control)
+piezas/**/ov/
+piezas/**/bg_*.mp4
+piezas/**/*.mp4
+piezas/**/out/
+piezas/**/img/
+piezas/**/cover_bg.jpg
+piezas/**/sheet*.jpg
