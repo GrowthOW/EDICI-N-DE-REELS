@@ -8,6 +8,9 @@ Cada comentario de revisión se convierte aquí en una regla. Antes de montar la
 - SEO siempre: una búsqueda principal por pieza y en cinco sitios (texto en pantalla, descripción, portada, hashtags y texto alternativo). Ver `ORBIS-WAYS-/aprendizajes/12-tiktok-seo.md`.
 - Marca: tokens del OW DESIGN SYSTEM (Brandbook 2027 V1). TikTok sin logo ni cierre; Reel/Short con cierre.
 
+## Fondos (feedback del 9 oct)
+- Las piezas van sobre fondo blanco o azul de la marca (#1376A4), o sobre foto. Nada de fondos negros ni gris oscuro en las piezas: el fondo negro es solo para el panel del centro de control.
+
 ## Negocio
 - Orbis no contrata cupos por adelantado: reserva camas cuando entra cada reserva. No proponer reservas anticipadas de alojamiento como acción.
 
