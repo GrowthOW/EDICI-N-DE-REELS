@@ -20,3 +20,6 @@ piezas/**/out/
 piezas/**/img/
 piezas/**/cover_bg.jpg
 piezas/**/sheet*.jpg
+# copias locales de Drive MULTIMEDIA (el original está en Drive; enlaces en las tablas de montaje)
+sources_raw/camino_drive/
+piezas/**/portada.png
