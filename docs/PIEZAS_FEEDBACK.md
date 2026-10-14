@@ -11,6 +11,11 @@ Cada comentario de revisión se convierte aquí en una regla. Antes de montar la
 ## Fondos (feedback del 9 oct)
 - Las piezas van sobre fondo blanco o azul de la marca (#1376A4), o sobre foto. Nada de fondos negros ni gris oscuro en las piezas: el fondo negro es solo para el panel del centro de control.
 
+## Material de Drive (feedback del 13 oct)
+- «Faltan imágenes: tienes imágenes del Camino en Drive». El material real sale primero de Drive MULTIMEDIA (inventario en el centro: colección "media", doc "drive-multimedia"). Los clips cortos de VIDEOS BRUTOS/CAMINO DE SANTIAGO pesan menos de 6 MB y se bajan con el conector.
+- Cada vídeo lleva su tabla «Montaje final (Drive MULTIMEDIA)» con el archivo, el enlace, el tramo y el texto de cada plano.
+- Nada de mochilas de trekking grandes en plano (p. ej. se descarta `sendero-pareja.mp4`). El titular no va encima de una cara.
+
 ## Negocio
 - Orbis no contrata cupos por adelantado: reserva camas cuando entra cada reserva. No proponer reservas anticipadas de alojamiento como acción.
 
