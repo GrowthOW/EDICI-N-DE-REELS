@@ -15,6 +15,8 @@ Cada comentario de revisión se convierte aquí en una regla. Antes de montar la
 - «Faltan imágenes: tienes imágenes del Camino en Drive». El material real sale primero de Drive MULTIMEDIA (inventario en el centro: colección "media", doc "drive-multimedia"). Los clips cortos de VIDEOS BRUTOS/CAMINO DE SANTIAGO pesan menos de 6 MB y se bajan con el conector.
 - Cada vídeo lleva su tabla «Montaje final (Drive MULTIMEDIA)» con el archivo, el enlace, el tramo y el texto de cada plano.
 - Nada de mochilas de trekking grandes en plano (p. ej. se descarta `sendero-pareja.mp4`). El titular no va encima de una cara.
+- Sin logos en la imagen (Iván, 14 oct: «quita logos de las imágenes»): se descartan `maleta-concha.mp4` y `maletas-etiqueta.mp4`, porque las etiquetas de las maletas llevan el logo de otra marca. El traslado de equipaje se cuenta con texto sobre caminantes ligeros.
+- El cierre de Reel y Short va en el idioma de la pieza: `endcard_9x16.png` (EN, «Find your trail.») y `endcard_9x16_es.png` (ES, «Descubre el mundo a tu ritmo.»). Para otro idioma, se renderiza `endcard.html` con su `claim`.
 
 ## Look nativo, no comercial (feedback del 14 oct)
 - «No quiero que las piezas de redes tengan esa portada tan corporativa»; «necesitamos un look & feel de contenido más nativo y menos comercial». En TikTok, Reels, Shorts, Instagram y Facebook esta regla manda sobre el estilo de marca del repo (CLAUDE.md): las piezas parecen contenido de creador, no anuncio.
