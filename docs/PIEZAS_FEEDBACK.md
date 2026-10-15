@@ -2,6 +2,13 @@
 
 Cada comentario de revisión se convierte aquí en una regla. Antes de montar las piezas del día, léelo entero.
 
+## Fábrica 24/7 (15 oct 2026)
+- Iván: «quiero que esto sea una fábrica de contenidos que funcione 24/7 sin necesidad de aprobación ni rondas dos veces al día». Las piezas se producen hasta el final sin esperar aprobación, un ciclo por hora, y se entregan en la sala de Diseño del centro, donde Iván ajusta o descarta. Manual de cada ciclo: `docs/FABRICA.md`. Lo de «2 piezas antes de las 8:00 y 2 antes de las 17:30» queda sustituido.
+- Mezcla: piezas informacionales y útiles, piezas con formato viral y algunas comerciales suaves, para que los canales sean la referencia del sector y ganen comunidad.
+
+## Eslogan (15 oct 2026)
+- El eslogan se escribe «Walk it, Ride it, Live it», como en el manual de marca V1; nunca todo en mayúsculas. La cartela de cierre (`scripts/piezas/endcard.html` y sus PNG) ya lo lleva así.
+
 ## Formato de la entrega (9 oct 2026)
 - De lunes a viernes llegan al chat de Claude 2 piezas antes de las 8:00 y otras 2 antes de las 17:30 (Madrid) (ampliado el 14 oct), una por canal: vídeo 9:16 (TikTok y Reel/Short), carrusel de Instagram/Facebook 4:5 y post de LinkedIn. Se pueden alternar con portadas o miniaturas de YouTube.
 - Piezas más trabajadas y nativas de cada red: cortes secos con empuje lento, texto animado palabra a palabra, gancho legible desde el fotograma 0, pregunta final solo en pantalla.
