@@ -1,0 +1,36 @@
+{
+ "total": 20.0,
+ "beats": [
+  {
+   "t": 0,
+   "text": "Compostela desde Sarria: 100 km a pie y dos sellos al día",
+   "sticker": "Camino Francés, Galicia",
+   "top": 900
+  },
+  {
+   "t": 4.0,
+   "text": "para la Compostela, al menos los últimos 100 km a pie",
+   "top": 1050
+  },
+  {
+   "t": 7.2,
+   "text": "y Sarria está a algo más de 100 km de Santiago",
+   "top": 330
+  },
+  {
+   "t": 10.4,
+   "text": "en ese tramo, sella la credencial 2 veces al día",
+   "top": 470
+  },
+  {
+   "t": 13.6,
+   "text": "al llegar, la Compostela se recoge en la Oficina del Peregrino",
+   "top": 470
+  },
+  {
+   "t": 16.8,
+   "text": "¿empezarías en Sarria?",
+   "top": 470
+  }
+ ]
+}

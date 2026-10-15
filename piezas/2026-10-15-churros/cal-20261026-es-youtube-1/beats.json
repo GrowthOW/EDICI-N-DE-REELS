@@ -1,0 +1,36 @@
+{
+ "total": 20.0,
+ "beats": [
+  {
+   "t": 0,
+   "text": "traslado de equipaje en el Camino de Santiago: 3 pasos",
+   "sticker": "Camino Francés, Galicia",
+   "top": 1000
+  },
+  {
+   "t": 4.0,
+   "text": "1. por la mañana, dejas la maleta en tu alojamiento",
+   "top": 470
+  },
+  {
+   "t": 7.2,
+   "text": "2. caminas la etapa ligero, con la mochila del día",
+   "top": 900
+  },
+  {
+   "t": 10.4,
+   "text": "3. al llegar, tu maleta ya te espera",
+   "top": 470
+  },
+  {
+   "t": 13.6,
+   "text": "sin peso a la espalda y a tu ritmo",
+   "top": 400
+  },
+  {
+   "t": 16.8,
+   "text": "¿mochila a cuestas o maleta por delante?",
+   "top": 1050
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "total": 19.6,
+ "beats": [
+  {
+   "t": 0,
+   "text": "hoteles en el Camino de Santiago: así es tu día",
+   "sticker": "Camino Francés, Galicia",
+   "top": 420
+  },
+  {
+   "t": 3.2,
+   "text": "por la mañana, dejas la maleta en el hotel",
+   "top": 470
+  },
+  {
+   "t": 5.6,
+   "text": "y caminas ligero, solo con la mochila del día",
+   "top": 1050
+  },
+  {
+   "t": 8.4,
+   "text": "al llegar, tu maleta ya te espera",
+   "top": 470
+  },
+  {
+   "t": 10.8,
+   "text": "alojamientos con encanto, de piedra y madera",
+   "top": 470
+  },
+  {
+   "t": 14.0,
+   "text": "y una cama de verdad al final de cada etapa",
+   "top": 400
+  },
+  {
+   "t": 16.8,
+   "text": "¿hotel con encanto o albergue?",
+   "top": 470
+  }
+ ]
+}

@@ -1,0 +1,60 @@
+{
+ "name": "compostela_sarria_short_es",
+ "endcard": "es",
+ "music_ss": 40,
+ "shots": [
+  [
+   "calle-aldea.mp4",
+   0.0,
+   4.0,
+   0.45,
+   1.05,
+   0.8
+  ],
+  [
+   "peregrinos-calzada.mp4",
+   0.2,
+   3.2,
+   0.38,
+   1.05,
+   0.9
+  ],
+  [
+   "puente-medieval.mp4",
+   0.0,
+   3.2,
+   0.45,
+   1.05,
+   0.9
+  ],
+  [
+   "capilla-prado.mp4",
+   0.0,
+   3.2,
+   0.68,
+   1.05,
+   0.9
+  ],
+  [
+   "catedral-quintana.mp4",
+   0.0,
+   3.2,
+   0.58,
+   1.05,
+   0.9
+  ],
+  [
+   "plaza-obradoiro.mp4",
+   0.0,
+   3.2,
+   0.5,
+   1.05,
+   0.75
+  ]
+ ],
+ "cover": {
+  "t": 1.0,
+  "text": "Compostela desde Sarria: lo que te piden",
+  "top": 900
+ }
+}

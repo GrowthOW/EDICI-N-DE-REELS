@@ -1,0 +1,68 @@
+{
+ "name": "traslado_equipaje_short_es",
+ "endcard": "es",
+ "music_ss": 100,
+ "shots": [
+  [
+   "peregrinos-calzada.mp4",
+   0.0,
+   4.0,
+   0.38,
+   1.05,
+   0.8
+  ],
+  [
+   "galeria-hotel.mp4",
+   0.0,
+   3.2,
+   0.5,
+   1.05,
+   0.8
+  ],
+  [
+   "calle-aldea.mp4",
+   0.0,
+   3.2,
+   0.45,
+   1.05,
+   0.85
+  ],
+  [
+   "salon-rustico.mp4",
+   0.0,
+   1.44,
+   0.72,
+   1.05,
+   0.68
+  ],
+  [
+   "habitacion-granate.mp4",
+   0.0,
+   1.76,
+   0.55,
+   1.05,
+   0.85
+  ],
+  [
+   "peregrinos-iglesia.mp4",
+   0.0,
+   3.2,
+   0.25,
+   1.05,
+   0.75
+  ],
+  [
+   "arco-piedra.mp4",
+   0.0,
+   3.2,
+   0.45,
+   1.05,
+   0.8
+  ]
+ ],
+ "cover": {
+  "t": 1.0,
+  "text": "traslado de equipaje en el Camino: 3 pasos",
+  "top": 1000
+ }
+}

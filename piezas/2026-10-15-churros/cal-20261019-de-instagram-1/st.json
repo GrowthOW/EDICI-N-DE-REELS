@@ -1,0 +1,6 @@
+[{"id":"tmb_huette_oder_hotel_1","type":"photo","img":"montblanc.jpg","pos":"top","head":"Tour du Mont Blanc: Hütte oder Hotel?","body":"Zwei Wege, dieselbe Runde.","sticker":"Tour du Mont Blanc"},
+ {"id":"tmb_huette_oder_hotel_2","type":"photo","img":"massiv.jpg","pos":"bottom","head":"Dieselbe Runde","body":"Du gehst dieselben Wege, die Aussicht ist dieselbe. Anders ist nur der Abend."},
+ {"id":"tmb_huette_oder_hotel_3","type":"text","head":"Die Hüttennacht","body":["Einfach und mitten am Berg: oft Mehrbettzimmer, Abendessen in der Runde.","Dein Gepäck kommt nicht immer mit, also leicht packen."]},
+ {"id":"tmb_huette_oder_hotel_4","type":"text","head":"Die Hotelnacht","body":["Eigenes Zimmer mit Bad und ein ruhiger Abend.","Dein Koffer ist schon da: Er fährt von Hotel zu Hotel."]},
+ {"id":"tmb_huette_oder_hotel_5","type":"photo","img":"pass.jpg","pos":"top","head":"Etwa 80.000 im Jahr","body":"Laut Presseberichten gehen jedes Jahr 75.000 bis 80.000 Menschen die Tour du Mont Blanc.","src":"Quelle: Euronews, August 2026"},
+ {"id":"tmb_huette_oder_hotel_6","type":"photo","img":"tagesrucksack.jpg","pos":"bottom","head":"Und du: Hütte oder Hotel?","body":"Schreib es in die Kommentare und speicher dir den Post für deine Planung."}]

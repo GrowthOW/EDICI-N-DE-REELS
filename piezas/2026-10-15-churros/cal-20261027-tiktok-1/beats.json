@@ -1,0 +1,36 @@
+{
+ "total": 20.0,
+ "beats": [
+  {
+   "t": 0,
+   "text": "Japanese walking: 3 minutes brisk, 3 minutes easy",
+   "sticker": "Camino de Santiago, Spain",
+   "top": 1000
+  },
+  {
+   "t": 4.0,
+   "text": "3 min brisk: breathing harder, but you can still talk",
+   "top": 900
+  },
+  {
+   "t": 7.2,
+   "text": "3 min easy, to get your breath back",
+   "top": 330
+  },
+  {
+   "t": 10.4,
+   "text": "repeat 5 times: about 30 minutes in total",
+   "top": 330
+  },
+  {
+   "t": 13.6,
+   "text": "it comes from researchers at Shinshu University in Japan",
+   "top": 400
+  },
+  {
+   "t": 16.8,
+   "text": "would you try it on your next walk?",
+   "top": 420
+  }
+ ]
+}

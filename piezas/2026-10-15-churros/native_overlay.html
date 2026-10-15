@@ -1,0 +1,39 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../../scripts/piezas/brand.css">
+<!-- Look nativo (Iván, 14 oct): texto como el de la app, en cajas blancas, minúsculas normales; ruta como pegatina 📍; sin logo ni bloque de datos.
+     Los textos vienen de beats.json (mismo directorio de la pieza) vía ?p=<carpeta>. -->
+<style>
+html,body{width:1080px;height:1920px;overflow:hidden;margin:0}
+#stage{position:relative;width:1080px;height:1920px}
+/* zona segura TikTok: 260 px arriba, 420 abajo, 200 derecha → el texto vive entre y=420 y y=1200, centrado en x=440..540 */
+.beat{position:absolute;left:90px;right:150px;top:470px;display:none;flex-direction:column;align-items:center;gap:26px;text-align:center}
+.bx{font-family:Body,sans-serif;font-weight:700;line-height:1.5;letter-spacing:-.005em;max-width:840px}
+.bx span{background:#fff;color:#161616;padding:6px 22px 9px;border-radius:16px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.bx.big{font-size:74px}.bx.mid{font-size:64px}.bx.cover{font-size:92px}
+.stk{display:inline-block;background:#fff;color:#161616;font-family:Body,sans-serif;font-weight:700;font-size:40px;padding:10px 24px 13px;border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.22);transform:rotate(-2.5deg)}
+</style></head>
+<body><div id="stage"></div>
+<script>
+const P = new URLSearchParams(location.search).get('p');
+fetch(P + '/' + (new URLSearchParams(location.search).get('f') || 'beats.json')).then(r => r.json()).then(cfg => {
+  window.TOTAL = cfg.total;
+  const st = document.getElementById('stage');
+  cfg.beats.forEach((b, i) => {
+    const d = document.createElement('div'); d.className = 'beat'; d.id = 'b' + i;
+    if (b.top) d.style.top = b.top + 'px';
+    const t = document.createElement('div'); t.className = 'bx ' + (b.size || (i === 0 ? 'big' : 'mid'));
+    const s = document.createElement('span'); s.textContent = b.text; t.appendChild(s); d.appendChild(t);
+    if (b.sticker) { const k = document.createElement('div'); k.className = 'stk'; k.textContent = '📍 ' + b.sticker; d.appendChild(k); }
+    st.appendChild(d);
+  });
+  const ease = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+  window.renderAt = t => {
+    let cur = 0; cfg.beats.forEach((b, i) => { if (t >= b.t) cur = i; });
+    cfg.beats.forEach((b, i) => { document.getElementById('b' + i).style.display = i === cur ? 'flex' : 'none'; });
+    const lt = t - cfg.beats[cur].t, p = cur === 0 && lt === 0 ? 1 : ease(lt / 0.16);
+    const el = document.getElementById('b' + cur); el.style.opacity = p; el.style.transform = `scale(${0.94 + 0.06 * p})`;
+  };
+  document.fonts.ready.then(() => { window.renderAt(0); window.__READY__ = true; });
+});
+</script></body></html>

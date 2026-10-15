@@ -1,0 +1,60 @@
+{
+ "name": "what_to_pack_reel_en",
+ "endcard": "en",
+ "music_ss": 20,
+ "shots": [
+  [
+   "calle-aldea.mp4",
+   0.0,
+   4.0,
+   0.45,
+   1.05,
+   0.8
+  ],
+  [
+   "peregrinos-calzada.mp4",
+   0.2,
+   3.2,
+   0.38,
+   1.05,
+   0.9
+  ],
+  [
+   "puente-medieval.mp4",
+   0.0,
+   3.2,
+   0.45,
+   1.05,
+   0.9
+  ],
+  [
+   "peregrinos-iglesia.mp4",
+   0.0,
+   3.2,
+   0.25,
+   1.05,
+   0.75
+  ],
+  [
+   "horreo-peregrinos.mp4",
+   0.0,
+   3.2,
+   0.55,
+   1.05,
+   0.85
+  ],
+  [
+   "arco-piedra.mp4",
+   0.0,
+   4.2,
+   0.45,
+   1.06,
+   0.6
+  ]
+ ],
+ "cover": {
+  "t": 12.0,
+  "text": "what to pack for a walking holiday",
+  "top": 380
+ }
+}
