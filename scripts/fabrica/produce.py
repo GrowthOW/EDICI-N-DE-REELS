@@ -75,9 +75,15 @@ def material_md(piece, channel):
         lines += [f"**Sticker para añadir en Instagram ({st.get('type', 'encuesta')}):** {st.get('text', '')}" + (" · Opciones: " + " / ".join(st.get("options", [])) if st.get("options") else ""), ""]
     if piece.get("compare"):
         c = piece["compare"]
-        for side in ("a", "b"):
-            x = c.get(side) or {}
-            lines += [f"**{x.get('name', '')}:** " + " · ".join(x.get("facts", []))]
+        if c.get("slides"):
+            lines += ["**Láminas de la comparativa**", ""]
+            for i, sl in enumerate(c["slides"]):
+                lines += [f"{i + 1}. {sl.get('headline', '')} — " + " / ".join(
+                    f"{sl[side].get('name', '')}: " + " · ".join(sl[side].get("facts", [])) for side in ("a", "b"))]
+        else:
+            for side in ("a", "b"):
+                x = c.get(side) or {}
+                lines += [f"**{x.get('name', '')}:** " + " · ".join(x.get("facts", []))]
         lines += [""]
     if piece.get("overlay"):
         lines += ["**Texto en la imagen:** " + " · ".join(x for x in [piece["overlay"].get("headline"), piece["overlay"].get("sub")] if x), ""]
@@ -209,6 +215,23 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                 files = [{"kind": "image", "label": f"Lámina {i + 1}", "local": f, "name": os.path.basename(f)} for i, f in enumerate(r["out"])]
                 manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
                                  "clips": [str(x["fromVideo"]) for x in s.get("slides", [])]})
+            elif key == "compare" and (piece.get("compare") or {}).get("slides"):
+                # comparativa en carrusel: portada partida + una lámina partida por aspecto
+                c, cs = piece["compare"], (s.get("compare") or {}).get("slides", [])
+                if len(cs) != len(c["slides"]) or len(cs) < 3:
+                    raise RuntimeError("la comparativa en carrusel necesita 3 láminas o más, con imagen para cada una")
+                slides = []
+                for i, (txt, im) in enumerate(zip(c["slides"], cs)):
+                    sl = {"headline": txt.get("headline", "")}
+                    for side in ("a", "b"):
+                        fr = frame(media, im[side], f"{out_dir}/{piece['id']}_{i + 1}{side}.jpg")
+                        sl[side] = {"image": fr, "name": txt[side].get("name", ""), "facts": txt[side].get("facts", []),
+                                    "objectPosition": im[side].get("objectPosition", "50% 50%")}
+                    slides.append(sl)
+                r = render.render_compare_carousel({"slides": slides, "vs": c.get("vs", "vs"), "out_prefix": f"{out_dir}/{piece['id']}"})
+                files = [{"kind": "image", "label": f"Lámina {i + 1}", "local": f, "name": os.path.basename(f)} for i, f in enumerate(r["out"])]
+                manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
+                                 "clips": sorted({str(x[side]["fromVideo"]) for x in cs for side in ("a", "b")})})
             elif key == "compare":
                 c, cs = piece.get("compare") or {}, s.get("compare") or {}
                 sides = {}

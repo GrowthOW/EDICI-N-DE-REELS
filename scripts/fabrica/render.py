@@ -271,17 +271,21 @@ def compare_html(sp):
                 f'<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.1) 70%)"></div>'
                 f'<div style="position:absolute;left:{int(60 * k)}px;bottom:{int(44 * k)}px;display:flex;flex-direction:column;gap:{int(10 * k)}px">'
                 f'<div class="t n" id="n{i}">{esc(side["name"])}</div>{facts}</div></div>')
-    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int(60 * k)}px;top:{int(46 * k)}px;'
+    cnt = sp.get("counter")
+    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else 60) * k)}px;top:{int(46 * k)}px;'
             f'font:800 {int(54 * k)}px/1.08 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
+    counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
+               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'border-radius:999px">{esc(cnt)}</div>') if cnt else ""
     # el «vs» va a la derecha de la línea de corte para no pisar los datos de la foto de arriba
     vs = (f'<div class="t" id="vs" style="position:absolute;right:{int(70 * k)}px;top:{hh + GAP // 2}px;transform:translateY(-50%);'
           f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;'
-          f'font:800 {int(36 * k)}px/1 Manrope">{esc(sp.get("vs", "vs"))}</div>')
+          f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Manrope">{esc(sp.get("vs", "vs"))}</div>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
-.t{{color:#fff}} .n{{font:800 {int(60 * k)}px/1.05 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
+.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
 .f{{font:700 {int(34 * k)}px/1.2 LS;-webkit-text-stroke:{max(1, int(1.5 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 10px rgba(0,0,0,.5)}}
-</style></head><body>{half(0, sp["a"])}{half(1, sp["b"])}{head}{vs}</body></html>"""
+</style></head><body>{half(0, sp["a"])}{half(1, sp["b"])}{head}{vs}{counter}</body></html>"""
 
 
 def render_compare(sp):
@@ -293,6 +297,17 @@ def render_compare(sp):
     capture([{"html": p, "out": png, "w": sp["w"], "h": sp["h"], "safe": {"top": m, "bottom": m // 2, "right": m, "left": m}}])
     run(["ffmpeg", "-v", "error", "-y", "-i", png, "-q:v", "2", sp["out"]])
     return {"out": sp["out"]}
+
+
+def render_compare_carousel(sp):
+    """Comparativa en carrusel (Iván, 18 oct: «no puede ser solo una foto»): portada partida y una lámina partida por aspecto."""
+    n, outs = len(sp["slides"]), []
+    for i, sl in enumerate(sp["slides"]):
+        out = f'{sp["out_prefix"]}_{i + 1}.jpg'
+        render_compare({"w": sp.get("w", 1080), "h": sp.get("h", 1350), "headline": sl.get("headline", ""), "vs": sp.get("vs", "vs"),
+                        "a": sl["a"], "b": sl["b"], "counter": f"{i + 1}/{n}", "nameSize": 60 if i == 0 else 46, "out": out})
+        outs.append(out)
+    return {"out": outs}
 
 
 if __name__ == "__main__":

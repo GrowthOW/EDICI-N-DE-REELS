@@ -18,7 +18,8 @@ Personas de 50-65 años, mejor en pareja, activas, que caminan 15-25 km/día con
 - 3 posts Facebook (imagen 1080x1350) — tono más informativo, público algo mayor.
 - 3 posts LinkedIn 1200x1200 — tono profesional (datos del sector, sostenibilidad, Año Santo, turismo lento), sin vender.
 - STORIES de Instagram 1080x1920: 2 en imagen y 1 en vídeo, cada una con un sticker sugerido (encuesta, quiz, pregunta, deslizador). Texto arriba; abajo queda libre para el sticker y la respuesta.
-- 1 post COMPARANDO dos rutas parecidas (TMB vs West Highland Way, Portugués por la Costa vs Rota Vicentina, Cotswold Way vs South West Coast Path, Sarria vs Tui…): dos fotos, nombre y 2 datos verificables por ruta.
+- 1 post COMPARANDO dos rutas parecidas (TMB vs West Highland Way, Portugués por la Costa vs Rota Vicentina, Cotswold Way vs South West Coast Path, Sarria vs Tui…), SIEMPRE EN CARRUSEL: portada en pantalla partida y una lámina partida por aspecto (distancia, inicio y final, terreno, paisaje, para quién), con fotos distintas y datos verificables.
+- Ninguna pieza termina con cartela de logo, lema o web (Iván, 18 oct: «no queda orgánico»).
 
 ## Redes orgánicas: nada de anuncio (Iván, 18 oct)
 - En las piezas (texto en pantalla, imagen y copy) NO va orbisways.com, ni «link in bio», ni logo, ni cartela final de marca, ni el lema. El reel termina en su último plano con un fundido corto.

@@ -121,7 +121,7 @@ Una ficha con `feedback` pendiente (`done: false`) y `agent: "fabrica-v2"`:
 | `story` | `overlay{headline, sub}`, `sticker{…}` | `image{fromVideo, at, objectPosition}` | instagram `Story`, `-storyN` |
 | `ig_carousel` | `slides[{headline, sub}]` (5-7) | `slides[{fromVideo, at, objectPosition}]` | instagram `Carrusel`, `-N` |
 | `fb` / `linkedin` | `overlay{headline, sub}` | `image{fromVideo, at, objectPosition}` | `Post`, `-N` |
-| `compare` | `compare{headline, vs, a{name, facts[2]}, b{…}}`, `channel` | `compare{a{fromVideo, at, objectPosition}, b{…}}` | `Comparativa`, `-cmpN` |
+| `compare` | **siempre en carrusel** (Iván, 18 oct: «no puede ser solo una foto»): `compare{vs, slides[{headline, a{name, facts[1]}, b{…}}]}` con 5-6 láminas (portada partida + un aspecto por lámina + pregunta final), `channel` | `compare{slides[{a{fromVideo, at, objectPosition}, b{…}}]}`, fotos distintas en cada lámina | `Comparativa`, `-cmpN` |
 
 Las etiquetas de cada pantalla (`labels`) dicen el lugar real que se ve, cortas (≤ 18 caracteres en
 `grid4`). Si `ss + dur` se sale del clip, `render.py` adelanta el tramo.
