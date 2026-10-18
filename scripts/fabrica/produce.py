@@ -124,10 +124,13 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     if not os.path.exists(f):
                         raise RuntimeError("sin licenciar " + sh["videoId"])
                     shots.append({"file": f, "ss": sh.get("ss", 0), "dur": sh.get("dur", 3.5), "cropx": sh.get("cropx", 0.5)})
-                texts = piece.get("textBlocks", [])[:3]
+                texts = [dict(t) for t in piece.get("textBlocks", [])[:3]]
                 body = sum(x["dur"] for x in shots)
-                for t in texts:  # los textos no pueden pasar del final del cuerpo
-                    t["end"] = min(t["end"], body - 0.45)
+                planned = sum(x.get("dur", 0) for x in piece.get("shots", [])) or body
+                k = body / planned  # si cambia el número o la duración de planos, los textos se reparten igual
+                for t in texts:
+                    t["start"] = round(t["start"] * k, 2)
+                    t["end"] = round(min(t["end"] * k, body - 0.45), 2)
                 out = f"{out_dir}/{piece['id']}.mp4"
                 r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "pill": pill_for(piece, lang), "out": out})
                 files = [{"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4"},
