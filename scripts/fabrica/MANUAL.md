@@ -44,6 +44,28 @@ del catálogo marcada «Unlimited»): da «outside of your collection» siempre.
 5. Los candidatos que sigan en la colección más de 3 días sin descargar no están en su plan:
    quítalos.
 
+## Drive de material (Iván, 18 oct): todo lo descargado, ordenado por rutas
+
+Carpeta de Iván «SELECCIÓN 2027» (ids en `drive.json`). Iván arrastra lo que descarga de
+Shutterstock a `_ENTRADA · deja aquí las descargas`. En cada ronda:
+1. `search_files` con `parentId = '<entrada>'`. El id del clip sale del nombre
+   (`shutterstock_<id>.mov|mp4`).
+2. Ruta y lugar: `biblioteca/nuevos_18oct.json`, `biblioteca/catalog.json` o la colección
+   `biblioteca` del Centro. Si no está catalogado, cataloga primero (circuito de clips nuevos).
+3. `update_file`: muévelo a `VIDEO/<ruta>` (fotos a `IMAGEN/PAISAJES Y RUTAS`), con título
+   «<Lugar> · <qué se ve> · <id>.<ext>» y descripción «Ruta: … · Lugar: … · <escena> ·
+   Shutterstock <id> · licencia footage_standard». Lo que no sea de una ruta de Orbis, a
+   `VIDEO/Otras rutas`.
+4. Las vistas previas con marca de agua (`<id>-preview.mp4`) van a `_Vistas previas con marca
+   de agua (no usar)`. Nunca borres nada del Drive ni cambies quién tiene acceso.
+
+## Qué clips puede descargar Iván
+
+Su plan («Unlimited», licencia `footage_standard`) solo permite una parte del catálogo, y ni la
+API ni la búsqueda dicen qué parte (el detalle de un clip fuera de su colección da 403). El
+18 oct pudo bajar 35 de 74 candidatos. Hasta saber la regla, propón el doble de candidatos de
+lo que haga falta y apunta en `fabrica/descargas` cuáles bajó y cuáles no.
+
 ## Límites que hay que respetar
 
 - **Shutterstock API**: 100 peticiones por hora. La app solo puede licenciar su colección;

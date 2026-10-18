@@ -178,6 +178,8 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
         # reel y story_video comparten numeración con su canal (reelN / storyN)
         sk = "story" if key == "story_video" else key
         slot = slots.get(sk, 0); slots[sk] = slot + 1
+        if piece.get("slot"):  # piezas extra del mismo día: número fijo para no pisar las fichas de la tanda principal
+            slot = int(piece["slot"]) - 1
         tag = tag_for(piece, lang)
         try:
             if key in ("reel", "story_video"):
