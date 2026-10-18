@@ -42,7 +42,7 @@ def ledger():
 
 
 def today():
-    return datetime.datetime.utcnow().strftime("%Y-%m-%d")
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
 
 
 def count(kind):
