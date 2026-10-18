@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import render  # noqa: E402
 
 ROUTES = [  # (patrón en el nombre de la ruta, {idioma: etiqueta corta para la pill})
+    (r"finis|fisterra|mux[ií]a", {"ES": "Camino a Fisterra", "EN": "Camino to Finisterre", "DE": "Jakobsweg nach Finisterre"}),
     (r"a[ñn]o santo|holy year|heilig", {"ES": "Año Santo 2027", "EN": "Holy Year 2027", "DE": "Heiliges Jahr 2027"}),
     (r"costa|coast|küste", {"ES": "Camino Portugués por la Costa", "EN": "Portuguese Coastal Camino", "DE": "Portugiesischer Küstenweg"}),
     (r"tui", {"ES": "Camino Portugués desde Tui", "EN": "Camino from Tui", "DE": "Jakobsweg ab Tui"}),

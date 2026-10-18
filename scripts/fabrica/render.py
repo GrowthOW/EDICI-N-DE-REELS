@@ -22,7 +22,7 @@ FONTS = f"""
 END_LINES = {
     "ES": "Tú caminas. Nosotros llevamos tu equipaje.",
     "EN": "You walk. We carry your luggage.",
-    "DE": "Sie wandern. Wir tragen Ihr Gepäck.",
+    "DE": "Du wanderst. Wir tragen dein Gepäck.",
 }
 
 
