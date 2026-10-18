@@ -27,7 +27,7 @@ ROUTES = [  # (patrón en el nombre de la ruta, {idioma: etiqueta corta para la 
     (r"ingl[ée]s|english way|englischer", {"ES": "Camino Inglés", "EN": "English Way", "DE": "Englischer Jakobsweg"}),
     (r"primitivo|primitive", {"ES": "Camino Primitivo", "EN": "Camino Primitivo", "DE": "Camino Primitivo"}),
 ]
-STATIC = {"ig_static": ("instagram", "Post", 1080, 1350), "fb": ("facebook", "Post", 1080, 1350), "linkedin": ("linkedin", "Post", 1200, 1200)}
+STATIC = {"ig_carousel": ("instagram", "Carrusel", 1080, 1350), "ig_static": ("instagram", "Post", 1080, 1350), "fb": ("facebook", "Post", 1080, 1350), "linkedin": ("linkedin", "Post", 1200, 1200)}
 REEL_CHANNELS = [("instagram", "Reel", "instagram"), ("tiktok", "Vídeo", "tiktok"), ("youtube", "Short", "youtube"), ("facebook", "Reel", "facebook")]
 TIMES = ["09:00", "13:30", "19:00"]
 MARKET = {"ES": "España", "EN": "UK+US", "DE": "DACH"}
@@ -62,6 +62,8 @@ def material_md(piece, channel):
         lines += ["**Llamada a la acción:** " + piece["cta"], ""]
     if piece.get("textBlocks"):
         lines += ["**Texto en pantalla**", ""] + [f"- {t['start']}–{t['end']} s: {t['text']}" for t in piece["textBlocks"]] + [""]
+    if piece.get("slides"):
+        lines += ["**Láminas del carrusel**", ""] + [f"{i + 1}. {x.get('headline', '')}" + (f" — {x['sub']}" if x.get("sub") else "") for i, x in enumerate(piece["slides"])] + [""]
     if piece.get("overlay"):
         lines += ["**Texto en la imagen:** " + " · ".join(x for x in [piece["overlay"].get("headline"), piece["overlay"].get("sub")] if x), ""]
     return "\n".join(lines).strip()
@@ -138,6 +140,21 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                          {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "sheet": r["sheet"], "files": files,
                                  "docs": docs_for(piece, lang, date, slot, files, cycle), "clips": [x["videoId"] for x in s["shots"]]})
+            elif piece["format"] == "ig_carousel":
+                slides = []
+                for i, (txt, im) in enumerate(zip(piece.get("slides", []), s.get("slides", []))):
+                    src = f"{media}/video/{im['fromVideo']}.mp4"
+                    if not os.path.exists(src):
+                        raise RuntimeError("sin licenciar " + str(im["fromVideo"]))
+                    fr = f"{out_dir}/{piece['id']}_frame{i + 1}.jpg"
+                    render.run(["ffmpeg", "-v", "error", "-y", "-ss", str(im.get("at", 1.0)), "-i", src, "-frames:v", "1", "-q:v", "2", fr])
+                    slides.append({"image": fr, "headline": txt.get("headline", ""), "sub": txt.get("sub", ""), "objectPosition": im.get("objectPosition", "50% 50%")})
+                if len(slides) < 3:
+                    raise RuntimeError("carrusel con menos de 3 láminas")
+                r = render.render_carousel({"slides": slides, "pill": pill_for(piece, lang), "out_prefix": f"{out_dir}/{piece['id']}"})
+                files = [{"kind": "image", "label": f"Lámina {i + 1}", "local": f, "name": os.path.basename(f)} for i, f in enumerate(r["out"])]
+                manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
+                                 "clips": [str(x["fromVideo"]) for x in s.get("slides", [])]})
             else:
                 img = (s.get("image") or {})
                 if img.get("fromVideo"):  # fotograma de un clip de la ruta ya licenciado

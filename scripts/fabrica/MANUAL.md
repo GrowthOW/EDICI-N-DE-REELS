@@ -2,8 +2,9 @@
 
 Lo que Iván pidió (18 oct 2026): propuestas **finales** (MP4 e imágenes listos para publicar),
 nunca a medias, para cada mercado e idioma (EN, ES, DE). Cada día y por idioma: **3 reels**
-(se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels), **3 estáticos de
-Instagram**, **3 de Facebook** y **3 de LinkedIn**. Iván las revisa en la sala de la Fábrica
+(se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels), **3 carruseles de
+Instagram** (5-7 láminas: portada con gancho, una idea por lámina y cierre suave para
+guardar/compartir; formato `ig_carousel`), **3 imágenes de Facebook** y **3 de LinkedIn**. Iván las revisa en la sala de la Fábrica
 del Centro de Control, descarga las que le gustan y pide cambios en la propia pieza.
 
 Reglas de contenido: `CONTEXTO.md` (léelo entero; manda sobre cualquier idea propia).
@@ -16,7 +17,26 @@ Reglas de contenido: `CONTEXTO.md` (léelo entero; manda sobre cualquier idea pr
 | Producción en lote | `produce.py <LANG> <brief.json> <selection.json> <media_dir> <out_dir> <fecha>` |
 | Shutterstock | `sst.py` (licencias con tope de 90/día; redescarga gratis de lo ya licenciado, en 4K si existe) |
 | Fichas de la sala | `docs_build.py <assets.json> <out_dir> <manifest.json>...` |
-| Biblioteca | `biblioteca/catalog.json` (ruta, escena, gente, mochila, usable) y `biblioteca/lib_info.json` (licencia de cada clip) |
+| Biblioteca | `biblioteca/catalog.json` y `biblioteca/lib_info.json` (los 112 de partida) + colección `biblioteca` del Centro (los nuevos) |
+
+## Circuito de clips nuevos (Shutterstock, 18 oct 2026)
+
+La API no puede licenciar con el plan de Iván («Unlimited Downloads», que solo incluye la parte
+del catálogo marcada «Unlimited»): da «outside of your collection» siempre. Lo que sí funciona:
+1. La Fábrica elige candidatos (2-3 por plano que falte, revisados con `sst.py preview`) y los
+   añade a la colección de Iván «Orbis · para licenciar» (id 328831218):
+   `POST /v2/videos/collections/328831218/items {"items":[{"id":"…"}]}`.
+2. Escribe en el Centro `fabrica/descargas` {pending, collection: "Orbis · para licenciar",
+   url, ids, note, ts}: el Centro muestra el aviso a Iván.
+3. Iván (o Claude en Chrome por él) descarga en la web los que su plan permite.
+4. En cada ronda: `GET /v2/videos/licenses?per_page=50&sort=newest` → los clips licenciados que
+   no estén en `biblioteca/catalog.json` ni en la colección `biblioteca` del Centro son nuevos:
+   bájalos con `sst.py video <id> <dir> <licenseId>`, míralos (hoja de fotogramas) y
+   catalógalos en el Centro (colección `biblioteca`, un doc por clip, mismos campos que
+   catalog.json + licenseId). Quítalos de la colección 328831218 (DELETE …/items?item_id=…)
+   y actualiza `fabrica/descargas.pending` (los que queden en la colección).
+5. Los candidatos que sigan en la colección más de 3 días sin descargar no están en su plan:
+   quítalos.
 
 ## Límites que hay que respetar
 

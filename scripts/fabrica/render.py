@@ -148,6 +148,9 @@ def static_html(sp):
     pill = f'<div class="t pill" id="pill">{esc(sp["pill"])}</div>' if sp.get("pill") else ""
     sub = f'<div class="t" id="sub">{esc(sp["sub"])}</div>' if sp.get("sub") else ""
     pos = sp.get("objectPosition", "50% 50%")
+    counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
+               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'border-radius:999px">{esc(sp["counter"])}</div>') if sp.get("counter") else ""
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}}
 #bg{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:{pos}}}
@@ -160,7 +163,7 @@ html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}
 #web{{position:absolute;right:{int(70 * k)}px;bottom:{int(48 * k)}px;font:800 {int(30 * k)}px/1 Manrope;letter-spacing:.03em;opacity:.95}}
 </style></head><body><img id="bg" src="{sp["image"]}"><div class="grad"></div>
 <div class="box">{pill}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>
-<div class="t" id="web">{esc(sp.get("web", "orbisways.com"))}</div></body></html>"""
+<div class="t" id="web">{esc(sp.get("web", "orbisways.com"))}</div>{counter}</body></html>"""
 
 
 def render_static(sp):
@@ -172,6 +175,18 @@ def render_static(sp):
     capture([{"html": p, "out": png, "w": sp["w"], "h": sp["h"], "safe": {"top": m, "bottom": m // 2, "right": m, "left": m}}])
     run(["ffmpeg", "-v", "error", "-y", "-i", png, "-q:v", "2", sp["out"]])
     return {"out": sp["out"]}
+
+
+def render_carousel(sp):
+    """Carrusel de Instagram (1080x1350): portada con la pill de la ruta, una idea por lámina y cierre suave."""
+    n, outs = len(sp["slides"]), []
+    for i, sl in enumerate(sp["slides"]):
+        out = f'{sp["out_prefix"]}_{i + 1}.jpg'
+        render_static({"w": 1080, "h": 1350, "image": sl["image"], "headline": sl.get("headline", ""), "sub": sl.get("sub", ""),
+                       "pill": sp.get("pill") if i == 0 else None, "objectPosition": sl.get("objectPosition", "50% 50%"),
+                       "headSize": 84 if i == 0 else 72, "counter": f"{i + 1}/{n}", "out": out})
+        outs.append(out)
+    return {"out": outs}
 
 
 if __name__ == "__main__":
