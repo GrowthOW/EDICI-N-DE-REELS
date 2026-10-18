@@ -1,6 +1,6 @@
 # Contexto Fábrica de contenidos Orbis Ways (leer entero)
 
-Orbis Ways: agencia de viajes de senderismo autoguiado (walking holidays) y Camino de Santiago. Incluye alojamientos rurales de calidad, TRANSPORTE DE EQUIPAJE de etapa a etapa (el cliente camina solo con mochila de día ligera), asistencia 24/7 y documentación/app de ruta. Lema exacto: «Walk it, Ride it, Live it». Web: orbisways.com.
+Orbis Ways: agencia de viajes de senderismo autoguiado (walking holidays) y Camino de Santiago. Incluye alojamientos rurales de calidad, TRANSPORTE DE EQUIPAJE de etapa a etapa (el cliente camina solo con mochila de día ligera), asistencia 24/7 y documentación/app de ruta. Lema exacto: «Walk it, Ride it, Live it». Web: orbisways.com (NO va en las piezas orgánicas: ver abajo).
 REGLA GENERAL: todo busca acelerar el crecimiento de la facturación. Prioriza rutas y mercados que más facturan.
 
 ## Público
@@ -13,10 +13,21 @@ Personas de 50-65 años, mejor en pareja, activas, que caminan 15-25 km/día con
 - Año Santo Xacobeo 2027: gran oportunidad (pipeline 2027 +45% vs año pasado). Orbis NO compra cupos por adelantado: no prometer "plazas reservadas"; sí avisar de fechas con alta demanda.
 
 ## Formatos que hay que entregar (por idioma y día)
-- 3 REELS verticales 1080x1920, 12-25 s (se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels con copy adaptado a cada canal).
-- 3 posts ESTÁTICOS Instagram 1080x1350.
-- 3 posts Facebook (imagen 1080x1350 o 1200x630) — tono más informativo, público algo mayor.
-- 3 posts LinkedIn 1200x1200 o 1200x627 — tono profesional (datos del sector, sostenibilidad, Año Santo, turismo lento), sin vender agresivo.
+- 3 REELS verticales 1080x1920, 12-25 s (se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels con copy adaptado a cada canal). Al menos 1 de cada tanda MULTIPANTALLA sencillo (`split` arriba/abajo, `triple` o `grid4`, con una etiqueta corta por pantalla).
+- 3 CARRUSELES de Instagram 1080x1350 (5-7 láminas; las imágenes fijas de Instagram van siempre en carrusel).
+- 3 posts Facebook (imagen 1080x1350) — tono más informativo, público algo mayor.
+- 3 posts LinkedIn 1200x1200 — tono profesional (datos del sector, sostenibilidad, Año Santo, turismo lento), sin vender.
+- STORIES de Instagram 1080x1920: 2 en imagen y 1 en vídeo, cada una con un sticker sugerido (encuesta, quiz, pregunta, deslizador). Texto arriba; abajo queda libre para el sticker y la respuesta.
+- 1 post COMPARANDO dos rutas parecidas (TMB vs West Highland Way, Portugués por la Costa vs Rota Vicentina, Cotswold Way vs South West Coast Path, Sarria vs Tui…): dos fotos, nombre y 2 datos verificables por ruta.
+
+## Redes orgánicas: nada de anuncio (Iván, 18 oct)
+- En las piezas (texto en pantalla, imagen y copy) NO va orbisways.com, ni «link in bio», ni logo, ni cartela final de marca, ni el lema. El reel termina en su último plano con un fundido corto.
+- La ruta va como etiqueta de ubicación discreta (chincheta), como las de la propia red, no como pill de marca.
+- Nada de llamadas de venta («reserva», «pide fechas», «plazas», «book now»…). CTA solo suave: guardar, compartir, comentar, responder la story.
+- Fotos y vídeo de calidad aceptable siempre: solo clips HD/4K de la biblioteca (para fotos fijas, fotogramas de clips de 1920 px o más); nada oscuro, borroso ni con marca de agua.
+
+## Alimentarse de las salas
+Cada tanda parte de los hallazgos de TODAS las salas del Centro (colección `findings`: social, viral, instagram, tiktok, youtube, facebook, linkedin, community, competencia, seo, product, pr, cro, council). Cada pieza cita en `justification.findings` los ids en que se apoya.
 
 ## Estilo de las piezas
 - Formatos SENCILLOS que funcionan en búsqueda y en feed: p.ej. pantalla partida arriba/abajo comparando dos cosas, "3 cosas que…", "lo que nadie te cuenta de…", "cuánto cuesta / cuántos km", POV caminando, antes/después, mapa de etapas, pregunta-respuesta de búsqueda real ("¿se puede hacer el Camino sin cargar mochila?").

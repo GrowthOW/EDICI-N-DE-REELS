@@ -4,8 +4,14 @@ Lo que Iván pidió (18 oct 2026): propuestas **finales** (MP4 e imágenes listo
 nunca a medias, para cada mercado e idioma (EN, ES, DE). Cada día y por idioma: **3 reels**
 (se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels), **3 carruseles de
 Instagram** (5-7 láminas: portada con gancho, una idea por lámina y cierre suave para
-guardar/compartir; formato `ig_carousel`), **3 imágenes de Facebook** y **3 de LinkedIn**. Iván las revisa en la sala de la Fábrica
-del Centro de Control, descarga las que le gustan y pide cambios en la propia pieza.
+guardar/compartir; formato `ig_carousel`), **3 imágenes de Facebook** y **3 de LinkedIn**; además
+(Iván, 18 oct) **3 stories** (2 en imagen `story` y 1 en vídeo `story_video`, con sticker sugerido) y
+**1 comparativa** de dos rutas parecidas (`compare`). Al menos un reel de cada tanda es **multipantalla**.
+Iván las revisa en la sala de la Fábrica del Centro de Control (pestañas Reels, Stories, Instagram,
+Facebook, LinkedIn…), descarga las que le gustan y pide cambios en la propia pieza.
+
+Son piezas para redes **orgánicas**: sin web, sin logo, sin cartela final y sin tono de anuncio
+(detalle en `CONTEXTO.md`, «Redes orgánicas»).
 
 Reglas de contenido: `CONTEXTO.md` (léelo entero; manda sobre cualquier idea propia).
 
@@ -13,7 +19,7 @@ Reglas de contenido: `CONTEXTO.md` (léelo entero; manda sobre cualquier idea pr
 
 | Paso | Herramienta |
 |---|---|
-| Montaje | `render.py` (reel 1080x1920 y estáticos, textos HTML reales con QA de solapes y zona segura) |
+| Montaje | `render.py` (reels y stories 1080x1920, también multipantalla; carruseles, estáticos y comparativas; textos HTML reales con QA de solapes y zona segura; etiqueta de ubicación en vez de pill; sin cartela final) |
 | Producción en lote | `produce.py <LANG> <brief.json> <selection.json> <media_dir> <out_dir> <fecha>` |
 | Shutterstock | `sst.py` (licencias con tope de 90/día; redescarga gratis de lo ya licenciado, en 4K si existe) |
 | Fichas de la sala | `docs_build.py <assets.json> <out_dir> <manifest.json>...` |
@@ -56,16 +62,18 @@ del catálogo marcada «Unlimited»): da «outside of your collection» siempre.
 ## Producción diaria (rutina «Fábrica»)
 
 1. Por idioma, un subagente estratega (Agent) con `CONTEXTO.md`, `biblioteca/catalog.json`,
-   la facturación por ruta y mercado (council/baseline del Centro) y lo que ya hay en la
-   sala de los últimos 14 días (para no repetir idea ni clip). Investiga con WebSearch
-   (tendencias del país, búsquedas, competencia; cita URL) y escribe `briefs/<lang>.json`
-   y `selection/<lang>.json` con el formato de la última tanda (ver un doc
-   `calendar/fab-*`: campos `brief` y `selection`). 12 piezas: 3 reel, 3 ig_static, 3 fb,
-   3 linkedin; ~1 de cada 3 de producto.
+   la facturación por ruta y mercado (council/baseline del Centro), **los hallazgos de todas las
+   salas** (colección `findings` del Centro: léela entera con ArtifactData `list` + `out_dir` y
+   pásale un resumen) y lo que ya hay en la sala de los últimos 14 días (para no repetir idea ni
+   clip). Investiga con WebSearch (tendencias del país, búsquedas, competencia; cita URL) y
+   escribe `briefs/<lang>.json` y `selection/<lang>.json` (formatos abajo). 17 piezas: 3 reel
+   (uno multipantalla), 3 ig_carousel, 3 fb, 3 linkedin, 2 story, 1 story_video, 1 compare;
+   ~1 de cada 3 de producto. Cada pieza cita en `justification.findings` los hallazgos usados.
 2. Baja los clips elegidos con `sst.py` (4K) a `media/video/`.
 3. `produce.py` por idioma con la fecha del día siguiente.
-4. **Revisión obligatoria**: mira con Read la hoja `_sheet.jpg` de cada reel y cada estático
-   (encuadre, mochilas, oscuridad, textos). Corrige y vuelve a montar lo que falle.
+4. **Revisión obligatoria**: mira con Read la hoja `_sheet.jpg` de cada reel y story en vídeo y
+   cada JPG final (encuadre, mochilas, oscuridad, nitidez, textos, que no aparezca la web).
+   Corrige y vuelve a montar lo que falle.
 5. Sube los archivos finales con Artifact (`action: publish`, `url` del Centro,
    `asset: true`, `file_paths` de hasta 25) y guarda `{ruta local: assetId}` en `assets.json`.
 6. `docs_build.py` y escribe las fichas con ArtifactData `batch` (lotes de 50). Añade a cada
@@ -81,3 +89,17 @@ Una ficha con `feedback` pendiente (`done: false`) y `agent: "fabrica-v2"`:
    misma pieza** (`briefId` igual en los cuatro canales del reel): `files` nuevos,
    `version` +1, `brief`/`selection` nuevos, `status: "propuesta"`, y en el feedback
    `done: true`, `reply` (qué has cambiado en una frase) y `version` nueva.
+
+## Formatos del brief y la selección
+
+| `format` | Brief | Selección | Ficha |
+|---|---|---|---|
+| `reel` | `shots[{dur, description, labels?}]`, `textBlocks[{start,end,text}]` (máx. 3) | `shots[{videoId, ss, dur, cropx}]` o multipantalla `{layout: split\|triple\|grid4, dur, panels[{videoId, ss, cropx, cropy}], labels[…]}` | 4 fichas: instagram/tiktok/youtube/facebook `-reelN` |
+| `story_video` | como `reel` + `sticker{type, text, options[]}` | como `reel` | instagram `Story`, `-storyN` |
+| `story` | `overlay{headline, sub}`, `sticker{…}` | `image{fromVideo, at, objectPosition}` | instagram `Story`, `-storyN` |
+| `ig_carousel` | `slides[{headline, sub}]` (5-7) | `slides[{fromVideo, at, objectPosition}]` | instagram `Carrusel`, `-N` |
+| `fb` / `linkedin` | `overlay{headline, sub}` | `image{fromVideo, at, objectPosition}` | `Post`, `-N` |
+| `compare` | `compare{headline, vs, a{name, facts[2]}, b{…}}`, `channel` | `compare{a{fromVideo, at, objectPosition}, b{…}}` | `Comparativa`, `-cmpN` |
+
+Las etiquetas de cada pantalla (`labels`) dicen el lugar real que se ve, cortas (≤ 18 caracteres en
+`grid4`). Si `ss + dur` se sale del clip, `render.py` adelanta el tramo.

@@ -27,20 +27,26 @@ ROUTES = [  # (patrón en el nombre de la ruta, {idioma: etiqueta corta para la 
     (r"ingl[ée]s|english way|englischer", {"ES": "Camino Inglés", "EN": "English Way", "DE": "Englischer Jakobsweg"}),
     (r"primitivo|primitive", {"ES": "Camino Primitivo", "EN": "Camino Primitivo", "DE": "Camino Primitivo"}),
 ]
-STATIC = {"ig_carousel": ("instagram", "Carrusel", 1080, 1350), "ig_static": ("instagram", "Post", 1080, 1350), "fb": ("facebook", "Post", 1080, 1350), "linkedin": ("linkedin", "Post", 1200, 1200)}
+STATIC = {"ig_carousel": ("instagram", "Carrusel", 1080, 1350), "ig_static": ("instagram", "Post", 1080, 1350),
+          "fb": ("facebook", "Post", 1080, 1350), "linkedin": ("linkedin", "Post", 1200, 1200),
+          "story": ("instagram", "Story", 1080, 1920), "compare": (None, "Comparativa", 1080, 1350)}
 REEL_CHANNELS = [("instagram", "Reel", "instagram"), ("tiktok", "Vídeo", "tiktok"), ("youtube", "Short", "youtube"), ("facebook", "Reel", "facebook")]
 TIMES = ["09:00", "13:30", "19:00"]
 MARKET = {"ES": "España", "EN": "UK+US", "DE": "DACH"}
+# id de la ficha por formato (los cuatro primeros mantienen el esquema de la primera tanda)
+SUFFIX = {"ig_carousel": "", "ig_static": "", "fb": "", "linkedin": "", "story": "story", "story_video": "story", "compare": "cmp"}
 
 
-def pill_for(piece, lang):
-    if piece.get("pill"):
-        return piece["pill"]
+def tag_for(piece, lang):
+    """Etiqueta de ubicación de la pieza (nombre corto de la ruta en el idioma del público)."""
+    if piece.get("tag") or piece.get("pill"):
+        return piece.get("tag") or piece.get("pill")
     name = (piece.get("route") or "").lower()
     for pat, lab in ROUTES:
         if re.search(pat, name):
             return lab.get(lang) or lab.get("*")
     return None
+
 
 
 def caption_for(piece, channel):
@@ -64,6 +70,15 @@ def material_md(piece, channel):
         lines += ["**Texto en pantalla**", ""] + [f"- {t['start']}–{t['end']} s: {t['text']}" for t in piece["textBlocks"]] + [""]
     if piece.get("slides"):
         lines += ["**Láminas del carrusel**", ""] + [f"{i + 1}. {x.get('headline', '')}" + (f" — {x['sub']}" if x.get("sub") else "") for i, x in enumerate(piece["slides"])] + [""]
+    if piece.get("sticker"):
+        st = piece["sticker"]
+        lines += [f"**Sticker para añadir en Instagram ({st.get('type', 'encuesta')}):** {st.get('text', '')}" + (" · Opciones: " + " / ".join(st.get("options", [])) if st.get("options") else ""), ""]
+    if piece.get("compare"):
+        c = piece["compare"]
+        for side in ("a", "b"):
+            x = c.get(side) or {}
+            lines += [f"**{x.get('name', '')}:** " + " · ".join(x.get("facts", []))]
+        lines += [""]
     if piece.get("overlay"):
         lines += ["**Texto en la imagen:** " + " · ".join(x for x in [piece["overlay"].get("headline"), piece["overlay"].get("sub")] if x), ""]
     return "\n".join(lines).strip()
@@ -91,19 +106,63 @@ def docs_for(piece, lang, date, slot, files, cycle):
         "searchQuery": (piece.get("justification") or {}).get("search", "")[:160], "agent": "fabrica-v2", "cycle": cycle,
         "briefId": piece["id"], "files": files, "time": TIMES[slot % 3],
     }
+    day = date.replace("-", "")
+    fmt_key = piece["format"]
     out = []
-    if piece["format"] == "reel":
+    if fmt_key == "reel":
         for ch, fmt, cap in REEL_CHANNELS:
-            d = dict(base, channel=ch, format=fmt, design={"caption": caption_for(piece, cap)[:220], "route": pill_for(piece, lang) or "", "lang": lang},
+            d = dict(base, channel=ch, format=fmt, design={"caption": caption_for(piece, cap)[:220], "route": tag_for(piece, lang) or "", "lang": lang},
                      ready_material=material_md(piece, cap))
-            d["id"] = f"fab-{date.replace('-', '')}-{lang.lower()}-{ch}-reel{slot + 1}"
+            d["id"] = f"fab-{day}-{lang.lower()}-{ch}-reel{slot + 1}"
             out.append(d)
+        return out
+    if fmt_key == "story_video":
+        ch, fmt = "instagram", "Story"
     else:
-        ch, fmt, _, _ = STATIC[piece["format"]]
-        d = dict(base, channel=ch, format=fmt, design={"caption": caption_for(piece, ch)[:220], "route": pill_for(piece, lang) or "", "lang": lang},
-                 ready_material=material_md(piece, ch))
-        d["id"] = f"fab-{date.replace('-', '')}-{lang.lower()}-{ch}-{slot + 1}"
-        out.append(d)
+        ch, fmt, _, _ = STATIC[fmt_key]
+        ch = ch or piece.get("channel", "facebook")
+    d = dict(base, channel=ch, format=fmt, design={"caption": caption_for(piece, ch)[:220], "route": tag_for(piece, lang) or "", "lang": lang},
+             ready_material=material_md(piece, ch))
+    d["id"] = f"fab-{day}-{lang.lower()}-{ch}-{SUFFIX.get(fmt_key, '')}{slot + 1}"
+    out.append(d)
+    return out
+
+
+def clip(media, vid):
+    f = f"{media}/video/{vid}.mp4"
+    if not os.path.exists(f):
+        raise RuntimeError("sin licenciar " + str(vid))
+    return f
+
+
+def frame(media, im, out):
+    """Fotograma de un clip de la ruta ya licenciado (las fotos salen de clips 4K/HD: calidad aceptable siempre)."""
+    render.run(["ffmpeg", "-v", "error", "-y", "-ss", str(im.get("at", 1.0)), "-i", clip(media, im["fromVideo"]), "-frames:v", "1", "-q:v", "2", out])
+    return out
+
+
+def build_shots(piece, s, media):
+    """Planos del reel. Un plano puede ser multipantalla: layout split/triple/grid4 con panels [{videoId, ss, cropx, cropy}]."""
+    shots = []
+    for i, sh in enumerate(s.get("shots", [])):
+        bs = piece.get("shots") or []
+        b = bs[i] if i < len(bs) else {}
+        if sh.get("panels"):
+            panels = [{"file": clip(media, p["videoId"]), "ss": p.get("ss", 0), "cropx": p.get("cropx", 0.5), "cropy": p.get("cropy", 0.5)}
+                      for p in sh["panels"]]
+            shots.append({"layout": sh.get("layout", "split"), "panels": panels, "dur": sh.get("dur", 3.5),
+                          "labels": sh.get("labels") or b.get("labels")})
+            continue
+        if sh.get("missing") or not sh.get("videoId"):
+            raise RuntimeError("falta plano " + str(i + 1))
+        shots.append({"file": clip(media, sh["videoId"]), "ss": sh.get("ss", 0), "dur": sh.get("dur", 3.5), "cropx": sh.get("cropx", 0.5)})
+    return shots
+
+
+def shot_clips(s):
+    out = []
+    for sh in s.get("shots", []):
+        out += [str(p["videoId"]) for p in sh["panels"]] if sh.get("panels") else [str(sh.get("videoId"))]
     return out
 
 
@@ -116,17 +175,13 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
     for piece in brief["pieces"]:
         s = selmap.get(piece["id"], {})
         key = piece["format"]
-        slot = slots.get(key, 0); slots[key] = slot + 1
+        # reel y story_video comparten numeración con su canal (reelN / storyN)
+        sk = "story" if key == "story_video" else key
+        slot = slots.get(sk, 0); slots[sk] = slot + 1
+        tag = tag_for(piece, lang)
         try:
-            if piece["format"] == "reel":
-                shots = []
-                for i, sh in enumerate(s.get("shots", [])):
-                    if sh.get("missing") or not sh.get("videoId"):
-                        raise RuntimeError("falta plano " + str(i + 1))
-                    f = f"{media}/video/{sh['videoId']}.mp4"
-                    if not os.path.exists(f):
-                        raise RuntimeError("sin licenciar " + sh["videoId"])
-                    shots.append({"file": f, "ss": sh.get("ss", 0), "dur": sh.get("dur", 3.5), "cropx": sh.get("cropx", 0.5)})
+            if key in ("reel", "story_video"):
+                shots = build_shots(piece, s, media)
                 texts = [dict(t) for t in piece.get("textBlocks", [])[:3]]
                 body = sum(x["dur"] for x in shots)
                 planned = sum(x.get("dur", 0) for x in piece.get("shots", [])) or body
@@ -135,34 +190,42 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     t["start"] = round(t["start"] * k, 2)
                     t["end"] = round(min(t["end"] * k, body - 0.45), 2)
                 out = f"{out_dir}/{piece['id']}.mp4"
-                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "pill": pill_for(piece, lang), "out": out})
+                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "out": out,
+                                        "kind": "story" if key == "story_video" else "reel"})
                 files = [{"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4"},
                          {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "sheet": r["sheet"], "files": files,
-                                 "docs": docs_for(piece, lang, date, slot, files, cycle), "clips": [x["videoId"] for x in s["shots"]]})
-            elif piece["format"] == "ig_carousel":
+                                 "docs": docs_for(piece, lang, date, slot, files, cycle), "clips": shot_clips(s)})
+            elif key == "ig_carousel":
                 slides = []
                 for i, (txt, im) in enumerate(zip(piece.get("slides", []), s.get("slides", []))):
-                    src = f"{media}/video/{im['fromVideo']}.mp4"
-                    if not os.path.exists(src):
-                        raise RuntimeError("sin licenciar " + str(im["fromVideo"]))
-                    fr = f"{out_dir}/{piece['id']}_frame{i + 1}.jpg"
-                    render.run(["ffmpeg", "-v", "error", "-y", "-ss", str(im.get("at", 1.0)), "-i", src, "-frames:v", "1", "-q:v", "2", fr])
+                    fr = frame(media, im, f"{out_dir}/{piece['id']}_frame{i + 1}.jpg")
                     slides.append({"image": fr, "headline": txt.get("headline", ""), "sub": txt.get("sub", ""), "objectPosition": im.get("objectPosition", "50% 50%")})
                 if len(slides) < 3:
                     raise RuntimeError("carrusel con menos de 3 láminas")
-                r = render.render_carousel({"slides": slides, "pill": pill_for(piece, lang), "out_prefix": f"{out_dir}/{piece['id']}"})
+                r = render.render_carousel({"slides": slides, "tag": tag, "out_prefix": f"{out_dir}/{piece['id']}"})
                 files = [{"kind": "image", "label": f"Lámina {i + 1}", "local": f, "name": os.path.basename(f)} for i, f in enumerate(r["out"])]
                 manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
                                  "clips": [str(x["fromVideo"]) for x in s.get("slides", [])]})
+            elif key == "compare":
+                c, cs = piece.get("compare") or {}, s.get("compare") or {}
+                sides = {}
+                for side in ("a", "b"):
+                    im = cs.get(side) or {}
+                    if not im.get("fromVideo"):
+                        raise RuntimeError("falta imagen " + side)
+                    fr = frame(media, im, f"{out_dir}/{piece['id']}_{side}.jpg")
+                    sides[side] = {"image": fr, "name": (c.get(side) or {}).get("name", ""), "facts": (c.get(side) or {}).get("facts", []),
+                                   "objectPosition": im.get("objectPosition", "50% 50%")}
+                out = f"{out_dir}/{piece['id']}.jpg"
+                render.render_compare({"w": 1080, "h": 1350, "headline": c.get("headline", ""), "vs": c.get("vs", "vs"), "out": out, **sides})
+                files = [{"kind": "image", "label": "Imagen final", "local": out, "name": f"{piece['id']}.jpg"}]
+                manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
+                                 "clips": [str(cs[x]["fromVideo"]) for x in ("a", "b")]})
             else:
                 img = (s.get("image") or {})
-                if img.get("fromVideo"):  # fotograma de un clip de la ruta ya licenciado
-                    src = f"{media}/video/{img['fromVideo']}.mp4"
-                    if not os.path.exists(src):
-                        raise RuntimeError("sin licenciar " + img["fromVideo"])
-                    f = f"{out_dir}/{piece['id']}_frame.jpg"
-                    render.run(["ffmpeg", "-v", "error", "-y", "-ss", str(img.get("at", 1.0)), "-i", src, "-frames:v", "1", "-q:v", "2", f])
+                if img.get("fromVideo"):
+                    f = frame(media, img, f"{out_dir}/{piece['id']}_frame.jpg")
                     img["imageId"] = "v" + str(img["fromVideo"])
                 elif img.get("missing") or not img.get("imageId"):
                     raise RuntimeError("falta imagen")
@@ -170,11 +233,12 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     f = f"{media}/image/{img['imageId']}.jpg"
                     if not os.path.exists(f):
                         raise RuntimeError("sin licenciar " + img["imageId"])
-                ch, fmt, w, h = STATIC[piece["format"]]
+                ch, fmt, w, h = STATIC[key]
                 ov = piece.get("overlay") or {}
                 out = f"{out_dir}/{piece['id']}.jpg"
                 render.render_static({"w": w, "h": h, "image": f, "headline": ov.get("headline", ""), "sub": ov.get("sub", ""),
-                                      "pill": pill_for(piece, lang), "objectPosition": img.get("objectPosition", "50% 50%"), "out": out})
+                                      "tag": tag, "objectPosition": img.get("objectPosition", "50% 50%"), "out": out,
+                                      "story": key == "story", "headSize": ov.get("headSize", 78)})
                 files = [{"kind": "image", "label": "Imagen final", "local": out, "name": f"{piece['id']}.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle), "image": img["imageId"]})
         except Exception as ex:
