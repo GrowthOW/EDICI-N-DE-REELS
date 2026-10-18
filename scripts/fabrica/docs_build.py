@@ -9,6 +9,21 @@ Escribe un JSON por ficha en out_dir y batches.json con lotes de hasta 50 escrit
 import json, os, sys
 
 
+def explain(d):
+    """La explicación va siempre al principio de la ficha (regla de Iván, 16 oct)."""
+    j = d.get("justification") or {}
+    tr = (j.get("trend") or {}).get("name", "")
+    se = (j.get("search") or {}).get("signals", "")
+    parts = [("De qué va", j.get("channel")), ("Tendencia", tr), ("Qué se busca", se), ("Qué hacen otros", j.get("accounts")),
+             ("Por qué en este mercado", j.get("lang")), ("Impacto en negocio", j.get("text")),
+             ("Tipo", d.get("contentType")), ("Cómo busca interacción", d.get("engagement"))]
+    md = "\n\n".join(f"## {k}\n{v}" for k, v in parts if v)
+    src = [u for u in (d.get("sources") or []) if u]
+    if src:
+        md += "\n\n## Fuentes\n" + "\n".join(f"- [{u.split('//')[-1][:70]}]({u})" for u in src)
+    return md
+
+
 def main(assets_p, out_dir, *manifests):
     assets = json.load(open(assets_p))
     os.makedirs(out_dir, exist_ok=True)
@@ -28,6 +43,7 @@ def main(assets_p, out_dir, *manifests):
                 continue
             for d in m["docs"]:
                 doc = dict(d, files=files, ts=d.get("ts") or "2026-10-18T13:30:00Z")
+                doc["explain"] = explain(doc)
                 p = f"{out_dir}/{doc['id']}.json"
                 json.dump(doc, open(p, "w"), ensure_ascii=False)
                 writes.append({"op": "set", "collection": "calendar", "doc_id": doc["id"], "file_path": p})

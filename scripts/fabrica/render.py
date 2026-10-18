@@ -127,7 +127,7 @@ def render_reel(spec):
         cmd += ["-f", "lavfi", "-t", f"{total:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
         fc += ";[2:a]anull[a]"
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium",
-            "-crf", "21", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", "-t", f"{total:.3f}", spec["out"]]
+            "-crf", "21", "-maxrate", "5M", "-bufsize", "10M", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", "-t", f"{total:.3f}", spec["out"]]
     run(cmd)
     # hoja de fotogramas para QA visual
     sheet = spec["out"].rsplit(".", 1)[0] + "_sheet.jpg"
