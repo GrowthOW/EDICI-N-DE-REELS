@@ -70,16 +70,18 @@ def download(url, out):
     return os.path.exists(out) and os.path.getsize(out) > 10000
 
 
-def license_video(vid, outdir):
+def license_video(vid, outdir, license_id=None):
     os.makedirs(outdir, exist_ok=True)
     out = f"{outdir}/{vid}.mp4"
     if os.path.exists(out) and os.path.getsize(out) > 10000:
         return {"file": out, "cached": True}
-    lic = already_licensed("video", vid)
+    lic = license_id or already_licensed("video", vid)
     if lic:
-        d = api("POST", f"/videos/licenses/{lic}/downloads", {"size": "hd"})
-        if d.get("url") and download(d["url"], out):
-            return {"file": out, "relicensed": False, "license": lic}
+        # 4K si existe: al recortar a 9:16 un HD queda blando
+        for size in ("4k", "hd"):
+            d = api("POST", f"/videos/licenses/{lic}/downloads", {"size": size})
+            if d.get("url") and download(d["url"], out):
+                return {"file": out, "relicensed": False, "license": lic, "size": size}
     if count("video") >= CAP:
         return {"error": f"tope diario de {CAP} licencias de vídeo alcanzado"}
     d = api("POST", f"/videos/licenses?subscription_id={SUB}", {"videos": [{"video_id": str(vid), "size": "hd"}]})
@@ -135,6 +137,6 @@ if __name__ == "__main__":
     elif a[0] == "preview":
         print(json.dumps(preview_video(a[2], a[3], a[4])))
     elif a[0] == "video":
-        print(json.dumps(license_video(a[1], a[2])))
+        print(json.dumps(license_video(a[1], a[2], a[3] if len(a) > 3 else None)))
     elif a[0] == "image":
         print(json.dumps(license_image(a[1], a[2])))
