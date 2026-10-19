@@ -24,3 +24,4 @@ piezas/**/sheet*.jpg
 sources_raw/camino_drive/
 piezas/**/portada.png
 __pycache__/
+scripts/fabrica/_trabajo/

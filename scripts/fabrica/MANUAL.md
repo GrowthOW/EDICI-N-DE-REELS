@@ -59,6 +59,32 @@ Shutterstock a `_ENTRADA · deja aquí las descargas`. En cada ronda:
 4. Las vistas previas con marca de agua (`<id>-preview.mp4`) van a `_Vistas previas con marca
    de agua (no usar)`. Nunca borres nada del Drive ni cambies quién tiene acceso.
 
+## Almacén del Centro (Iván, 19 oct: «hazlo tú de forma automática»)
+
+El almacén de archivos del Centro tiene 1 GB y una tanda diaria completa ocupa unos 200 MB.
+En cada ronda, ANTES de subir nada:
+1. `Artifact list` con `scope: "assets"` (paginando con `after`): id, bytes y fecha de cada archivo.
+2. Ids en uso: busca `[0-9a-f]{32}` en la página (`index.html` del Centro, con Artifact `read`) y en
+   todas las colecciones de la base de datos (calendar, library, deliverables, actions, findings,
+   reputation, events, agents, cycles, debug, fabrica, biblioteca, council, calplan, crmcache,
+   trello, rondas), con ArtifactData `list` + `out_dir` dentro de la carpeta de trabajo.
+3. Borra con `Artifact action delete` (url del Centro, `path` = id) los archivos que no usa nada y
+   tienen más de 6 horas (los recientes pueden ser de una sesión en curso). Nunca borres un archivo
+   en uso ni filas de la base de datos.
+4. Si después quedan menos de 300 MB libres, retención por este orden hasta tener 300 MB:
+   a. archivos de fichas `descartada`;
+   b. archivos de propuestas de la Fábrica (`agent: fabrica-v2`, `status: propuesta`, sin
+      `feedback`) con más de 7 días.
+   La ficha se queda con su brief y su selección: pon `files: []` y
+   `archivado: {ts, motivo: "espacio"}`. Si Iván la quiere, la rutina «Indicaciones» la vuelve a
+   montar con `produce.py`. Nunca se tocan las fichas aprobadas, planificadas, listas, publicadas
+   ni las que tienen indicaciones de Iván.
+5. Apunta en `fabrica/estado.almacenMB` lo ocupado y, si hubo retención, qué fichas en `aviso`.
+
+Los JSON y archivos que pases a ArtifactData (`file_path`) o a Artifact (`file_paths`) tienen que
+estar dentro de la carpeta del repositorio (`scripts/fabrica/_trabajo/`, ignorada por git) o del
+scratchpad: fuera de ahí el envío pide aprobación y la rutina se queda parada (pasó el 19 oct).
+
 ## Qué clips puede descargar Iván
 
 Su plan («Unlimited», licencia `footage_standard`) solo permite una parte del catálogo, y ni la
