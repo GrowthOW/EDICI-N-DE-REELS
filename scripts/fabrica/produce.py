@@ -223,7 +223,7 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
         try:
             if key in ("reel", "story_video"):
                 shots = build_shots(piece, s, media)
-                texts = [dict(t) for t in piece.get("textBlocks", [])[:3]]
+                texts = [dict(t) for t in piece.get("textBlocks", [])[:4]]  # hasta 4 rótulos cortos
                 body = sum(x["dur"] for x in shots)
                 planned = sum(x.get("dur", 0) for x in piece.get("shots", [])) or body
                 k = body / planned  # si cambia el número o la duración de planos, los textos se reparten igual
