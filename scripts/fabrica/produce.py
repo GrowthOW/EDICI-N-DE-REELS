@@ -87,6 +87,17 @@ def material_md(piece, channel):
         lines += [""]
     if piece.get("overlay"):
         lines += ["**Texto en la imagen:** " + " · ".join(x for x in [piece["overlay"].get("headline"), piece["overlay"].get("sub")] if x), ""]
+    seo = piece.get("seo") or {}
+    if seo:  # SEO social (Iván, 19 oct): palabra clave por pieza y dónde va
+        lines += ["**SEO**", "", f"- Palabra clave: {seo.get('keyword', '')}"]
+        if seo.get("secondary"):
+            lines += ["- Secundarias: " + ", ".join(seo["secondary"])]
+        if seo.get("altText"):
+            alts = seo["altText"] if isinstance(seo["altText"], list) else [seo["altText"]]
+            lines += [f"- Texto alternativo {i + 1}: {a}" for i, a in enumerate(alts)]
+        if seo.get("source"):
+            lines += [f"- De dónde sale: {seo['source']}"]
+        lines += [""]
     return "\n".join(lines).strip()
 
 
@@ -112,6 +123,8 @@ def docs_for(piece, lang, date, slot, files, cycle):
         "searchQuery": (piece.get("justification") or {}).get("search", "")[:160], "agent": "fabrica-v2", "cycle": cycle,
         "briefId": piece["id"], "files": files, "time": TIMES[slot % 3],
     }
+    if piece.get("seo"):
+        base["seo"] = piece["seo"]
     day = date.replace("-", "")
     fmt_key = piece["format"]
     out = []

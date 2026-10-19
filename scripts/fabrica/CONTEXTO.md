@@ -27,6 +27,17 @@ Personas de 50-65 años, mejor en pareja, activas, que caminan 15-25 km/día con
 - Nada de llamadas de venta («reserva», «pide fechas», «plazas», «book now»…). CTA solo suave: guardar, compartir, comentar, responder la story.
 - Fotos y vídeo de calidad aceptable siempre: solo clips HD/4K de la biblioteca (para fotos fijas, fotogramas de clips de 1920 px o más); nada oscuro, borroso ni con marca de agua.
 
+## SEO social: obligatorio en cada pieza (Iván, 19 oct: «doy por hecho que el texto está todo priorizado por SEO»)
+Instagram, TikTok, YouTube, Facebook y LinkedIn son buscadores: leen el texto en pantalla, el copy, el título y el texto alternativo. Cada pieza lleva `seo`:
+- `keyword`: UNA palabra clave principal, como la busca la gente en ese país e idioma (transcreación, no traducción: «Camino desde Sarria», «Camino from Sarria», «Jakobsweg ab Sarria»). Sale de los hallazgos de la sala SEO del Centro, de `seo_keywords.json` o de búsquedas reales (autocompletado, «la gente también pregunta», foros), siempre citadas en `seo.source`.
+- `secondary`: 2-3 variantes o preguntas relacionadas.
+- `altText`: una frase descriptiva por imagen (o lámina), con la palabra clave si encaja de forma natural.
+- `ytTitle` en los reels: título de YouTube Shorts de 60 caracteres como máximo, con la palabra clave al principio.
+Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada si queda natural; en los primeros 125 caracteres del copy de cada canal; en el título y las dos primeras líneas de la descripción de YouTube; y en 1 de los 3-5 hashtags (1 de ruta, 1 de destino, 1-2 de nicho; nada de hashtags genéricos tipo #travel). Nunca forzada ni repetida: primero que se lea natural.
+
+## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
+En las piezas (texto en pantalla, láminas, copys, títulos y descripciones) NO se citan fuentes: nada de «según la Xunta», «(Oficina del Peregrino)», «Source: …», «according to…», «laut…», «je nach Quelle». Los datos se dan en primera persona de experto («Desde Sarria salen 3 de cada 10 peregrinos», «Unos 10.000 m de desnivel positivo»). Las fuentes siguen siendo obligatorias, pero solo DENTRO de la ficha (justification, sources, explain), para comprobar que el dato es real; nunca en lo que se publica. Si un dato es dudoso o varía según quién lo mida, se redondea («unos», «más de») en lugar de citar.
+
 ## Alimentarse de las salas
 Cada tanda parte de los hallazgos de TODAS las salas del Centro (colección `findings`: social, viral, instagram, tiktok, youtube, facebook, linkedin, community, competencia, seo, product, pr, cro, council). Cada pieza cita en `justification.findings` los ids en que se apoya.
 
@@ -37,7 +48,7 @@ Cada tanda parte de los hallazgos de TODAS las salas del Centro (colección `fin
 - Hoteles, habitaciones y desayunos: NUNCA de banco de imágenes (si una pieza los necesita, descártala).
 - Material SOLO de la ruta real que se nombra (nada del Camino en otras rutas, nada de otra costa haciéndose pasar por la Rota Vicentina).
 - Textos en cada idioma: transcreación nativa, no traducción literal. Nombres de ruta sin traducir cuando sea nombre propio (West Highland Way, Rota Vicentina, Cotswold Way, Tour du Mont Blanc).
-- Sin datos inventados: precios, km o etapas solo si son reales y verificables (km de las rutas oficiales son públicos; precios de Orbis NO los des si no los tienes).
+- Sin datos inventados: precios, km o etapas solo si son reales y verificables (km de las rutas oficiales son públicos; precios de Orbis NO los des si no los tienes). La fuente se guarda en la ficha, no se cita en la pieza.
 
 ## Regla reforzada por Iván (18 oct)
 - PRIORIZAR SIEMPRE REALISMO Y NATURALIDAD: planos que parezcan grabados por un viajero real.
