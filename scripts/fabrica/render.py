@@ -10,7 +10,14 @@ capturados con Playwright y comprobados con QA (no se pisan, zona segura).
 Redes orgánicas (Iván, 18 oct): sin web, sin logo y sin cartela final de marca.
 La ruta va como etiqueta de ubicación discreta, como las de la propia red.
 """
-import html, json, os, subprocess, sys, tempfile
+import atexit, html, json, os, shutil, subprocess, sys, tempfile
+
+
+def workdir(prefix):
+    """Carpeta temporal de montaje que se borra al terminar (dejaba GB de restos en /tmp)."""
+    d = tempfile.mkdtemp(prefix=prefix)
+    atexit.register(shutil.rmtree, d, True)
+    return d
 
 ENGINE = os.path.dirname(os.path.abspath(__file__))
 STYLE = os.path.join(ENGINE, "..", "orbisways_style")
@@ -57,9 +64,20 @@ def tag_html(text, size, cls="t tag", ident="tag"):
             f'font:800 {size}px/1 Manrope;white-space:nowrap">{PIN.format(s=int(size * 1.05))}<span>{esc(text)}</span></div>')
 
 
+def badge_html(text, size, ident="badge"):
+    """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). Es el único acento amarillo de la pieza
+    que permite el brandbook (#FFDA00 con texto #222), en Manrope 800 y mayúsculas."""
+    if not text:
+        return ""
+    return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:#FFDA00;color:#222;'
+            f'padding:{int(size * .34)}px {int(size * .62)}px {int(size * .3)}px;border-radius:{int(size * .3)}px;'
+            f'font:800 {size}px/1 Manrope;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
+            f'box-shadow:0 4px 18px rgba(0,0,0,.28)">{esc(text)}</div>')
+
+
 # ---------- reels y stories en vídeo ----------
 
-def text_html(text, tag=None, labels=None, layout="full", top=330):
+def text_html(text, tag=None, labels=None, layout="full", top=330, badge=None):
     """Bloque de texto del reel (y etiquetas de cada pantalla en los formatos multipantalla)."""
     lab = ""
     if labels:
@@ -87,7 +105,7 @@ html,body{{margin:0;width:{W}px;height:{H}px;background:transparent;overflow:hid
 .t{{color:#fff}}
 #txt{{font:800 70px/1.08 Manrope;text-shadow:0 3px 3px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.45)}}
 .grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.14) 55%,rgba(0,0,0,0))}}
-</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{txt}{tag_html(tag, 38) if tag else ''}</div>{lab}</body></html>"""
+</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 38) if tag else ''}</div>{lab}</body></html>"""
 
 
 def panel_geom(layout):
@@ -101,6 +119,32 @@ def panel_geom(layout):
         w, h = (W - GAP) // 2, (H - GAP) // 2
         return [(w, h)] * 4
     return [(W, H)]
+
+
+# Sin cámara lenta (Iván, 19 oct: «queda muy de banco de imagen»): los planos de dron, travelling
+# o paneo de stock vienen ralentizados y se aceleran; la gente andando va a velocidad real.
+AERIAL_SPEED = 1.6
+_CATALOG = None
+
+
+def clip_speed(p):
+    """Velocidad del plano: `speed` del brief si la trae; si no, 1.6 para dron/paneo y 1 para el resto."""
+    if p.get("speed"):
+        return float(p["speed"])
+    global _CATALOG
+    if _CATALOG is None:
+        _CATALOG = {}
+        for name in ("catalog.json", "nuevos_18oct.json"):
+            try:
+                for c in json.load(open(os.path.join(ENGINE, "biblioteca", name))):
+                    _CATALOG[str(c.get("id"))] = c
+            except (OSError, ValueError):
+                pass
+    c = _CATALOG.get(os.path.splitext(os.path.basename(p["file"]))[0], {})
+    scene = (c.get("scene") or "").lower()
+    if c.get("aerial") or any(w in scene for w in ("dron", "travelling", "paneo", "aérea", "aerea")):
+        return AERIAL_SPEED
+    return 1.0
 
 
 def segment(shot, out, work, idx):
@@ -118,9 +162,13 @@ def segment(shot, out, work, idx):
               f"crop={pw}:{ph}:(iw-{pw})*{cx}:(ih-{ph})*{cy},fps=30,setsar=1,format=yuv420p")
         # si el tramo pedido se sale del clip, se adelanta para que el plano dure lo previsto
         clip_dur = float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", p["file"]]).strip() or 0)
-        ss = max(0.0, min(float(p.get("ss", 0)), clip_dur - shot["dur"] - 0.1))
-        run(["ffmpeg", "-v", "error", "-y", "-ss", f"{ss:.2f}", "-t", str(shot["dur"]), "-i", p["file"],
-             "-vf", vf, "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", po])
+        sp = clip_speed(p)
+        if clip_dur and shot["dur"] * sp > clip_dur - 0.1:  # el clip no da para acelerar tanto
+            sp = max(1.0, (clip_dur - 0.1) / shot["dur"])
+        src = shot["dur"] * sp
+        ss = max(0.0, min(float(p.get("ss", 0)), clip_dur - src - 0.1))
+        run(["ffmpeg", "-v", "error", "-y", "-ss", f"{ss:.2f}", "-t", f"{src:.3f}", "-i", p["file"],
+             "-vf", f"setpts=PTS/{sp:.3f}," + vf, "-t", str(shot["dur"]), "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", po])
         parts.append(po)
     if layout == "full":
         os.replace(parts[0], out)
@@ -139,7 +187,7 @@ def segment(shot, out, work, idx):
 
 def render_reel(spec):
     """Reel o story en vídeo 1080x1920. Sin cartela final: termina en el último plano con un fundido corto."""
-    work = tempfile.mkdtemp(prefix="reel_")
+    work = workdir("reel_")
     story = spec.get("kind") == "story"
     safe = STORY_SAFE if story else REEL_SAFE
     # etiquetas por pantalla: las del primer tramo multipantalla se mantienen mientras dure ese formato
@@ -153,7 +201,8 @@ def render_reel(spec):
         mid = (tb["start"] + tb["end"]) / 2
         seg = next((x for x in seg_times if x[0] <= mid < x[1]), seg_times[-1])
         p = f"{work}/t{i}.html"
-        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else 330))
+        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else 330,
+                                     badge=spec.get("badge")))
         jobs.append({"html": p, "out": f"{work}/t{i}.png", "w": W, "h": H, "safe": safe})
         overlays.append((f"{work}/t{i}.png", tb["start"], tb["end"]))
     # tramos multipantalla sin texto propio: sus etiquetas también se ven
@@ -230,11 +279,11 @@ html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}
 #head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Manrope;text-shadow:0 2px 18px rgba(0,0,0,.35)}}
 #sub{{font:700 {int(40 * k)}px/1.22 LS;-webkit-text-stroke:{max(1, int(2 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 12px rgba(0,0,0,.55)}}
 </style></head><body><img id="bg" src="{sp["image"]}"><div class="grad"></div>
-<div class="box">{tag_html(sp.get("tag"), int(34 * k))}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>{counter}</body></html>"""
+<div class="box">{badge_html(sp.get("badge"), int(44 * k))}{tag_html(sp.get("tag"), int(34 * k))}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>{counter}</body></html>"""
 
 
 def render_static(sp):
-    work = tempfile.mkdtemp(prefix="st_")
+    work = workdir("st_")
     p = f"{work}/s.html"
     open(p, "w").write(static_html(sp))
     png = f"{work}/s.png"
@@ -251,7 +300,8 @@ def render_carousel(sp):
     for i, sl in enumerate(sp["slides"]):
         out = f'{sp["out_prefix"]}_{i + 1}.jpg'
         render_static({"w": 1080, "h": 1350, "image": sl["image"], "headline": sl.get("headline", ""), "sub": sl.get("sub", ""),
-                       "tag": sp.get("tag") if i == 0 else None, "objectPosition": sl.get("objectPosition", "50% 50%"),
+                       "tag": sp.get("tag") if i == 0 else None, "badge": sp.get("badge") if i == 0 else None,
+                       "objectPosition": sl.get("objectPosition", "50% 50%"),
                        "headSize": 84 if i == 0 else 72, "counter": f"{i + 1}/{n}", "out": out})
         outs.append(out)
     return {"out": outs}
@@ -289,7 +339,7 @@ html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
 
 
 def render_compare(sp):
-    work = tempfile.mkdtemp(prefix="cmp_")
+    work = workdir("cmp_")
     p = f"{work}/c.html"
     open(p, "w").write(compare_html(sp))
     png = f"{work}/c.png"

@@ -126,6 +126,11 @@ lo que haga falta y apunta en `fabrica/descargas` cuáles bajó y cuáles no.
    `asset: true`, `file_paths` de hasta 25) y guarda `{ruta local: assetId}` en `assets.json`.
 6. `docs_build.py` y escribe las fichas con ArtifactData `batch` (lotes de 50). Añade a cada
    ficha `brief` y `selection` (con `licenseId` en cada plano) para poder rehacerla.
+7. **Prioridad** (Iván, 19 oct: «ordenar las publicaciones de más a menos importante en todos los
+   canales y añadir a la justificación por qué»): vuelca las fichas activas con ArtifactData `list`
+   + `out_dir`, corre `python3 prioridad.py <carpeta>/calendar <salida.json>` y escribe `priority`
+   en cada ficha (`update` + `if_version` con la versión que da el listado, no el campo `version`
+   de la ficha). El Centro ordena por `priority.score`.
 
 ## Cambios que pide Iván (rutina «Indicaciones»)
 

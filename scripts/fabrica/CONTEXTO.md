@@ -10,7 +10,7 @@ Personas de 50-65 años, mejor en pareja, activas, que caminan 15-25 km/día con
 - EN (UK+US, 8,3 M€): Camino Portugués de la Costa completo desde Oporto (705k), Camino desde Sarria 7/8/11 días (1,1M), Rota Vicentina Fisherman's Trail (247k), Camino Francés completo desde St-Jean (246k), Cotswold Way 12 días (239k), Portugués Costa desde Vigo/Baiona (586k), Tour du Mont Blanc (385k), West Highland Way 9 días (165k), Portugués desde Tui (154k).
 - ES (1,9 M€, 83% Camino): Camino desde Sarria 7/8 días (592k), Portugués Costa desde Baiona/Vigo/Oporto (228k), Portugués desde Tui (139k), Sarria 11 días, Camino Inglés desde Ferrol, Lebaniego, Primitivo desde Oviedo, West Highland Way.
 - DE (2,5 M€, el walking pesa más que el Camino): Rota Vicentina Fischerpfad (377k + 150k), Portugiesischer Küstenweg ab Porto (246k) / ab Baiona / Vigo, Jakobsweg ab Sarria, West Highland Way 9-10 Tage (129k), South West Coast Path St Ives–Penzance (69k), Französischer Jakobsweg komplett.
-- Año Santo Xacobeo 2027: gran oportunidad (pipeline 2027 +45% vs año pasado). Orbis NO compra cupos por adelantado: no prometer "plazas reservadas"; sí avisar de fechas con alta demanda.
+- Año Santo Xacobeo 2027 (en español SIEMPRE «Año Santo Xacobeo 2027», nunca solo «Año Santo 2027»; Iván, 19 oct). Las piezas que tratan de él llevan la etiqueta amarilla de evento encima del titular (produce.py, `badge_for`). Gran oportunidad (pipeline 2027 +45% vs año pasado). Orbis NO compra cupos por adelantado: no prometer "plazas reservadas"; sí avisar de fechas con alta demanda.
 
 ## Formatos que hay que entregar (por idioma y día)
 - 3 REELS verticales 1080x1920, 12-25 s (se publican en Instagram Reels, TikTok, YouTube Shorts y Facebook Reels con copy adaptado a cada canal). Al menos 1 de cada tanda MULTIPANTALLA sencillo (`split` arriba/abajo, `triple` o `grid4`, con una etiqueta corta por pantalla).
@@ -37,6 +37,14 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 
 ## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
 En las piezas (texto en pantalla, láminas, copys, títulos y descripciones) NO se citan fuentes: nada de «según la Xunta», «(Oficina del Peregrino)», «Source: …», «according to…», «laut…», «je nach Quelle». Los datos se dan en primera persona de experto («Desde Sarria salen 3 de cada 10 peregrinos», «Unos 10.000 m de desnivel positivo»). Las fuentes siguen siendo obligatorias, pero solo DENTRO de la ficha (justification, sources, explain), para comprobar que el dato es real; nunca en lo que se publica. Si un dato es dudoso o varía según quién lo mida, se redondea («unos», «más de») en lugar de citar.
+
+## Orden de publicación: de más a menos importante (Iván, 19 oct)
+En la sala, las piezas de cada canal se ordenan de izquierda a derecha por prioridad, y cada ficha explica por qué en `priority` {score, driver, why, factors}: lo calcula `prioridad.py` con cuatro palancas y lo pinta el Centro («Nº 1 · motivo» y en la Justificación):
+- **Volumen de búsqueda** de la palabra clave en ese mercado.
+- **Tipo de producto**: lo que más factura en ese mercado (cifras de Zoho de arriba).
+- **Trend que ya ha funcionado** en otra cuenta (con métrica en `justification.trend.examples`).
+- **Momento**: Año Santo Xacobeo 2027, temporada de la ruta.
+El motivo dice cuál pesa más y cuál le sigue, con el dato. Si ninguna palanca destaca, lo dice («Sin palanca fuerte»).
 
 ## Alimentarse de las salas
 Cada tanda parte de los hallazgos de TODAS las salas del Centro (colección `findings`: social, viral, instagram, tiktok, youtube, facebook, linkedin, community, competencia, seo, product, pr, cro, council). Cada pieza cita en `justification.findings` los ids en que se apoya.

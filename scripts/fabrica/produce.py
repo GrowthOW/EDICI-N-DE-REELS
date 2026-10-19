@@ -14,7 +14,7 @@ import render  # noqa: E402
 
 ROUTES = [  # (patrón en el nombre de la ruta, {idioma: etiqueta corta para la pill})
     (r"finis|fisterra|mux[ií]a", {"ES": "Camino a Fisterra", "EN": "Camino to Finisterre", "DE": "Jakobsweg nach Finisterre"}),
-    (r"a[ñn]o santo|holy year|heilig", {"ES": "Año Santo 2027", "EN": "Holy Year 2027", "DE": "Heiliges Jahr 2027"}),
+    (r"a[ñn]o santo|holy year|heilig", {"ES": "Año Santo Xacobeo 2027", "EN": "Holy Year 2027", "DE": "Heiliges Jahr 2027"}),
     (r"costa|coast|küste", {"ES": "Camino Portugués por la Costa", "EN": "Portuguese Coastal Camino", "DE": "Portugiesischer Küstenweg"}),
     (r"tui", {"ES": "Camino Portugués desde Tui", "EN": "Camino from Tui", "DE": "Jakobsweg ab Tui"}),
     (r"sarria", {"ES": "Camino desde Sarria", "EN": "Camino from Sarria", "DE": "Jakobsweg ab Sarria"}),
@@ -47,6 +47,23 @@ def tag_for(piece, lang):
             return lab.get(lang) or lab.get("*")
     return None
 
+
+
+EVENTS = [  # etiqueta amarilla de evento (Iván, 19 oct: «lo de Holy Year 2027 que es importante tiene poca visibilidad»)
+    (r"a[ñn]o santo|holy year|heiliges? jahr|xacobeo|jacobeo 2027|puerta santa|holy door|heilige pforte",
+     {"ES": "Año Santo Xacobeo 2027", "EN": "Holy Year 2027", "DE": "Heiliges Jahr 2027"}),
+]
+
+
+def badge_for(piece, lang):
+    """Etiqueta de evento: la que ponga el brief, o la del Año Santo si la pieza trata de él."""
+    if "badge" in piece:
+        return piece["badge"] or None
+    txt = " ".join(str(piece.get(k) or "") for k in ("route", "title", "hook", "concept")).lower()
+    for pat, lab in EVENTS:
+        if re.search(pat, txt):
+            return lab.get(lang)
+    return None
 
 
 def caption_for(piece, channel):
@@ -200,6 +217,9 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
         if piece.get("slot"):  # piezas extra del mismo día: número fijo para no pisar las fichas de la tanda principal
             slot = int(piece["slot"]) - 1
         tag = tag_for(piece, lang)
+        badge = badge_for(piece, lang)
+        if badge and tag and re.search(r"a[ñn]o santo|holy year|heilig", tag, re.I):
+            tag = None  # la etiqueta amarilla ya lo dice
         try:
             if key in ("reel", "story_video"):
                 shots = build_shots(piece, s, media)
@@ -211,7 +231,7 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     t["start"] = round(t["start"] * k, 2)
                     t["end"] = round(min(t["end"] * k, body - 0.45), 2)
                 out = f"{out_dir}/{piece['id']}.mp4"
-                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "out": out,
+                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "badge": badge, "out": out,
                                         "kind": "story" if key == "story_video" else "reel"})
                 files = [{"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4"},
                          {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
@@ -224,7 +244,7 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     slides.append({"image": fr, "headline": txt.get("headline", ""), "sub": txt.get("sub", ""), "objectPosition": im.get("objectPosition", "50% 50%")})
                 if len(slides) < 3:
                     raise RuntimeError("carrusel con menos de 3 láminas")
-                r = render.render_carousel({"slides": slides, "tag": tag, "out_prefix": f"{out_dir}/{piece['id']}"})
+                r = render.render_carousel({"slides": slides, "tag": tag, "badge": badge, "out_prefix": f"{out_dir}/{piece['id']}"})
                 files = [{"kind": "image", "label": f"Lámina {i + 1}", "local": f, "name": os.path.basename(f)} for i, f in enumerate(r["out"])]
                 manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle),
                                  "clips": [str(x["fromVideo"]) for x in s.get("slides", [])]})
@@ -275,7 +295,7 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                 ov = piece.get("overlay") or {}
                 out = f"{out_dir}/{piece['id']}.jpg"
                 render.render_static({"w": w, "h": h, "image": f, "headline": ov.get("headline", ""), "sub": ov.get("sub", ""),
-                                      "tag": tag, "objectPosition": img.get("objectPosition", "50% 50%"), "out": out,
+                                      "tag": tag, "badge": badge, "objectPosition": img.get("objectPosition", "50% 50%"), "out": out,
                                       "story": key == "story", "headSize": ov.get("headSize", 78)})
                 files = [{"kind": "image", "label": "Imagen final", "local": out, "name": f"{piece['id']}.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "files": files, "docs": docs_for(piece, lang, date, slot, files, cycle), "image": img["imageId"]})
