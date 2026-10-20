@@ -24,8 +24,11 @@ ENGINE = os.path.dirname(os.path.abspath(__file__))
 STYLE = os.path.join(ENGINE, "..", "orbisways_style")
 W, H = 1080, 1920
 BRAND = "#1376A4"  # azul oscuro del brandbook: chips de ruta y rótulos de pantalla
-REEL_SAFE = {"top": 260, "bottom": 420, "right": 200, "left": 60}
-STORY_SAFE = {"top": 250, "bottom": 340, "right": 60, "left": 60}
+# zona segura de Instagram sobre 1080x1920 (Ana, 19 oct; fabrica/zona-segura): top 210, laterales 48/52, bottom 370;
+# desde y=1118 el borde derecho baja a x=921 (botones de la app). cap.js lo comprueba con notchX/notchY.
+REEL_SAFE = {"top": 210, "bottom": 370, "right": 52, "left": 48, "notchX": 921, "notchY": 1118}
+STORY_SAFE = dict(REEL_SAFE)
+NOTCH_RIGHT = W - 921  # margen derecho de todo bloque que baje de y=1118
 GAP = 6  # separación blanca entre pantallas
 
 FONTS = f"""
@@ -75,7 +78,7 @@ def badge_html(text, size, ident="badge"):
     return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:{BRAND};color:#fff;'
             f'padding:{int(size * .34)}px {int(size * .62)}px {int(size * .3)}px;border-radius:{int(size * .3)}px;'
             f'font:800 {size}px/1 Head;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
-            f'box-shadow:0 4px 18px rgba(0,0,0,.28)">{esc(text)}</div>')
+            f'box-shadow:0 4px 18px rgba(34,34,34,.28)">{esc(text)}</div>')
 
 
 # ---------- reels y stories en vídeo ----------
@@ -95,8 +98,8 @@ def text_html(text, tag=None, labels=None, layout="full", top=330, badge=None):
             if not lt:
                 continue
             # la etiqueta de cada pantalla va abajo a la izquierda de su pantalla, dentro de la zona segura
-            yb = min(y + ph - 60, H - REEL_SAFE["bottom"] - 10)
-            mw = min(W - REEL_SAFE["right"] - x, W // 2 - 90) if layout == "grid4" else 760
+            yb = min(y + ph - 60, H - REEL_SAFE["bottom"] - 30)
+            mw = min(W - NOTCH_RIGHT - x, W // 2 - 90) if layout == "grid4" else 760
             fs = 34 if layout == "grid4" else 44
             lab += (f'<div class="t lab" id="lab{i}" style="position:absolute;left:{x}px;top:{yb}px;transform:translateY(-100%);'
                     f'background:{BRAND};color:#fff;padding:10px 20px 12px;border-radius:12px;font:700 {fs}px/1.05 Head;'
@@ -104,10 +107,10 @@ def text_html(text, tag=None, labels=None, layout="full", top=330, badge=None):
     txt = f'<div class="t" id="txt">{esc(text)}</div>' if text else ""
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{W}px;height:{H}px;background:transparent;overflow:hidden}}
-.box{{position:absolute;left:90px;right:230px;top:{top}px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}}
+.box{{position:absolute;left:80px;right:{NOTCH_RIGHT + 40}px;top:{top}px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}}
 .t{{color:#fff}}
-#txt{{font:800 70px/1.08 Head;text-shadow:0 3px 3px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.45)}}
-.grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.14) 55%,rgba(0,0,0,0))}}
+#txt{{font:800 70px/1.08 Head;text-shadow:0 3px 3px rgba(34,34,34,.55),0 0 26px rgba(34,34,34,.45)}}
+.grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(34,34,34,.40),rgba(34,34,34,.14) 55%,rgba(34,34,34,0))}}
 </style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 46) if tag else ''}</div>{lab}</body></html>"""
 
 
@@ -204,7 +207,7 @@ def render_reel(spec):
         mid = (tb["start"] + tb["end"]) / 2
         seg = next((x for x in seg_times if x[0] <= mid < x[1]), seg_times[-1])
         p = f"{work}/t{i}.html"
-        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else 330,
+        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else (232 if seg[2] == 'triple' else 330),
                                      badge=tb.get("badge", spec.get("badge"))))
         jobs.append({"html": p, "out": f"{work}/t{i}.png", "w": W, "h": H, "safe": safe})
         overlays.append((f"{work}/t{i}.png", tb["start"], tb["end"]))
@@ -270,21 +273,23 @@ def static_html(sp):
     sub = f'<div class="t" id="sub">{esc(sp["sub"])}</div>' if sp.get("sub") else ""
     pos = sp.get("objectPosition", "50% 50%")
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:700 {int(30 * k)}px/1 Head;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(34,34,34,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(sp["counter"])}</div>') if sp.get("counter") else ""
     # en stories el texto va arriba-centro (lo de abajo lo tapan la respuesta y los stickers)
-    box = (f"left:{int(70 * k)}px;right:{int(70 * k)}px;top:{int(330 * k)}px" if story
-           else f"left:{int(70 * k)}px;right:{int(70 * k)}px;bottom:{int(90 * k)}px")
-    grad = ("top:0;height:{0}px;background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.38) 45%,rgba(0,0,0,0))".format(int(h * .6)) if story
-            else "bottom:0;height:{0}px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.30) 35%,rgba(0,0,0,.72))".format(int(h * .62)))
+    # stories: texto arriba dentro de la zona segura; carruseles de Instagram: lejos de los iconos de la app (Ana, 19 oct)
+    bot = 150 if sp.get("ig") else 90
+    box = (f"left:{int(80 * k)}px;right:{int((NOTCH_RIGHT + 30) * k)}px;top:{int(330 * k)}px" if story
+           else f"left:{int(70 * k)}px;right:{int((100 if sp.get('ig') else 70) * k)}px;bottom:{int(bot * k)}px")
+    grad = ("top:0;height:{0}px;background:linear-gradient(180deg,rgba(34,34,34,.62),rgba(34,34,34,.38) 45%,rgba(34,34,34,0))".format(int(h * .6)) if story
+            else "bottom:0;height:{0}px;background:linear-gradient(180deg,rgba(34,34,34,0),rgba(34,34,34,.30) 35%,rgba(34,34,34,.72))".format(int(h * .62)))
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}}
 #bg{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:{pos}}}
 .grad{{position:absolute;left:0;right:0;{grad}}}
 .box{{position:absolute;{box};display:flex;flex-direction:column;align-items:flex-start;gap:{int(24 * k)}px}}
 .t{{color:#fff}}
-#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Head;text-shadow:0 2px 18px rgba(0,0,0,.35)}}
-#sub{{font:700 {int(40 * k)}px/1.22 Body;text-shadow:0 2px 12px rgba(0,0,0,.55)}}
+#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Head;text-shadow:0 2px 18px rgba(34,34,34,.35)}}
+#sub{{font:700 {int(40 * k)}px/1.22 Body;text-shadow:0 2px 12px rgba(34,34,34,.55)}}
 </style></head><body><img id="bg" src="{sp["image"]}"><div class="grad"></div>
 <div class="box">{badge_html(sp.get("badge"), int(44 * k))}{tag_html(sp.get("tag"), int(34 * k))}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>{counter}</body></html>"""
 
@@ -295,7 +300,7 @@ def render_static(sp):
     open(p, "w").write(static_html(sp))
     png = f"{work}/s.png"
     m = int(40 * sp["w"] / 1080)
-    safe = STORY_SAFE if sp.get("story") else {"top": m, "bottom": m // 2, "right": m, "left": m}
+    safe = STORY_SAFE if sp.get("story") else ({"top": 120, "bottom": 130, "right": 90, "left": 60} if sp.get("ig") else {"top": m, "bottom": m // 2, "right": m, "left": m})
     capture([{"html": p, "out": png, "w": sp["w"], "h": sp["h"], "safe": safe}])
     run(["ffmpeg", "-v", "error", "-y", "-i", png, "-q:v", "2", sp["out"]])
     return {"out": sp["out"]}
@@ -309,7 +314,7 @@ def render_carousel(sp):
         render_static({"w": 1080, "h": 1350, "image": sl["image"], "headline": sl.get("headline", ""), "sub": sl.get("sub", ""),
                        "tag": sp.get("tag") if i == 0 else None, "badge": sp.get("badge") if i == 0 else None,
                        "objectPosition": sl.get("objectPosition", "50% 50%"),
-                       "headSize": 84 if i == 0 else 72, "counter": f"{i + 1}/{n}", "out": out})
+                       "headSize": 84 if i == 0 else 72, "ig": True, "out": out})
         outs.append(out)
     return {"out": outs}
 
@@ -319,20 +324,21 @@ def compare_html(sp):
     w, h = sp["w"], sp["h"]
     k = w / 1080
     hh = (h - GAP) // 2
+    sp_ig = bool(sp.get("ig"))
 
     def half(i, side):
         y = 0 if i == 0 else hh + GAP
         facts = "".join(f'<div class="t f" id="f{i}{j}">{esc(x)}</div>' for j, x in enumerate(side.get("facts", [])[:3]))
         return (f'<div style="position:absolute;left:0;top:{y}px;width:{w}px;height:{hh}px;overflow:hidden">'
                 f'<img src="{side["image"]}" style="width:100%;height:100%;object-fit:cover;object-position:{side.get("objectPosition", "50% 50%")}">'
-                f'<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.1) 70%)"></div>'
-                f'<div style="position:absolute;left:{int(60 * k)}px;bottom:{int(44 * k)}px;display:flex;flex-direction:column;gap:{int(10 * k)}px">'
+                f'<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(34,34,34,.62),rgba(34,34,34,.1) 70%)"></div>'
+                f'<div style="position:absolute;left:{int(60 * k)}px;bottom:{int((120 if (sp_ig and i == 1) else 44) * k)}px;display:flex;flex-direction:column;gap:{int(10 * k)}px">'
                 f'<div class="t n" id="n{i}">{esc(side["name"])}</div>{facts}</div></div>')
     cnt = sp.get("counter")
-    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else 60) * k)}px;top:{int(46 * k)}px;'
-            f'font:800 {int(54 * k)}px/1.08 Head;text-shadow:0 2px 14px rgba(0,0,0,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
+    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else (100 if sp_ig else 60)) * k)}px;top:{int((120 if sp_ig else 46) * k)}px;'
+            f'font:800 {int(54 * k)}px/1.08 Head;text-shadow:0 2px 14px rgba(34,34,34,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:700 {int(30 * k)}px/1 Head;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(34,34,34,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(cnt)}</div>') if cnt else ""
     # el «vs» va a la derecha de la línea de corte para no pisar los datos de la foto de arriba
     vs = (f'<div class="t" id="vs" style="position:absolute;right:{int(70 * k)}px;top:{hh + GAP // 2}px;transform:translateY(-50%);'
@@ -340,8 +346,8 @@ def compare_html(sp):
           f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Head">{esc(sp.get("vs", "vs"))}</div>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
-.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Head;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
-.f{{font:700 {int(34 * k)}px/1.2 Body;text-shadow:0 2px 10px rgba(0,0,0,.5)}}
+.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Head;text-shadow:0 2px 14px rgba(34,34,34,.5)}}
+.f{{font:700 {int(34 * k)}px/1.2 Body;text-shadow:0 2px 10px rgba(34,34,34,.5)}}
 </style></head><body>{half(0, sp["a"])}{half(1, sp["b"])}{head}{vs}{counter}</body></html>"""
 
 
@@ -362,7 +368,7 @@ def render_compare_carousel(sp):
     for i, sl in enumerate(sp["slides"]):
         out = f'{sp["out_prefix"]}_{i + 1}.jpg'
         render_compare({"w": sp.get("w", 1080), "h": sp.get("h", 1350), "headline": sl.get("headline", ""), "vs": sp.get("vs", "vs"),
-                        "a": sl["a"], "b": sl["b"], "counter": f"{i + 1}/{n}", "nameSize": 60 if i == 0 else 46, "out": out})
+                        "a": sl["a"], "b": sl["b"], "ig": True, "nameSize": 60 if i == 0 else 46, "out": out})
         outs.append(out)
     return {"out": outs}
 
