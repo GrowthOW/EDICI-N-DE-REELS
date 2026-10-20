@@ -35,6 +35,11 @@ Instagram, TikTok, YouTube, Facebook y LinkedIn son buscadores: leen el texto en
 - `ytTitle` en los reels: título de YouTube Shorts de 60 caracteres como máximo, con la palabra clave al principio.
 Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada si queda natural; en los primeros 125 caracteres del copy de cada canal; en el título y las dos primeras líneas de la descripción de YouTube; y en 1 de los 3-5 hashtags (1 de ruta, 1 de destino, 1-2 de nicho; nada de hashtags genéricos tipo #travel). Nunca forzada ni repetida: primero que se lea natural.
 
+## Tipografía y azul de marca (Iván, 20 oct: «utiliza Nunito y el azul del manual en todas las creas»)
+- Titulares y chips en **Nunito** (800 titulares, 700 chips, etiquetas y contador), el sustituto de Caros Soft Bold del brandbook mientras no haya licencia. El texto secundario va en **Mulish** 700 (sustituto de Museo Sans), sin contorno. Nunca menos de 22 px a 1080.
+- La etiqueta de la ruta y los rótulos de cada pantalla van en chip **azul de marca #1376A4** con texto blanco. El amarillo #FFDA00 solo en el badge de evento (uno por pieza).
+- Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
+
 ## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
 En las piezas (texto en pantalla, láminas, copys, títulos y descripciones) NO se citan fuentes: nada de «según la Xunta», «(Oficina del Peregrino)», «Source: …», «according to…», «laut…», «je nach Quelle». Los datos se dan en primera persona de experto («Desde Sarria salen 3 de cada 10 peregrinos», «Unos 10.000 m de desnivel positivo»). Las fuentes siguen siendo obligatorias, pero solo DENTRO de la ficha (justification, sources, explain), para comprobar que el dato es real; nunca en lo que se publica. Si un dato es dudoso o varía según quién lo mida, se redondea («unos», «más de») en lugar de citar.
 

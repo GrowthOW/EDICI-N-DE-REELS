@@ -4,7 +4,8 @@ Uso:
   python3 render.py reel spec.json
   python3 render.py static spec.json
 
-Textos siempre como HTML real (Manrope 800 / Liberation Sans engrosada),
+Textos siempre como HTML real (Nunito en titulares y chips, Mulish en el texto; sustitutos
+de Caros Soft y Museo Sans del brandbook, Iván 20 oct), con el azul de marca #1376A4 en los chips,
 capturados con Playwright y comprobados con QA (no se pisan, zona segura).
 
 Redes orgánicas (Iván, 18 oct): sin web, sin logo y sin cartela final de marca.
@@ -22,13 +23,15 @@ def workdir(prefix):
 ENGINE = os.path.dirname(os.path.abspath(__file__))
 STYLE = os.path.join(ENGINE, "..", "orbisways_style")
 W, H = 1080, 1920
+BRAND = "#1376A4"  # azul oscuro del brandbook: chips de ruta y rótulos de pantalla
 REEL_SAFE = {"top": 260, "bottom": 420, "right": 200, "left": 60}
 STORY_SAFE = {"top": 250, "bottom": 340, "right": 60, "left": 60}
 GAP = 6  # separación blanca entre pantallas
 
 FONTS = f"""
-@font-face{{font-family:Manrope;font-weight:800;src:url({STYLE}/fonts/manrope-latin-800-normal.woff2)}}
-@font-face{{font-family:LS;font-weight:700;src:url({STYLE}/fonts/LiberationSans-Bold.ttf)}}
+@font-face{{font-family:Head;font-weight:800;src:url({STYLE}/fonts/nunito-latin-800-normal.woff2)}}
+@font-face{{font-family:Head;font-weight:700;src:url({STYLE}/fonts/nunito-latin-700-normal.woff2)}}
+@font-face{{font-family:Body;font-weight:700;src:url({STYLE}/fonts/mulish-latin-700-normal.woff2)}}
 """
 PIN = ('<svg viewBox="0 0 24 24" width="{s}" height="{s}" style="flex:none"><path fill="#fff" '
        'd="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>')
@@ -56,22 +59,22 @@ def esc(s):
 
 
 def tag_html(text, size, cls="t tag", ident="tag"):
-    """Etiqueta de ubicación: chip translúcido con chincheta, sin color de marca."""
+    """Etiqueta de ubicación: chip azul de marca con chincheta, en Nunito Bold (brandbook: chip azul con la ruta)."""
     if not text:
         return ""
     return (f'<div class="{cls}" id="{ident}" style="display:inline-flex;align-items:center;gap:{int(size * .35)}px;'
-            f'background:rgba(0,0,0,.6);padding:{int(size * .32)}px {int(size * .62)}px;border-radius:999px;'
-            f'font:800 {size}px/1.15 Manrope;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
+            f'background:{BRAND};padding:{int(size * .32)}px {int(size * .62)}px;border-radius:999px;'
+            f'font:700 {size}px/1.15 Head;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
 
 
 def badge_html(text, size, ident="badge"):
     """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). Es el único acento amarillo de la pieza
-    que permite el brandbook (#FFDA00 con texto #222), en Manrope 800 y mayúsculas."""
+    que permite el brandbook (#FFDA00 con texto #222), en Nunito 800 y mayúsculas."""
     if not text:
         return ""
     return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:#FFDA00;color:#222;'
             f'padding:{int(size * .34)}px {int(size * .62)}px {int(size * .3)}px;border-radius:{int(size * .3)}px;'
-            f'font:800 {size}px/1 Manrope;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
+            f'font:800 {size}px/1 Head;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
             f'box-shadow:0 4px 18px rgba(0,0,0,.28)">{esc(text)}</div>')
 
 
@@ -96,14 +99,14 @@ def text_html(text, tag=None, labels=None, layout="full", top=330, badge=None):
             mw = min(W - REEL_SAFE["right"] - x, W // 2 - 90) if layout == "grid4" else 760
             fs = 34 if layout == "grid4" else 44
             lab += (f'<div class="t lab" id="lab{i}" style="position:absolute;left:{x}px;top:{yb}px;transform:translateY(-100%);'
-                    f'background:#fff;color:#111;padding:10px 20px 12px;border-radius:12px;font:800 {fs}px/1.05 Manrope;'
+                    f'background:{BRAND};color:#fff;padding:10px 20px 12px;border-radius:12px;font:700 {fs}px/1.05 Head;'
                     f'box-sizing:border-box;max-width:{mw}px">{esc(lt)}</div>')
     txt = f'<div class="t" id="txt">{esc(text)}</div>' if text else ""
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{W}px;height:{H}px;background:transparent;overflow:hidden}}
 .box{{position:absolute;left:90px;right:230px;top:{top}px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}}
 .t{{color:#fff}}
-#txt{{font:800 70px/1.08 Manrope;text-shadow:0 3px 3px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.45)}}
+#txt{{font:800 70px/1.08 Head;text-shadow:0 3px 3px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.45)}}
 .grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.14) 55%,rgba(0,0,0,0))}}
 </style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 46) if tag else ''}</div>{lab}</body></html>"""
 
@@ -263,7 +266,7 @@ def static_html(sp):
     sub = f'<div class="t" id="sub">{esc(sp["sub"])}</div>' if sp.get("sub") else ""
     pos = sp.get("objectPosition", "50% 50%")
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(sp["counter"])}</div>') if sp.get("counter") else ""
     # en stories el texto va arriba-centro (lo de abajo lo tapan la respuesta y los stickers)
     box = (f"left:{int(70 * k)}px;right:{int(70 * k)}px;top:{int(330 * k)}px" if story
@@ -276,8 +279,8 @@ html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}
 .grad{{position:absolute;left:0;right:0;{grad}}}
 .box{{position:absolute;{box};display:flex;flex-direction:column;align-items:flex-start;gap:{int(24 * k)}px}}
 .t{{color:#fff}}
-#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Manrope;text-shadow:0 2px 18px rgba(0,0,0,.35)}}
-#sub{{font:700 {int(40 * k)}px/1.22 LS;-webkit-text-stroke:{max(1, int(2 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 12px rgba(0,0,0,.55)}}
+#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Head;text-shadow:0 2px 18px rgba(0,0,0,.35)}}
+#sub{{font:700 {int(40 * k)}px/1.22 Body;text-shadow:0 2px 12px rgba(0,0,0,.55)}}
 </style></head><body><img id="bg" src="{sp["image"]}"><div class="grad"></div>
 <div class="box">{badge_html(sp.get("badge"), int(44 * k))}{tag_html(sp.get("tag"), int(34 * k))}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>{counter}</body></html>"""
 
@@ -323,18 +326,18 @@ def compare_html(sp):
                 f'<div class="t n" id="n{i}">{esc(side["name"])}</div>{facts}</div></div>')
     cnt = sp.get("counter")
     head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else 60) * k)}px;top:{int(46 * k)}px;'
-            f'font:800 {int(54 * k)}px/1.08 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
+            f'font:800 {int(54 * k)}px/1.08 Head;text-shadow:0 2px 14px rgba(0,0,0,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(cnt)}</div>') if cnt else ""
     # el «vs» va a la derecha de la línea de corte para no pisar los datos de la foto de arriba
     vs = (f'<div class="t" id="vs" style="position:absolute;right:{int(70 * k)}px;top:{hh + GAP // 2}px;transform:translateY(-50%);'
           f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;'
-          f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Manrope">{esc(sp.get("vs", "vs"))}</div>')
+          f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Head">{esc(sp.get("vs", "vs"))}</div>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
-.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
-.f{{font:700 {int(34 * k)}px/1.2 LS;-webkit-text-stroke:{max(1, int(1.5 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 10px rgba(0,0,0,.5)}}
+.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Head;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
+.f{{font:700 {int(34 * k)}px/1.2 Body;text-shadow:0 2px 10px rgba(0,0,0,.5)}}
 </style></head><body>{half(0, sp["a"])}{half(1, sp["b"])}{head}{vs}{counter}</body></html>"""
 
 
