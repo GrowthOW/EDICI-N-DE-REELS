@@ -336,7 +336,7 @@ def compare_html(sp):
                f'border-radius:999px">{esc(cnt)}</div>') if cnt else ""
     # el «vs» va a la derecha de la línea de corte para no pisar los datos de la foto de arriba
     vs = (f'<div class="t" id="vs" style="position:absolute;right:{int(70 * k)}px;top:{hh + GAP // 2}px;transform:translateY(-50%);'
-          f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;'
+          f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:{BRAND};color:#fff;display:grid;place-items:center;'
           f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Head">{esc(sp.get("vs", "vs"))}</div>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
