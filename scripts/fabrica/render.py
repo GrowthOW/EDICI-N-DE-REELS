@@ -67,7 +67,7 @@ def tag_html(text, size, cls="t tag", ident="tag"):
         return ""
     return (f'<div class="{cls}" id="{ident}" style="display:inline-flex;align-items:center;gap:{int(size * .35)}px;'
             f'background:{BRAND};padding:{int(size * .32)}px {int(size * .62)}px;border-radius:999px;'
-            f'font:700 {size}px/1.15 Head;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
+            f'font:800 {size}px/1.15 Head;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
 
 
 def badge_html(text, size, ident="badge"):
@@ -111,7 +111,7 @@ html,body{{margin:0;width:{W}px;height:{H}px;background:transparent;overflow:hid
 .t{{color:#fff}}
 #txt{{font:800 70px/1.08 Head;text-shadow:0 3px 3px rgba(34,34,34,.55),0 0 26px rgba(34,34,34,.45)}}
 .grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(34,34,34,.40),rgba(34,34,34,.14) 55%,rgba(34,34,34,0))}}
-</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 46) if tag else ''}</div>{lab}</body></html>"""
+</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 58) if tag else ''}</div>{lab}</body></html>"""
 
 
 def panel_geom(layout):
