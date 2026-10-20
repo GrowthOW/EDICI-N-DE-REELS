@@ -39,6 +39,7 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 - Titulares y chips en **Nunito** (800 titulares, 700 chips, etiquetas y contador), el sustituto de Caros Soft Bold del brandbook mientras no haya licencia. El texto secundario va en **Mulish** 700 (sustituto de Museo Sans), sin contorno. Nunca menos de 22 px a 1080.
 - La etiqueta de la ruta, los rótulos de cada pantalla y el badge de evento van en chip **azul de marca #1376A4** con texto blanco. Nada más de color.
 - Limpio y sobrio (Iván, 20 oct: «no quiero bolds en blanco como hay en unas creas, solo la fuente en blanco y algún fondo azul Orbis en el nombre de los destinos»): texto en blanco sobre la foto, sin cajas blancas detrás del texto, sin contornos, sin amarillo ni más adornos.
+- Zona segura de Instagram SIEMPRE (Iván, 20 oct: «nada de la información importante puede quedar tapada por los iconos de la app»): en 9:16, top 210, laterales 48/52, abajo 370 y, desde y=1118, nada a la derecha de x=921 (botones). En carruseles, sin contador propio y lejos de los iconos. cap.js lo comprueba: una pieza con «fuera de zona» o «tapado por los botones de IG» no se sube.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
 ## Referencia de estilo: @_thru_hiking (Iván, 20 oct)
