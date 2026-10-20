@@ -45,6 +45,7 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 ## Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano porque da la sensación de que hay saltos; vale para todos los vídeos»)
 - Cada rótulo entra justo cuando empieza un plano y sale justo antes de un corte. Nunca entra a mitad ni al final de un plano.
 - El rótulo va con el plano que nombra: si habla de una ciudad, entra con el plano de esa ciudad, y si habla de la barca, con el plano de la barca.
+- Si el título ya nombra la ruta, no se pone también el chip con su nombre (Iván, 20 oct: «no es necesario el título dos veces»). produce.py lo quita solo con `tag_repeats_title`; para quitarlo a mano, pon `"tag": null` en el brief.
 - render.py lo aplica solo con `snap_texts`: ajusta las entradas y salidas a los cortes y avisa en el log. Aun así, al escribir el brief, cuadra cada rótulo con su plano.
 
 ## Referencia de estilo: @_thru_hiking (Iván, 20 oct)

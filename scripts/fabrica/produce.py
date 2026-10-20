@@ -7,7 +7,7 @@ media_dir contiene video/<id>.mp4 e image/<id>.jpg ya licenciados.
 Escribe en out_dir los MP4/JPG finales y manifest.json con, por pieza, los
 archivos y los documentos de calendario (uno por canal) para la sala.
 """
-import json, os, re, sys, traceback
+import json, os, re, sys, traceback, unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import render  # noqa: E402
@@ -37,10 +37,24 @@ MARKET = {"ES": "España", "EN": "UK+US", "DE": "DACH"}
 SUFFIX = {"ig_carousel": "", "ig_static": "", "fb": "", "linkedin": "", "story": "story", "story_video": "story", "compare": "cmp"}
 
 
+_TAG_STOP = {"camino", "the", "de", "del", "la", "el", "way", "ways", "walk", "trail", "path", "tour", "coastal", "costa", "route", "ruta", "weg", "der", "die", "das", "von", "from", "desde"}
+
+
+def tag_repeats_title(tag, piece):
+    """True si el primer rótulo ya dice el nombre de la ruta del chip (p. ej. chip «Portuguese Coastal Camino» con título «The Camino Portugués, from Porto»)."""
+    texts = piece.get("texts") or piece.get("textBlocks") or []
+    first = (texts[0].get("text") if texts and isinstance(texts[0], dict) else (texts[0] if texts else "")) or ""
+    norm = lambda x: re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", x.lower()).encode("ascii", "ignore").decode())
+    words = [w for w in norm(tag).split() if w not in _TAG_STOP and len(w) > 2]
+    return bool(words) and all(w[:6] in norm(first) for w in words)
+
+
 def tag_for(piece, lang):
     """Etiqueta de ubicación de la pieza (nombre corto de la ruta en el idioma del público)."""
     if piece.get("tag") or piece.get("pill"):
         return piece.get("tag") or piece.get("pill")
+    if "tag" in piece:  # "tag": null o "" en el brief = sin etiqueta (Iván, 20 oct)
+        return None
     name = (piece.get("route") or "").lower()
     for pat, lab in ROUTES:
         if re.search(pat, name):
@@ -220,6 +234,8 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
         badge = badge_for(piece, lang)
         if badge and tag and re.search(r"a[ñn]o santo|holy year|heilig", tag, re.I):
             tag = None  # la etiqueta amarilla ya lo dice
+        if tag and tag_repeats_title(tag, piece):
+            tag = None  # el título ya nombra la ruta: no repetirla en el chip (Iván, 20 oct)
         try:
             if key in ("reel", "story_video"):
                 shots = build_shots(piece, s, media)
