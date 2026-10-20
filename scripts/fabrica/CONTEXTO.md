@@ -41,6 +41,12 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 - Limpio y sobrio (Iván, 20 oct: «no quiero bolds en blanco como hay en unas creas, solo la fuente en blanco y algún fondo azul Orbis en el nombre de los destinos»): texto en blanco sobre la foto, sin cajas blancas detrás del texto, sin contornos, sin amarillo ni más adornos.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
+## Referencia de estilo: @_thru_hiking (Iván, 20 oct)
+Cuenta de Instagram que nos gusta como referencia: https://www.instagram.com/_thru_hiking/ (grandes datos de alcance y comunidad).
+- Formato favorito de Iván: **entrada por el mapa y paso a imágenes reales**, como https://www.instagram.com/p/DdsyksTt2RW/. El vídeo arranca con un mapa 3D o un vuelo sobre la ruta (dónde está, por dónde va) y enlaza con planos reales del sendero.
+- Cómo hacerlo con lo que tenemos: el vuelo 3D de Virtual Routes (https://claude.ai/artifact/4t1wUrkkXdhmvMnGK9Dx4n) o el Configurador de Mapas Animados con el GPX real de la ruta como primer plano (2-4 s), y después los clips reales de la biblioteca. Mismo estilo de siempre: texto blanco en Nunito y el destino en chip azul.
+- Proponer al menos un reel así en cada tanda de vídeos, empezando por las rutas que más facturan.
+
 ## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
 En las piezas (texto en pantalla, láminas, copys, títulos y descripciones) NO se citan fuentes: nada de «según la Xunta», «(Oficina del Peregrino)», «Source: …», «according to…», «laut…», «je nach Quelle». Los datos se dan en primera persona de experto («Desde Sarria salen 3 de cada 10 peregrinos», «Unos 10.000 m de desnivel positivo»). Las fuentes siguen siendo obligatorias, pero solo DENTRO de la ficha (justification, sources, explain), para comprobar que el dato es real; nunca en lo que se publica. Si un dato es dudoso o varía según quién lo mida, se redondea («unos», «más de») en lugar de citar.
 
