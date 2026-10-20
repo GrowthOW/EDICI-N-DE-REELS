@@ -191,6 +191,27 @@ def segment(shot, out, work, idx):
     run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[v]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", out])
 
 
+def snap_texts(texts, cuts, total):
+    """Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano, da sensación de saltos»).
+    Cada rótulo entra justo al empezar un plano y sale justo antes de un corte (o del fundido final); nunca a mitad ni al final de un plano."""
+    ends = cuts[1:] + [total]
+    out, prev = [], 0.0
+    for tb in sorted(texts, key=lambda t: t["start"]):
+        t = dict(tb)
+        free = [c for c in cuts if c >= prev - 0.01]
+        c0 = min(free, key=lambda c: abs(c - t["start"])) if free else cuts[-1]
+        start = 0.3 if c0 == 0 else c0 + 0.12
+        cand = [e for e in ends if e - 0.12 - start >= 1.8]
+        e0 = min(cand, key=lambda e: abs(e - t["end"])) if cand else total
+        end = total - 0.35 if e0 >= total else e0 - 0.12
+        if abs(start - t["start"]) > 0.05 or abs(end - t["end"]) > 0.05:
+            print(f"  rótulo «{t['text'][:30]}»: {t['start']:.2f}-{t['end']:.2f} s → {start:.2f}-{end:.2f} s (al ritmo de los planos)")
+        t["start"], t["end"] = round(start, 2), round(end, 2)
+        out.append(t)
+        prev = e0
+    return out
+
+
 def render_reel(spec):
     """Reel o story en vídeo 1080x1920. Sin cartela final: termina en el último plano con un fundido corto."""
     work = workdir("reel_")
@@ -203,6 +224,8 @@ def render_reel(spec):
         seg_times.append((t_acc, t_acc + s["dur"], s.get("layout", "full"), s.get("labels")))
         t_acc += s["dur"]
     body_dur = t_acc
+    if not spec.get("freeTiming"):
+        spec["texts"] = snap_texts(spec["texts"], [x[0] for x in seg_times], body_dur)
     for i, tb in enumerate(spec["texts"]):
         mid = (tb["start"] + tb["end"]) / 2
         seg = next((x for x in seg_times if x[0] <= mid < x[1]), seg_times[-1])

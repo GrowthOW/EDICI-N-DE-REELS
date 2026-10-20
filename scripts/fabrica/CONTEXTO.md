@@ -42,6 +42,11 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 - Zona segura de Instagram SIEMPRE (Iván, 20 oct: «nada de la información importante puede quedar tapada por los iconos de la app»): en 9:16, top 210, laterales 48/52, abajo 370 y, desde y=1118, nada a la derecha de x=921 (botones). En carruseles, sin contador propio y lejos de los iconos. cap.js lo comprueba: una pieza con «fuera de zona» o «tapado por los botones de IG» no se sube.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
+## Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano porque da la sensación de que hay saltos; vale para todos los vídeos»)
+- Cada rótulo entra justo cuando empieza un plano y sale justo antes de un corte. Nunca entra a mitad ni al final de un plano.
+- El rótulo va con el plano que nombra: si habla de una ciudad, entra con el plano de esa ciudad, y si habla de la barca, con el plano de la barca.
+- render.py lo aplica solo con `snap_texts`: ajusta las entradas y salidas a los cortes y avisa en el log. Aun así, al escribir el brief, cuadra cada rótulo con su plano.
+
 ## Referencia de estilo: @_thru_hiking (Iván, 20 oct)
 Cuenta de Instagram que nos gusta como referencia: https://www.instagram.com/_thru_hiking/ (grandes datos de alcance y comunidad).
 - Formato favorito de Iván: **entrada por el mapa y paso a imágenes reales**, como https://www.instagram.com/p/DdsyksTt2RW/. El vídeo arranca con un mapa 3D o un vuelo sobre la ruta (dónde está, por dónde va) y enlaza con planos reales del sendero.
