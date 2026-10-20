@@ -245,8 +245,12 @@ def render_reel(spec):
     else:
         cmd += ["-f", "lavfi", "-t", f"{body_dur:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
         fc += f";[{na}:a]anull[a]"
+    # solo móvil (stories de Instagram; Iván, 20 oct: «Instagram y TikTok se ven en el móvil, baja la calidad si se ve
+    # igual»): crf 24 deja el archivo a la mitad con SSIM 0,987. Los reels comparten archivo con YouTube y Facebook,
+    # que también se ven en ordenador, y mantienen la calidad alta.
+    q = ["-crf", "24", "-maxrate", "4M", "-bufsize", "8M"] if story else ["-crf", "21", "-maxrate", "5M", "-bufsize", "10M"]
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium",
-            "-crf", "21", "-maxrate", "5M", "-bufsize", "10M", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart",
+            *q, "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart",
             "-t", f"{body_dur:.3f}", spec["out"]]
     run(cmd)
     sheet = spec["out"].rsplit(".", 1)[0] + "_sheet.jpg"
