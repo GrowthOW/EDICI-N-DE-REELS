@@ -68,11 +68,11 @@ def tag_html(text, size, cls="t tag", ident="tag"):
 
 
 def badge_html(text, size, ident="badge"):
-    """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). Es el único acento amarillo de la pieza
-    que permite el brandbook (#FFDA00 con texto #222), en Nunito 800 y mayúsculas."""
+    """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). En azul de marca con texto blanco,
+    como el resto de chips (Iván, 20 oct: «limpio y sobrio», solo texto blanco y azul Orbis)."""
     if not text:
         return ""
-    return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:#FFDA00;color:#222;'
+    return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:{BRAND};color:#fff;'
             f'padding:{int(size * .34)}px {int(size * .62)}px {int(size * .3)}px;border-radius:{int(size * .3)}px;'
             f'font:800 {size}px/1 Head;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
             f'box-shadow:0 4px 18px rgba(0,0,0,.28)">{esc(text)}</div>')

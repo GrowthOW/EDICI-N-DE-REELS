@@ -37,7 +37,8 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 
 ## Tipografía y azul de marca (Iván, 20 oct: «utiliza Nunito y el azul del manual en todas las creas»)
 - Titulares y chips en **Nunito** (800 titulares, 700 chips, etiquetas y contador), el sustituto de Caros Soft Bold del brandbook mientras no haya licencia. El texto secundario va en **Mulish** 700 (sustituto de Museo Sans), sin contorno. Nunca menos de 22 px a 1080.
-- La etiqueta de la ruta y los rótulos de cada pantalla van en chip **azul de marca #1376A4** con texto blanco. El amarillo #FFDA00 solo en el badge de evento (uno por pieza).
+- La etiqueta de la ruta, los rótulos de cada pantalla y el badge de evento van en chip **azul de marca #1376A4** con texto blanco. Nada más de color.
+- Limpio y sobrio (Iván, 20 oct: «no quiero bolds en blanco como hay en unas creas, solo la fuente en blanco y algún fondo azul Orbis en el nombre de los destinos»): texto en blanco sobre la foto, sin cajas blancas detrás del texto, sin contornos, sin amarillo ni más adornos.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
 ## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
