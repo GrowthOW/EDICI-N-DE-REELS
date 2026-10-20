@@ -211,10 +211,9 @@ def render_reel(spec):
                                      badge=tb.get("badge", spec.get("badge"))))
         jobs.append({"html": p, "out": f"{work}/t{i}.png", "w": W, "h": H, "safe": safe})
         overlays.append((f"{work}/t{i}.png", tb["start"], tb["end"]))
-    # tramos multipantalla sin texto propio: sus etiquetas también se ven
+    # etiquetas de cada pantalla: se ven durante todo su tramo, también entre un rótulo y el siguiente (Iván, 20 oct)
     for k, (a, b, lay, labels) in enumerate(seg_times):
-        covered = any(tb["start"] < b and tb["end"] > a for tb in spec["texts"])
-        if labels and not covered:
+        if labels:
             p = f"{work}/l{k}.html"
             open(p, "w").write(text_html("", None, labels, lay))
             jobs.append({"html": p, "out": f"{work}/l{k}.png", "w": W, "h": H, "safe": safe})
