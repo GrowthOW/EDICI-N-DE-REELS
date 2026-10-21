@@ -73,8 +73,10 @@ En cada ronda, ANTES de subir nada:
    en uso ni filas de la base de datos.
 4. Si después quedan menos de 300 MB libres, retención por este orden hasta tener 300 MB:
    a. archivos de fichas `descartada`;
-   b. archivos de propuestas de la Fábrica (`agent: fabrica-v2`, `status: propuesta`, sin
-      `feedback`) con más de 7 días.
+   b. (QUITADA el 21 oct: Iván quiere ver todas las piezas hasta que él las quite. Las propuestas
+      no se archivan nunca por antigüedad.) Quien libera espacio es Iván con la cruz de la sala:
+      al quitar una pieza («no me gusta» o «ya la he publicado») la sala borra sus archivos
+      que no use otra ficha. Si sigue sin haber espacio, se avisa en `fabrica/estado` y no se borra nada más.
    La ficha se queda con su brief y su selección: pon `files: []` y
    `archivado: {ts, motivo: "espacio"}`. Si Iván la quiere, la rutina «Indicaciones» la vuelve a
    montar con `produce.py`. Nunca se tocan las fichas aprobadas, planificadas, listas, publicadas
