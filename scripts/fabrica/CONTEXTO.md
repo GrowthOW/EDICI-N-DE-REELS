@@ -42,6 +42,11 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 - Zona segura de Instagram SIEMPRE (Iván, 20 oct: «nada de la información importante puede quedar tapada por los iconos de la app»): en 9:16, top 210, laterales 48/52, abajo 370 y, desde y=1118, nada a la derecha de x=921 (botones). En carruseles, sin contador propio y lejos de los iconos. cap.js lo comprueba: una pieza con «fuera de zona» o «tapado por los botones de IG» no se sube.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
+## Nunca cámara lenta: todo a velocidad real (Iván, 21 oct: «no quiero que ningún vídeo incluya planos a cámara lenta; edítalos para que vayan a velocidad normal y parezcan más realistas»)
+- Si un clip de la biblioteca está grabado a cámara lenta, en el catálogo va `"slowmo": "sí"` y, si se sabe, `"speed"` con el factor real. Por ejemplo, 2.5 si se grabó a 60 fps y se sirve a 24.
+- render.py lo acelera solo (x2,4 por defecto) para que el movimiento de la gente, el agua o los árboles sea natural. Si el clip no da para tanto, se usa un tramo más largo o se elige otro plano.
+- Al revisar la hoja de fotogramas, si algo sigue pareciendo lento (pasos flotando, agua espesa), sube `speed` en el brief de ese plano.
+
 ## Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano porque da la sensación de que hay saltos; vale para todos los vídeos»)
 - Cada rótulo entra justo cuando empieza un plano y sale justo antes de un corte. Nunca entra a mitad ni al final de un plano.
 - El rótulo va con el plano que nombra: si habla de una ciudad, entra con el plano de esa ciudad, y si habla de la barca, con el plano de la barca.

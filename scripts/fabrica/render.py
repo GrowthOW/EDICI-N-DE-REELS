@@ -11,7 +11,7 @@ capturados con Playwright y comprobados con QA (no se pisan, zona segura).
 Redes orgánicas (Iván, 18 oct): sin web, sin logo y sin cartela final de marca.
 La ruta va como etiqueta de ubicación discreta, como las de la propia red.
 """
-import atexit, html, json, os, shutil, subprocess, sys, tempfile
+import atexit, glob, html, json, os, shutil, subprocess, sys, tempfile
 
 
 def workdir(prefix):
@@ -130,24 +130,37 @@ def panel_geom(layout):
 # Sin cámara lenta (Iván, 19 oct: «queda muy de banco de imagen»): los planos de dron, travelling
 # o paneo de stock vienen ralentizados y se aceleran; la gente andando va a velocidad real.
 AERIAL_SPEED = 1.6
+SLOWMO_SPEED = 2.4  # cámara lenta típica de stock: grabado a 50-60 fps y servido a 24-25 (Iván, 21 oct: «ningún vídeo con planos a cámara lenta»)
 _CATALOG = None
 
 
 def clip_speed(p):
-    """Velocidad del plano: `speed` del brief si la trae; si no, 1.6 para dron/paneo y 1 para el resto."""
+    """Velocidad del plano: `speed` del brief si la trae; si no, la del catálogo. La cámara lenta se pasa
+    SIEMPRE a velocidad real (x2,4 o el `speed` del catálogo), el dron/paneo a x1,6 y el resto a x1."""
     if p.get("speed"):
         return float(p["speed"])
     global _CATALOG
     if _CATALOG is None:
         _CATALOG = {}
-        for name in ("catalog.json", "nuevos_18oct.json"):
+        for path in sorted(glob.glob(os.path.join(ENGINE, "biblioteca", "*.json"))):
+            if os.path.basename(path) == "lib_info.json":
+                continue
             try:
-                for c in json.load(open(os.path.join(ENGINE, "biblioteca", name))):
-                    _CATALOG[str(c.get("id"))] = c
-            except (OSError, ValueError):
+                data = json.load(open(path))
+                for c in (data if isinstance(data, list) else data.get("clips", [])):
+                    if isinstance(c, dict) and c.get("id"):
+                        _CATALOG[str(c.get("id"))] = {**_CATALOG.get(str(c.get("id")), {}), **c}
+            except (OSError, ValueError, AttributeError):
                 pass
     c = _CATALOG.get(os.path.splitext(os.path.basename(p["file"]))[0], {})
+    if c.get("speed"):
+        return float(c["speed"])
+    slow = str(c.get("slowmo", "")).strip().lower()
+    if slow and slow not in ("no", "false", "0"):
+        return SLOWMO_SPEED
     scene = (c.get("scene") or "").lower()
+    if any(w in scene for w in ("cámara lenta", "camara lenta", "slow motion", "slow-motion")):
+        return SLOWMO_SPEED
     if c.get("aerial") or any(w in scene for w in ("dron", "travelling", "paneo", "aérea", "aerea")):
         return AERIAL_SPEED
     return 1.0
