@@ -42,6 +42,14 @@ Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada 
 - Zona segura de Instagram SIEMPRE (Iván, 20 oct: «nada de la información importante puede quedar tapada por los iconos de la app»): en 9:16, top 210, laterales 48/52, abajo 370 y, desde y=1118, nada a la derecha de x=921 (botones). En carruseles, sin contador propio y lejos de los iconos. cap.js lo comprueba: una pieza con «fuera de zona» o «tapado por los botones de IG» no se sube.
 - Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
 
+## Almacén sostenible: vista previa en el Centro, versión buena al aprobar (Iván, 21 oct)
+- Los vídeos (reels, stories y shorts) se suben al Centro como vista previa de 720p (unos 2-3 MB, `"preview": true` en files). Es lo que hace produce.py por defecto.
+- Cuando Iván aprueba la pieza (✓), la sala lanza la rutina «Preparar final». Esa rutina vuelve a montar la pieza con `FABRICA_FINAL=1` (1080p, mismos planos y textos) y sustituye la vista previa por el vídeo final en todas las fichas del mismo briefId.
+- Las imágenes (carruseles, posts y portadas) van siempre a calidad completa.
+- Con la cruz, Iván quita la pieza («ya publicada» o «no me gusta») y la sala borra sus archivos.
+- Más adelante, la versión buena irá a Google Drive con una cuenta de servicio.
+- Para que el chip de destino salga en todos los rótulos y no solo en el primero, pon `"tagAll": true` en el brief.
+
 ## Nunca cámara lenta: todo a velocidad real (Iván, 21 oct: «no quiero que ningún vídeo incluya planos a cámara lenta; edítalos para que vayan a velocidad normal y parezcan más realistas»)
 - Si un clip de la biblioteca está grabado a cámara lenta, en el catálogo va `"slowmo": "sí"` y, si se sabe, `"speed"` con el factor real. Por ejemplo, 2.5 si se grabó a 60 fps y se sirve a 24.
 - render.py lo acelera solo (x2,4 por defecto) para que el movimiento de la gente, el agua o los árboles sea natural. Si el clip no da para tanto, se usa un tramo más largo o se elige otro plano.

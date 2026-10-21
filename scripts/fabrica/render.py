@@ -243,7 +243,7 @@ def render_reel(spec):
         mid = (tb["start"] + tb["end"]) / 2
         seg = next((x for x in seg_times if x[0] <= mid < x[1]), seg_times[-1])
         p = f"{work}/t{i}.html"
-        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else (232 if seg[2] == 'triple' else 330),
+        open(p, "w").write(text_html(tb["text"], spec.get("tag") if (i == 0 or spec.get("tagAll")) else None, seg[3], seg[2], top=300 if story else (232 if seg[2] == 'triple' else 330),
                                      badge=tb.get("badge", spec.get("badge"))))
         jobs.append({"html": p, "out": f"{work}/t{i}.png", "w": W, "h": H, "safe": safe})
         overlays.append((f"{work}/t{i}.png", tb["start"], tb["end"]))
@@ -270,7 +270,7 @@ def render_reel(spec):
     chain, last = [], "0:v"
     for i, (png, a, b) in enumerate(overlays):
         inputs += ["-i", png]
-        chain.append(f"[{last}][{i + 1}:v]overlay=0:0:enable='between(t,{a},{b})'[v{i}]")
+        chain.append(f"[{last}][{i + 1}:v]overlay=0:0:enable='gte(t,{a})*lt(t,{b})'[v{i}]")
         last = f"v{i}"
     fade = f"fade=t=out:st={body_dur - 0.35:.3f}:d=0.35"
     fc = (";".join(chain) + f";[{last}]{fade},format=yuv420p[v]") if chain else f"[0:v]{fade},format=yuv420p[v]"

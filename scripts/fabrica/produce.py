@@ -49,6 +49,18 @@ def tag_repeats_title(tag, piece):
     return bool(words) and all(w[:6] in norm(first) for w in words)
 
 
+# Almacén sostenible (Iván, 21 oct): los vídeos se suben como vista previa 720p (~2-3 MB) y la versión
+# buena (1080p) solo se monta cuando Iván aprueba la pieza (rutina «Preparar final», FABRICA_FINAL=1).
+FINAL = os.environ.get("FABRICA_FINAL") == "1"
+
+
+def make_preview(src):
+    out = os.path.splitext(src)[0] + "_previa.mp4"
+    render.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vf", "scale=720:-2", "-c:v", "libx264", "-preset", "medium",
+                "-crf", "27", "-maxrate", "1.8M", "-bufsize", "3.6M", "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", out])
+    return out
+
+
 def tag_for(piece, lang):
     """Etiqueta de ubicación de la pieza (nombre corto de la ruta en el idioma del público)."""
     if piece.get("tag") or piece.get("pill"):
@@ -247,10 +259,13 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     t["start"] = round(t["start"] * k, 2)
                     t["end"] = round(min(t["end"] * k, body - 0.45), 2)
                 out = f"{out_dir}/{piece['id']}.mp4"
-                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "badge": badge, "out": out,
+                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "tagAll": bool(piece.get("tagAll")), "badge": badge, "out": out,
                                         "kind": "story" if key == "story_video" else "reel"})
-                files = [{"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4"},
-                         {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
+                if FINAL:
+                    vid = {"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4", "final": True}
+                else:  # en el Centro solo la vista previa ligera; la buena se monta al aprobar (Iván, 21 oct)
+                    vid = {"kind": "video", "label": "Vista previa 720p", "local": make_preview(r["out"]), "name": f"{piece['id']}_previa.mp4", "preview": True}
+                files = [vid, {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "sheet": r["sheet"], "files": files,
                                  "docs": docs_for(piece, lang, date, slot, files, cycle), "clips": shot_clips(s)})
             elif key == "ig_carousel":
