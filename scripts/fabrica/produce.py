@@ -17,7 +17,7 @@ ROUTES = [  # (patrón en el nombre de la ruta, {idioma: etiqueta corta para la 
     (r"a[ñn]o santo|holy year|heilig", {"ES": "Año Santo Xacobeo 2027", "EN": "Holy Year 2027", "DE": "Heiliges Jahr 2027"}),
     (r"costa|coast|küste", {"ES": "Camino Portugués por la Costa", "EN": "Portuguese Coastal Camino", "DE": "Portugiesischer Küstenweg"}),
     (r"tui", {"ES": "Camino Portugués desde Tui", "EN": "Camino from Tui", "DE": "Jakobsweg ab Tui"}),
-    (r"sarria", {"ES": "Camino de Santiago desde Sarria", "EN": "Camino from Sarria", "DE": "Jakobsweg ab Sarria"}),
+    (r"sarria", {"ES": "Camino de Santiago desde Sarria", "EN": "Camino de Santiago from Sarria", "DE": "Jakobsweg ab Sarria"}),
     (r"franc[ée]s|french|französ|saint-jean|st\.? jean", {"ES": "Camino Francés", "EN": "Camino Francés", "DE": "Französischer Jakobsweg"}),
     (r"fisher|fischer|vicentina", {"ES": "Rota Vicentina", "EN": "Rota Vicentina", "DE": "Rota Vicentina"}),
     (r"cotswold", {"*": "Cotswold Way"}),
