@@ -4,13 +4,14 @@ Uso:
   python3 render.py reel spec.json
   python3 render.py static spec.json
 
-Textos siempre como HTML real (Manrope 800 / Liberation Sans engrosada),
+Textos siempre como HTML real (Nunito en titulares y chips, Mulish en el texto; sustitutos
+de Caros Soft y Museo Sans del brandbook, Iván 20 oct), con el azul de marca #1376A4 en los chips,
 capturados con Playwright y comprobados con QA (no se pisan, zona segura).
 
 Redes orgánicas (Iván, 18 oct): sin web, sin logo y sin cartela final de marca.
 La ruta va como etiqueta de ubicación discreta, como las de la propia red.
 """
-import atexit, html, json, os, shutil, subprocess, sys, tempfile
+import atexit, glob, html, json, os, shutil, subprocess, sys, tempfile
 
 
 def workdir(prefix):
@@ -22,13 +23,18 @@ def workdir(prefix):
 ENGINE = os.path.dirname(os.path.abspath(__file__))
 STYLE = os.path.join(ENGINE, "..", "orbisways_style")
 W, H = 1080, 1920
-REEL_SAFE = {"top": 260, "bottom": 420, "right": 200, "left": 60}
-STORY_SAFE = {"top": 250, "bottom": 340, "right": 60, "left": 60}
+BRAND = "#1376A4"  # azul oscuro del brandbook: chips de ruta y rótulos de pantalla
+# zona segura de Instagram sobre 1080x1920 (Ana, 19 oct; fabrica/zona-segura): top 210, laterales 48/52, bottom 370;
+# desde y=1118 el borde derecho baja a x=921 (botones de la app). cap.js lo comprueba con notchX/notchY.
+REEL_SAFE = {"top": 210, "bottom": 370, "right": 52, "left": 48, "notchX": 921, "notchY": 1118}
+STORY_SAFE = dict(REEL_SAFE)
+NOTCH_RIGHT = W - 921  # margen derecho de todo bloque que baje de y=1118
 GAP = 6  # separación blanca entre pantallas
 
 FONTS = f"""
-@font-face{{font-family:Manrope;font-weight:800;src:url({STYLE}/fonts/manrope-latin-800-normal.woff2)}}
-@font-face{{font-family:LS;font-weight:700;src:url({STYLE}/fonts/LiberationSans-Bold.ttf)}}
+@font-face{{font-family:Head;font-weight:800;src:url({STYLE}/fonts/nunito-latin-800-normal.woff2)}}
+@font-face{{font-family:Head;font-weight:700;src:url({STYLE}/fonts/nunito-latin-700-normal.woff2)}}
+@font-face{{font-family:Body;font-weight:700;src:url({STYLE}/fonts/mulish-latin-700-normal.woff2)}}
 """
 PIN = ('<svg viewBox="0 0 24 24" width="{s}" height="{s}" style="flex:none"><path fill="#fff" '
        'd="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>')
@@ -56,23 +62,23 @@ def esc(s):
 
 
 def tag_html(text, size, cls="t tag", ident="tag"):
-    """Etiqueta de ubicación: chip translúcido con chincheta, sin color de marca."""
+    """Etiqueta de ubicación: chip azul de marca con chincheta, en Nunito Bold (brandbook: chip azul con la ruta)."""
     if not text:
         return ""
     return (f'<div class="{cls}" id="{ident}" style="display:inline-flex;align-items:center;gap:{int(size * .35)}px;'
-            f'background:rgba(0,0,0,.6);padding:{int(size * .32)}px {int(size * .62)}px;border-radius:999px;'
-            f'font:800 {size}px/1.15 Manrope;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
+            f'background:{BRAND};padding:{int(size * .32)}px {int(size * .62)}px;border-radius:999px;'
+            f'font:800 {size}px/1.15 Head;max-width:100%;box-sizing:border-box">{PIN.format(s=int(size * 1.05))}<span style="text-wrap:balance">{esc(text)}</span></div>')
 
 
 def badge_html(text, size, ident="badge"):
-    """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). Es el único acento amarillo de la pieza
-    que permite el brandbook (#FFDA00 con texto #222), en Manrope 800 y mayúsculas."""
+    """Etiqueta de evento (Iván, 19 oct: el Año Santo 2027 tiene que verse). En azul de marca con texto blanco,
+    como el resto de chips (Iván, 20 oct: «limpio y sobrio», solo texto blanco y azul Orbis)."""
     if not text:
         return ""
-    return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:#FFDA00;color:#222;'
+    return (f'<div class="t badge" id="{ident}" style="display:inline-block;background:{BRAND};color:#fff;'
             f'padding:{int(size * .34)}px {int(size * .62)}px {int(size * .3)}px;border-radius:{int(size * .3)}px;'
-            f'font:800 {size}px/1 Manrope;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
-            f'box-shadow:0 4px 18px rgba(0,0,0,.28)">{esc(text)}</div>')
+            f'font:800 {size}px/1 Head;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;'
+            f'box-shadow:0 4px 18px rgba(34,34,34,.28)">{esc(text)}</div>')
 
 
 # ---------- reels y stories en vídeo ----------
@@ -92,20 +98,20 @@ def text_html(text, tag=None, labels=None, layout="full", top=330, badge=None):
             if not lt:
                 continue
             # la etiqueta de cada pantalla va abajo a la izquierda de su pantalla, dentro de la zona segura
-            yb = min(y + ph - 60, H - REEL_SAFE["bottom"] - 10)
-            mw = min(W - REEL_SAFE["right"] - x, W // 2 - 90) if layout == "grid4" else 760
+            yb = min(y + ph - 60, H - REEL_SAFE["bottom"] - 30)
+            mw = min(W - NOTCH_RIGHT - x, W // 2 - 90) if layout == "grid4" else 760
             fs = 34 if layout == "grid4" else 44
             lab += (f'<div class="t lab" id="lab{i}" style="position:absolute;left:{x}px;top:{yb}px;transform:translateY(-100%);'
-                    f'background:#fff;color:#111;padding:10px 20px 12px;border-radius:12px;font:800 {fs}px/1.05 Manrope;'
+                    f'background:{BRAND};color:#fff;padding:10px 20px 12px;border-radius:12px;font:700 {fs}px/1.05 Head;'
                     f'box-sizing:border-box;max-width:{mw}px">{esc(lt)}</div>')
     txt = f'<div class="t" id="txt">{esc(text)}</div>' if text else ""
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{W}px;height:{H}px;background:transparent;overflow:hidden}}
-.box{{position:absolute;left:90px;right:230px;top:{top}px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}}
+.box{{position:absolute;left:80px;right:{NOTCH_RIGHT + 40}px;top:{top}px;display:flex;flex-direction:column;align-items:flex-start;gap:28px}}
 .t{{color:#fff}}
-#txt{{font:800 70px/1.08 Manrope;text-shadow:0 3px 3px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.45)}}
-.grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.14) 55%,rgba(0,0,0,0))}}
-</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 46) if tag else ''}</div>{lab}</body></html>"""
+#txt{{font:800 70px/1.08 Head;text-shadow:0 3px 3px rgba(34,34,34,.55),0 0 26px rgba(34,34,34,.45)}}
+.grad{{position:absolute;left:0;right:0;top:0;height:1000px;background:linear-gradient(180deg,rgba(34,34,34,.40),rgba(34,34,34,.14) 55%,rgba(34,34,34,0))}}
+</style></head><body>{'<div class="grad"></div>' if text else ''}<div class="box">{badge_html(badge, 46) if badge and text else ''}{txt}{tag_html(tag, 58) if tag else ''}</div>{lab}</body></html>"""
 
 
 def panel_geom(layout):
@@ -124,24 +130,37 @@ def panel_geom(layout):
 # Sin cámara lenta (Iván, 19 oct: «queda muy de banco de imagen»): los planos de dron, travelling
 # o paneo de stock vienen ralentizados y se aceleran; la gente andando va a velocidad real.
 AERIAL_SPEED = 1.6
+SLOWMO_SPEED = 2.4  # cámara lenta típica de stock: grabado a 50-60 fps y servido a 24-25 (Iván, 21 oct: «ningún vídeo con planos a cámara lenta»)
 _CATALOG = None
 
 
 def clip_speed(p):
-    """Velocidad del plano: `speed` del brief si la trae; si no, 1.6 para dron/paneo y 1 para el resto."""
+    """Velocidad del plano: `speed` del brief si la trae; si no, la del catálogo. La cámara lenta se pasa
+    SIEMPRE a velocidad real (x2,4 o el `speed` del catálogo), el dron/paneo a x1,6 y el resto a x1."""
     if p.get("speed"):
         return float(p["speed"])
     global _CATALOG
     if _CATALOG is None:
         _CATALOG = {}
-        for name in ("catalog.json", "nuevos_18oct.json"):
+        for path in sorted(glob.glob(os.path.join(ENGINE, "biblioteca", "*.json"))):
+            if os.path.basename(path) == "lib_info.json":
+                continue
             try:
-                for c in json.load(open(os.path.join(ENGINE, "biblioteca", name))):
-                    _CATALOG[str(c.get("id"))] = c
-            except (OSError, ValueError):
+                data = json.load(open(path))
+                for c in (data if isinstance(data, list) else data.get("clips", [])):
+                    if isinstance(c, dict) and c.get("id"):
+                        _CATALOG[str(c.get("id"))] = {**_CATALOG.get(str(c.get("id")), {}), **c}
+            except (OSError, ValueError, AttributeError):
                 pass
     c = _CATALOG.get(os.path.splitext(os.path.basename(p["file"]))[0], {})
+    if c.get("speed"):
+        return float(c["speed"])
+    slow = str(c.get("slowmo", "")).strip().lower()
+    if slow and slow not in ("no", "false", "0"):
+        return SLOWMO_SPEED
     scene = (c.get("scene") or "").lower()
+    if any(w in scene for w in ("cámara lenta", "camara lenta", "slow motion", "slow-motion")):
+        return SLOWMO_SPEED
     if c.get("aerial") or any(w in scene for w in ("dron", "travelling", "paneo", "aérea", "aerea")):
         return AERIAL_SPEED
     return 1.0
@@ -185,6 +204,27 @@ def segment(shot, out, work, idx):
     run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[v]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", out])
 
 
+def snap_texts(texts, cuts, total):
+    """Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano, da sensación de saltos»).
+    Cada rótulo entra justo al empezar un plano y sale justo antes de un corte (o del fundido final); nunca a mitad ni al final de un plano."""
+    ends = cuts[1:] + [total]
+    out, prev = [], 0.0
+    for tb in sorted(texts, key=lambda t: t["start"]):
+        t = dict(tb)
+        free = [c for c in cuts if c >= prev - 0.01]
+        c0 = min(free, key=lambda c: abs(c - t["start"])) if free else cuts[-1]
+        start = 0.3 if c0 == 0 else c0 + 0.12
+        cand = [e for e in ends if e - 0.12 - start >= 1.8]
+        e0 = min(cand, key=lambda e: abs(e - t["end"])) if cand else total
+        end = total - 0.35 if e0 >= total else e0 - 0.12
+        if abs(start - t["start"]) > 0.05 or abs(end - t["end"]) > 0.05:
+            print(f"  rótulo «{t['text'][:30]}»: {t['start']:.2f}-{t['end']:.2f} s → {start:.2f}-{end:.2f} s (al ritmo de los planos)")
+        t["start"], t["end"] = round(start, 2), round(end, 2)
+        out.append(t)
+        prev = e0
+    return out
+
+
 def render_reel(spec):
     """Reel o story en vídeo 1080x1920. Sin cartela final: termina en el último plano con un fundido corto."""
     work = workdir("reel_")
@@ -197,18 +237,19 @@ def render_reel(spec):
         seg_times.append((t_acc, t_acc + s["dur"], s.get("layout", "full"), s.get("labels")))
         t_acc += s["dur"]
     body_dur = t_acc
+    if not spec.get("freeTiming"):
+        spec["texts"] = snap_texts(spec["texts"], [x[0] for x in seg_times], body_dur)
     for i, tb in enumerate(spec["texts"]):
         mid = (tb["start"] + tb["end"]) / 2
         seg = next((x for x in seg_times if x[0] <= mid < x[1]), seg_times[-1])
         p = f"{work}/t{i}.html"
-        open(p, "w").write(text_html(tb["text"], spec.get("tag") if i == 0 else None, seg[3], seg[2], top=300 if story else 330,
+        open(p, "w").write(text_html(tb["text"], spec.get("tag") if (i == 0 or spec.get("tagAll")) else None, seg[3], seg[2], top=300 if story else (232 if seg[2] == 'triple' else 330),
                                      badge=tb.get("badge", spec.get("badge"))))
         jobs.append({"html": p, "out": f"{work}/t{i}.png", "w": W, "h": H, "safe": safe})
         overlays.append((f"{work}/t{i}.png", tb["start"], tb["end"]))
-    # tramos multipantalla sin texto propio: sus etiquetas también se ven
+    # etiquetas de cada pantalla: se ven durante todo su tramo, también entre un rótulo y el siguiente (Iván, 20 oct)
     for k, (a, b, lay, labels) in enumerate(seg_times):
-        covered = any(tb["start"] < b and tb["end"] > a for tb in spec["texts"])
-        if labels and not covered:
+        if labels:
             p = f"{work}/l{k}.html"
             open(p, "w").write(text_html("", None, labels, lay))
             jobs.append({"html": p, "out": f"{work}/l{k}.png", "w": W, "h": H, "safe": safe})
@@ -229,7 +270,7 @@ def render_reel(spec):
     chain, last = [], "0:v"
     for i, (png, a, b) in enumerate(overlays):
         inputs += ["-i", png]
-        chain.append(f"[{last}][{i + 1}:v]overlay=0:0:enable='between(t,{a},{b})'[v{i}]")
+        chain.append(f"[{last}][{i + 1}:v]overlay=0:0:enable='gte(t,{a})*lt(t,{b})'[v{i}]")
         last = f"v{i}"
     fade = f"fade=t=out:st={body_dur - 0.35:.3f}:d=0.35"
     fc = (";".join(chain) + f";[{last}]{fade},format=yuv420p[v]") if chain else f"[0:v]{fade},format=yuv420p[v]"
@@ -242,8 +283,12 @@ def render_reel(spec):
     else:
         cmd += ["-f", "lavfi", "-t", f"{body_dur:.3f}", "-i", "anullsrc=r=48000:cl=stereo"]
         fc += f";[{na}:a]anull[a]"
+    # solo móvil (stories de Instagram; Iván, 20 oct: «Instagram y TikTok se ven en el móvil, baja la calidad si se ve
+    # igual»): crf 24 deja el archivo a la mitad con SSIM 0,987. Los reels comparten archivo con YouTube y Facebook,
+    # que también se ven en ordenador, y mantienen la calidad alta.
+    q = ["-crf", "24", "-maxrate", "4M", "-bufsize", "8M"] if story else ["-crf", "21", "-maxrate", "5M", "-bufsize", "10M"]
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium",
-            "-crf", "21", "-maxrate", "5M", "-bufsize", "10M", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart",
+            *q, "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart",
             "-t", f"{body_dur:.3f}", spec["out"]]
     run(cmd)
     sheet = spec["out"].rsplit(".", 1)[0] + "_sheet.jpg"
@@ -263,21 +308,23 @@ def static_html(sp):
     sub = f'<div class="t" id="sub">{esc(sp["sub"])}</div>' if sp.get("sub") else ""
     pos = sp.get("objectPosition", "50% 50%")
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(34,34,34,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(sp["counter"])}</div>') if sp.get("counter") else ""
     # en stories el texto va arriba-centro (lo de abajo lo tapan la respuesta y los stickers)
-    box = (f"left:{int(70 * k)}px;right:{int(70 * k)}px;top:{int(330 * k)}px" if story
-           else f"left:{int(70 * k)}px;right:{int(70 * k)}px;bottom:{int(90 * k)}px")
-    grad = ("top:0;height:{0}px;background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.38) 45%,rgba(0,0,0,0))".format(int(h * .6)) if story
-            else "bottom:0;height:{0}px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.30) 35%,rgba(0,0,0,.72))".format(int(h * .62)))
+    # stories: texto arriba dentro de la zona segura; carruseles de Instagram: lejos de los iconos de la app (Ana, 19 oct)
+    bot = 150 if sp.get("ig") else 90
+    box = (f"left:{int(80 * k)}px;right:{int((NOTCH_RIGHT + 30) * k)}px;top:{int(330 * k)}px" if story
+           else f"left:{int(70 * k)}px;right:{int((100 if sp.get('ig') else 70) * k)}px;bottom:{int(bot * k)}px")
+    grad = ("top:0;height:{0}px;background:linear-gradient(180deg,rgba(34,34,34,.62),rgba(34,34,34,.38) 45%,rgba(34,34,34,0))".format(int(h * .6)) if story
+            else "bottom:0;height:{0}px;background:linear-gradient(180deg,rgba(34,34,34,0),rgba(34,34,34,.30) 35%,rgba(34,34,34,.72))".format(int(h * .62)))
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#0b2230}}
 #bg{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:{pos}}}
 .grad{{position:absolute;left:0;right:0;{grad}}}
 .box{{position:absolute;{box};display:flex;flex-direction:column;align-items:flex-start;gap:{int(24 * k)}px}}
 .t{{color:#fff}}
-#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Manrope;text-shadow:0 2px 18px rgba(0,0,0,.35)}}
-#sub{{font:700 {int(40 * k)}px/1.22 LS;-webkit-text-stroke:{max(1, int(2 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 12px rgba(0,0,0,.55)}}
+#head{{font:800 {int(sp.get("headSize", 78) * k)}px/1.06 Head;text-shadow:0 2px 18px rgba(34,34,34,.35)}}
+#sub{{font:700 {int(40 * k)}px/1.22 Body;text-shadow:0 2px 12px rgba(34,34,34,.55)}}
 </style></head><body><img id="bg" src="{sp["image"]}"><div class="grad"></div>
 <div class="box">{badge_html(sp.get("badge"), int(44 * k))}{tag_html(sp.get("tag"), int(34 * k))}<div class="t" id="head">{esc(sp["headline"])}</div>{sub}</div>{counter}</body></html>"""
 
@@ -288,7 +335,7 @@ def render_static(sp):
     open(p, "w").write(static_html(sp))
     png = f"{work}/s.png"
     m = int(40 * sp["w"] / 1080)
-    safe = STORY_SAFE if sp.get("story") else {"top": m, "bottom": m // 2, "right": m, "left": m}
+    safe = STORY_SAFE if sp.get("story") else ({"top": 120, "bottom": 130, "right": 90, "left": 60} if sp.get("ig") else {"top": m, "bottom": m // 2, "right": m, "left": m})
     capture([{"html": p, "out": png, "w": sp["w"], "h": sp["h"], "safe": safe}])
     run(["ffmpeg", "-v", "error", "-y", "-i", png, "-q:v", "2", sp["out"]])
     return {"out": sp["out"]}
@@ -302,7 +349,7 @@ def render_carousel(sp):
         render_static({"w": 1080, "h": 1350, "image": sl["image"], "headline": sl.get("headline", ""), "sub": sl.get("sub", ""),
                        "tag": sp.get("tag") if i == 0 else None, "badge": sp.get("badge") if i == 0 else None,
                        "objectPosition": sl.get("objectPosition", "50% 50%"),
-                       "headSize": 84 if i == 0 else 72, "counter": f"{i + 1}/{n}", "out": out})
+                       "headSize": 84 if i == 0 else 72, "ig": True, "out": out})
         outs.append(out)
     return {"out": outs}
 
@@ -312,29 +359,30 @@ def compare_html(sp):
     w, h = sp["w"], sp["h"]
     k = w / 1080
     hh = (h - GAP) // 2
+    sp_ig = bool(sp.get("ig"))
 
     def half(i, side):
         y = 0 if i == 0 else hh + GAP
         facts = "".join(f'<div class="t f" id="f{i}{j}">{esc(x)}</div>' for j, x in enumerate(side.get("facts", [])[:3]))
         return (f'<div style="position:absolute;left:0;top:{y}px;width:{w}px;height:{hh}px;overflow:hidden">'
                 f'<img src="{side["image"]}" style="width:100%;height:100%;object-fit:cover;object-position:{side.get("objectPosition", "50% 50%")}">'
-                f'<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.1) 70%)"></div>'
-                f'<div style="position:absolute;left:{int(60 * k)}px;bottom:{int(44 * k)}px;display:flex;flex-direction:column;gap:{int(10 * k)}px">'
+                f'<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(34,34,34,.62),rgba(34,34,34,.1) 70%)"></div>'
+                f'<div style="position:absolute;left:{int(60 * k)}px;bottom:{int((120 if (sp_ig and i == 1) else 44) * k)}px;display:flex;flex-direction:column;gap:{int(10 * k)}px">'
                 f'<div class="t n" id="n{i}">{esc(side["name"])}</div>{facts}</div></div>')
     cnt = sp.get("counter")
-    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else 60) * k)}px;top:{int(46 * k)}px;'
-            f'font:800 {int(54 * k)}px/1.08 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
+    head = (f'<div class="t" id="head" style="position:absolute;left:{int(60 * k)}px;right:{int((170 if cnt else (100 if sp_ig else 60)) * k)}px;top:{int((120 if sp_ig else 46) * k)}px;'
+            f'font:800 {int(54 * k)}px/1.08 Head;text-shadow:0 2px 14px rgba(34,34,34,.6)">{esc(sp.get("headline"))}</div>') if sp.get("headline") else ""
     counter = (f'<div class="t" id="cnt" style="position:absolute;right:{int(56 * k)}px;top:{int(52 * k)}px;'
-               f'font:800 {int(30 * k)}px/1 Manrope;background:rgba(0,0,0,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
+               f'font:700 {int(30 * k)}px/1 Head;background:rgba(34,34,34,.38);padding:{int(10 * k)}px {int(18 * k)}px;'
                f'border-radius:999px">{esc(cnt)}</div>') if cnt else ""
     # el «vs» va a la derecha de la línea de corte para no pisar los datos de la foto de arriba
     vs = (f'<div class="t" id="vs" style="position:absolute;right:{int(70 * k)}px;top:{hh + GAP // 2}px;transform:translateY(-50%);'
-          f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;'
-          f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Manrope">{esc(sp.get("vs", "vs"))}</div>')
+          f'width:{int(96 * k)}px;height:{int(96 * k)}px;border-radius:50%;background:{BRAND};color:#fff;display:grid;place-items:center;'
+          f'font:800 {int((36 if len(sp.get("vs", "vs")) <= 2 else 26) * k)}px/1 Head">{esc(sp.get("vs", "vs"))}</div>')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{FONTS}
 html,body{{margin:0;width:{w}px;height:{h}px;overflow:hidden;background:#fff}}
-.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Manrope;text-shadow:0 2px 14px rgba(0,0,0,.5)}}
-.f{{font:700 {int(34 * k)}px/1.2 LS;-webkit-text-stroke:{max(1, int(1.5 * k))}px #fff;paint-order:stroke;text-shadow:0 2px 10px rgba(0,0,0,.5)}}
+.t{{color:#fff}} .n{{font:800 {int(sp.get("nameSize", 60) * k)}px/1.05 Head;text-shadow:0 2px 14px rgba(34,34,34,.5)}}
+.f{{font:700 {int(34 * k)}px/1.2 Body;text-shadow:0 2px 10px rgba(34,34,34,.5)}}
 </style></head><body>{half(0, sp["a"])}{half(1, sp["b"])}{head}{vs}{counter}</body></html>"""
 
 
@@ -355,7 +403,7 @@ def render_compare_carousel(sp):
     for i, sl in enumerate(sp["slides"]):
         out = f'{sp["out_prefix"]}_{i + 1}.jpg'
         render_compare({"w": sp.get("w", 1080), "h": sp.get("h", 1350), "headline": sl.get("headline", ""), "vs": sp.get("vs", "vs"),
-                        "a": sl["a"], "b": sl["b"], "counter": f"{i + 1}/{n}", "nameSize": 60 if i == 0 else 46, "out": out})
+                        "a": sl["a"], "b": sl["b"], "ig": True, "nameSize": 60 if i == 0 else 46, "out": out})
         outs.append(out)
     return {"out": outs}
 

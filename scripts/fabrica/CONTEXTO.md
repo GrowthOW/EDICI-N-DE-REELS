@@ -35,6 +35,38 @@ Instagram, TikTok, YouTube, Facebook y LinkedIn son buscadores: leen el texto en
 - `ytTitle` en los reels: título de YouTube Shorts de 60 caracteres como máximo, con la palabra clave al principio.
 Dónde va la palabra clave: en el rótulo del gancho o el titular de la portada si queda natural; en los primeros 125 caracteres del copy de cada canal; en el título y las dos primeras líneas de la descripción de YouTube; y en 1 de los 3-5 hashtags (1 de ruta, 1 de destino, 1-2 de nicho; nada de hashtags genéricos tipo #travel). Nunca forzada ni repetida: primero que se lea natural.
 
+## Tipografía y azul de marca (Iván, 20 oct: «utiliza Nunito y el azul del manual en todas las creas»)
+- Titulares y chips en **Nunito** (800 titulares, 700 chips, etiquetas y contador), el sustituto de Caros Soft Bold del brandbook mientras no haya licencia. El texto secundario va en **Mulish** 700 (sustituto de Museo Sans), sin contorno. Nunca menos de 22 px a 1080.
+- La etiqueta de la ruta, los rótulos de cada pantalla y el badge de evento van en chip **azul de marca #1376A4** con texto blanco. Nada más de color.
+- Limpio y sobrio (Iván, 20 oct: «no quiero bolds en blanco como hay en unas creas, solo la fuente en blanco y algún fondo azul Orbis en el nombre de los destinos»): texto en blanco sobre la foto, sin cajas blancas detrás del texto, sin contornos, sin amarillo ni más adornos.
+- Zona segura de Instagram SIEMPRE (Iván, 20 oct: «nada de la información importante puede quedar tapada por los iconos de la app»): en 9:16, top 210, laterales 48/52, abajo 370 y, desde y=1118, nada a la derecha de x=921 (botones). En carruseles, sin contador propio y lejos de los iconos. cap.js lo comprueba: una pieza con «fuera de zona» o «tapado por los botones de IG» no se sube.
+- Lo aplica `render.py` solo; no se cambia a mano en el brief. Si llega la Caros Soft con licencia, se sustituye en `FONTS`.
+
+## Almacén sostenible: vista previa en el Centro, versión buena al aprobar (Iván, 21 oct)
+- Los vídeos (reels, stories y shorts) se suben al Centro como vista previa de 720p (unos 2-3 MB, `"preview": true` en files). Es lo que hace produce.py por defecto.
+- Cuando Iván aprueba la pieza (✓), la sala lanza la rutina «Preparar final». Esa rutina vuelve a montar la pieza con `FABRICA_FINAL=1` (1080p, mismos planos y textos) y sustituye la vista previa por el vídeo final en todas las fichas del mismo briefId.
+- Las imágenes (carruseles, posts y portadas) van siempre a calidad completa.
+- Con la cruz, Iván quita la pieza («ya publicada» o «no me gusta») y la sala borra sus archivos.
+- Más adelante, la versión buena irá a Google Drive con una cuenta de servicio.
+- Para que el chip de destino salga en todos los rótulos y no solo en el primero, pon `"tagAll": true` en el brief.
+
+## Nunca cámara lenta: todo a velocidad real (Iván, 21 oct: «no quiero que ningún vídeo incluya planos a cámara lenta; edítalos para que vayan a velocidad normal y parezcan más realistas»)
+- Si un clip de la biblioteca está grabado a cámara lenta, en el catálogo va `"slowmo": "sí"` y, si se sabe, `"speed"` con el factor real. Por ejemplo, 2.5 si se grabó a 60 fps y se sirve a 24.
+- render.py lo acelera solo (x2,4 por defecto) para que el movimiento de la gente, el agua o los árboles sea natural. Si el clip no da para tanto, se usa un tramo más largo o se elige otro plano.
+- Al revisar la hoja de fotogramas, si algo sigue pareciendo lento (pasos flotando, agua espesa), sube `speed` en el brief de ese plano.
+
+## Rótulos en armonía con los planos (Iván, 20 oct: «no pongas un subtítulo en el último segundo del plano porque da la sensación de que hay saltos; vale para todos los vídeos»)
+- Cada rótulo entra justo cuando empieza un plano y sale justo antes de un corte. Nunca entra a mitad ni al final de un plano.
+- El rótulo va con el plano que nombra: si habla de una ciudad, entra con el plano de esa ciudad, y si habla de la barca, con el plano de la barca.
+- Si el título ya nombra la ruta, no se pone también el chip con su nombre (Iván, 20 oct: «no es necesario el título dos veces»). produce.py lo quita solo con `tag_repeats_title`; para quitarlo a mano, pon `"tag": null` en el brief.
+- render.py lo aplica solo con `snap_texts`: ajusta las entradas y salidas a los cortes y avisa en el log. Aun así, al escribir el brief, cuadra cada rótulo con su plano.
+
+## Referencia de estilo: @_thru_hiking (Iván, 20 oct)
+Cuenta de Instagram que nos gusta como referencia: https://www.instagram.com/_thru_hiking/ (grandes datos de alcance y comunidad).
+- Formato favorito de Iván: **entrada por el mapa y paso a imágenes reales**, como https://www.instagram.com/p/DdsyksTt2RW/. El vídeo arranca con un mapa 3D o un vuelo sobre la ruta (dónde está, por dónde va) y enlaza con planos reales del sendero.
+- Cómo hacerlo con lo que tenemos: el vuelo 3D de Virtual Routes (https://claude.ai/artifact/4t1wUrkkXdhmvMnGK9Dx4n) o el Configurador de Mapas Animados con el GPX real de la ruta como primer plano (2-4 s), y después los clips reales de la biblioteca. Mismo estilo de siempre: texto blanco en Nunito y el destino en chip azul.
+- Proponer al menos un reel así en cada tanda de vídeos, empezando por las rutas que más facturan.
+
 ## Orbis habla como fuente autorizada (Iván, 19 oct: «quita referencia de las fuentes, nosotros mismos somos una fuente autorizada»)
 En las piezas (texto en pantalla, láminas, copys, títulos y descripciones) NO se citan fuentes: nada de «según la Xunta», «(Oficina del Peregrino)», «Source: …», «according to…», «laut…», «je nach Quelle». Los datos se dan en primera persona de experto («Desde Sarria salen 3 de cada 10 peregrinos», «Unos 10.000 m de desnivel positivo»). Las fuentes siguen siendo obligatorias, pero solo DENTRO de la ficha (justification, sources, explain), para comprobar que el dato es real; nunca en lo que se publica. Si un dato es dudoso o varía según quién lo mida, se redondea («unos», «más de») en lugar de citar.
 

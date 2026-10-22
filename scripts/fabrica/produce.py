@@ -7,7 +7,7 @@ media_dir contiene video/<id>.mp4 e image/<id>.jpg ya licenciados.
 Escribe en out_dir los MP4/JPG finales y manifest.json con, por pieza, los
 archivos y los documentos de calendario (uno por canal) para la sala.
 """
-import json, os, re, sys, traceback
+import json, os, re, sys, traceback, unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import render  # noqa: E402
@@ -37,10 +37,36 @@ MARKET = {"ES": "España", "EN": "UK+US", "DE": "DACH"}
 SUFFIX = {"ig_carousel": "", "ig_static": "", "fb": "", "linkedin": "", "story": "story", "story_video": "story", "compare": "cmp"}
 
 
+_TAG_STOP = {"camino", "the", "de", "del", "la", "el", "way", "ways", "walk", "trail", "path", "tour", "coastal", "costa", "route", "ruta", "weg", "der", "die", "das", "von", "from", "desde"}
+
+
+def tag_repeats_title(tag, piece):
+    """True si el primer rótulo ya dice el nombre de la ruta del chip (p. ej. chip «Portuguese Coastal Camino» con título «The Camino Portugués, from Porto»)."""
+    texts = piece.get("texts") or piece.get("textBlocks") or []
+    first = (texts[0].get("text") if texts and isinstance(texts[0], dict) else (texts[0] if texts else "")) or ""
+    norm = lambda x: re.sub(r"[^a-z0-9 ]", " ", unicodedata.normalize("NFD", x.lower()).encode("ascii", "ignore").decode())
+    words = [w for w in norm(tag).split() if w not in _TAG_STOP and len(w) > 2]
+    return bool(words) and all(w[:6] in norm(first) for w in words)
+
+
+# Almacén sostenible (Iván, 21 oct): los vídeos se suben como vista previa 720p (~2-3 MB) y la versión
+# buena (1080p) solo se monta cuando Iván aprueba la pieza (rutina «Preparar final», FABRICA_FINAL=1).
+FINAL = os.environ.get("FABRICA_FINAL") == "1"
+
+
+def make_preview(src):
+    out = os.path.splitext(src)[0] + "_previa.mp4"
+    render.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vf", "scale=720:-2", "-c:v", "libx264", "-preset", "medium",
+                "-crf", "27", "-maxrate", "1.8M", "-bufsize", "3.6M", "-c:a", "aac", "-b:a", "96k", "-movflags", "+faststart", out])
+    return out
+
+
 def tag_for(piece, lang):
     """Etiqueta de ubicación de la pieza (nombre corto de la ruta en el idioma del público)."""
     if piece.get("tag") or piece.get("pill"):
         return piece.get("tag") or piece.get("pill")
+    if "tag" in piece:  # "tag": null o "" en el brief = sin etiqueta (Iván, 20 oct)
+        return None
     name = (piece.get("route") or "").lower()
     for pat, lab in ROUTES:
         if re.search(pat, name):
@@ -220,6 +246,8 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
         badge = badge_for(piece, lang)
         if badge and tag and re.search(r"a[ñn]o santo|holy year|heilig", tag, re.I):
             tag = None  # la etiqueta amarilla ya lo dice
+        if tag and tag_repeats_title(tag, piece):
+            tag = None  # el título ya nombra la ruta: no repetirla en el chip (Iván, 20 oct)
         try:
             if key in ("reel", "story_video"):
                 shots = build_shots(piece, s, media)
@@ -231,10 +259,13 @@ def main(lang, brief_p, sel_p, media, out_dir, date):
                     t["start"] = round(t["start"] * k, 2)
                     t["end"] = round(min(t["end"] * k, body - 0.45), 2)
                 out = f"{out_dir}/{piece['id']}.mp4"
-                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "badge": badge, "out": out,
+                r = render.render_reel({"lang": lang, "shots": shots, "texts": texts, "tag": tag, "tagAll": bool(piece.get("tagAll")), "badge": badge, "out": out,
                                         "kind": "story" if key == "story_video" else "reel"})
-                files = [{"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4"},
-                         {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
+                if FINAL:
+                    vid = {"kind": "video", "label": "Vídeo final", "local": r["out"], "name": f"{piece['id']}.mp4", "final": True}
+                else:  # en el Centro solo la vista previa ligera; la buena se monta al aprobar (Iván, 21 oct)
+                    vid = {"kind": "video", "label": "Vista previa 720p", "local": make_preview(r["out"]), "name": f"{piece['id']}_previa.mp4", "preview": True}
+                files = [vid, {"kind": "image", "label": "Portada", "local": r["cover"], "name": f"{piece['id']}_portada.jpg"}]
                 manifest.append({"id": piece["id"], "ok": True, "sheet": r["sheet"], "files": files,
                                  "docs": docs_for(piece, lang, date, slot, files, cycle), "clips": shot_clips(s)})
             elif key == "ig_carousel":
